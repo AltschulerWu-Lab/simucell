@@ -6,7 +6,7 @@ classdef Centered_nucleus_model <SimuCell_Object
         radius;
         eccentricity;
         centered_around;
-        description='An Elliptical Model of Cell Shape';
+        description='An Elliptical Model of Nucleus';
         
     end
     
