@@ -1,3 +1,4 @@
+function [a,b,c]=test_script()
 subpop=cell(0);
 
 
@@ -34,4 +35,5 @@ simucell_data.subpopulations=subpop;
 simucell_data.overlap=overlap;
 
 [a,b,c]=SimuCell_Engine(simucell_data);
-imagesc(a);
+
+end
