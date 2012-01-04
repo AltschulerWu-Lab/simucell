@@ -66,6 +66,29 @@ for cell_number=1:SimuCell_Params.number_of_cells
     
 end
 final_mask=current_image_mask;
+
+
+for cell_number=1:SimuCell_Params.number_of_cells
+    current_cell=struct;
+    subpopulation_number=subpopulation_number_of_cell(cell_number);
+    
+    %draw_order=(SimuCell_Params.subpopulations{subpopulation_number}.marker_draw_order);
+    number_of_markers=length(draw_order);
+    %calculate mask from other cells
+    
+    for object=1:number_of_objects
+        % marker draw order
+        for marker_number=1:number_of_markers
+            
+            
+            for operation_number=1:number_of_operations
+                
+            end
+        end
+    end
+end
+
+
 %
 %final_image=zeros(image_size(1),image_size(2),number_of_markers);
 %full_image_textures=cell(number_of_markers,number_of_cells,number_of_objects_per_cell);
