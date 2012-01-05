@@ -56,65 +56,77 @@ function define_shape_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 %Change the Title
-if (length(varargin) < 3) %|| ~isa(varargin{1}, 'importantObjectType')
+if (length(varargin) < 5) %|| ~isa(varargin{1}, 'importantObjectType')
      error ('you must pass your object name and subpopulation nr');
 end
-handles.object_name = varargin{1};
-handles.subpop_nr = varargin{2};
-handles.objects=varargin{3};
-handles.currentObject=varargin{4};
-handles.subpop=varargin{5};
+% handles.object_name = varargin{1};
+% handles.subpop_nr = varargin{2};
+% handles.objects=varargin{3};
+% handles.currentObject=varargin{4};
+% handles.subpop=varargin{5};
+
+
+shapeHandles.object_name = varargin{1};
+shapeHandles.object_name = varargin{1};
+shapeHandles.subpop_nr = varargin{2};
+shapeHandles.objects=varargin{3};
+shapeHandles.currentObject=varargin{4};
+shapeHandles.subpop=varargin{5};
 set(handles.title,'String',['Define your object '...
-  ' for subpopulation ' num2str(handles.subpop_nr)]);
+  ' for subpopulation ' num2str(shapeHandles.subpop_nr)]);
 
 
-handles.selectedType=[];
-handles.selectedModel=[];
-if(~isempty(handles.currentObject))
-  currentClassName=class(handles.currentObject);
+
+
+shapeHandles.selectedType=[];
+shapeHandles.selectedModel=[];
+if(~isempty(shapeHandles.currentObject))
+  currentClassName=class(shapeHandles.currentObject);
   shapeListFile=getAllFiles('plugins/shape/');
   shapeListFile = strrep(shapeListFile, 'plugins/shape/', '');
   result=cellfun(@(x)regexp(x,[currentClassName '.m']),shapeListFile,...
     'UniformOutput',false);
-  handles.selectedType=shapeListFile{cellfun(@(y)~isempty(y),result)};
-  r=regexp(handles.selectedType,'/','split');
-  handles.selectedType=r{1};
-  handles.selectedModel=currentClassName;
+  shapeHandles.selectedType=shapeListFile{cellfun(@(y)~isempty(y),result)};
+  r=regexp(shapeHandles.selectedType,'/','split');
+  shapeHandles.selectedType=r{1};
+  shapeHandles.selectedModel=currentClassName;
 end
-
+setappdata(0,'shapeHandles',shapeHandles);
 
 
 %Populate the Type ComboBox
 dirList=dir('plugins/shape/');
 dirList = {dirList(find([dirList.isdir])).name};
 dirList=dirList(3:end);
-if(~isempty(handles.selectedType))
-  valueSelected=find(strcmp(dirList, handles.selectedType));
+if(~isempty(shapeHandles.selectedType))
+  valueSelected=find(strcmp(dirList, shapeHandles.selectedType));
   %Set the shape Type
   set(handles.shapeTypeCb,'String',dirList,'Value',valueSelected);
   %Set the shape Model
   guidata(hObject, handles);
   shapeTypeCb_Callback(hObject, eventdata, handles);
   modelList=get(handles.shapeModelCb,'String');
-  valueSelected=find(strcmp(modelList, handles.selectedModel));
+  
+  valueSelected=find(strcmp(modelList, shapeHandles.selectedModel));
   set(handles.shapeModelCb,'Value',valueSelected);
-  guidata(hObject, handles);
+  
+  
   %Set the parameters field
-  setParametersPanel(hObject,handles,handles.currentObject);
+  setParametersPanel(hObject,handles,shapeHandles.currentObject);
   
 else
   set(handles.shapeTypeCb,'String',dirList);
 end
-set(handles.nameEdit,'String',handles.object_name);
+set(handles.nameEdit,'String',shapeHandles.object_name);
 
 
-% Update handles structure
-guidata(hObject, handles);
-if(isempty(handles.selectedType))
+if(isempty(shapeHandles.selectedType))
   shapeTypeCb_Callback(hObject, eventdata, handles);
 end
 % UIWAIT makes define_shape wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
+uiwait(handles.figure1);
+%delete(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -125,8 +137,12 @@ function varargout = define_shape_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+%varargout{1} = handles.output;
+shapeHandles=getappdata(0,'shapeHandles');
+varargout{1}=shapeHandles.shapeObj;
+varargout{2}=shapeHandles.object_name;
 
+delete(handles.figure1);
 
 % --- Executes on selection change in shapeTypeCb.
 function shapeTypeCb_Callback(hObject, eventdata, handles)
@@ -184,20 +200,23 @@ setParametersPanel(hObject,handles,shapeObj);
 
 
 function setParametersPanel(hObject,handles,shapeObj)
-propertyList = fieldnames(get(shapeObj));
+propertyList = properties(shapeObj);
 
+
+shapeHandles=getappdata(0,'shapeHandles');
 %Clear the all parameters
-handles=clearAllParameters(handles);
+clearAllParameters();
 %Populate the new one
 paramNr=1;
 for i=1:length(propertyList)
-  if(strcmpi(propertyList{i},'description'))
+  %if(strcmpi(propertyList{i},'description'))
+  if (~isa(shapeObj.(propertyList{i}),'Parameter'))
     continue;
   end
   property=shapeObj.get(propertyList{i});
   propertyName= shapeObj.get(propertyList{i}).name;
   
-  handles.parametersLabel{paramNr}= uicontrol(...
+  shapeHandles.parametersLabel{paramNr}= uicontrol(...
     'Parent', handles.mainPanel, 'Style', 'text',...
     'String', propertyName, 'Units', 'pixel',...
     'HorizontalAlignment','right',...
@@ -207,7 +226,7 @@ for i=1:length(propertyList)
   
   %If the property is a number, use edit ui
   if(property.type==SimuCell_Class_Type.number)
-    handles.parametersField{paramNr}= uicontrol(...
+    shapeHandles.parametersField{paramNr}= uicontrol(...
       'Parent', handles.mainPanel, 'Style', 'edit',...
       'String', property.value, 'Units', 'pixel',...
       'HorizontalAlignment','left',...
@@ -219,62 +238,74 @@ for i=1:length(propertyList)
   %If the property is a list, use list ui
   elseif(property.type==SimuCell_Class_Type.list)
     ;
-  %If the property is a simucell_model, use list ui
-  elseif(property.type==SimuCell_Class_Type.simucell_model)
+  %If the property is a simucell_shape_model, use list ui
+  elseif(property.type==SimuCell_Class_Type.simucell_shape_model)
     objectList=getOtherObjectList(handles);
     if(isempty(objectList))
       warndlg({['You MUST have defined a object PREVIOUSLY in order to '...
         'use this model.'],
         'Please Cancel or choose and other Type/Model.'});
-      handles=clearAllParameters(handles);
-      guidata(hObject, handles);
+      setappdata(0,'shapeHandles',shapeHandles);
+      handles=clearAllParameters();
+%       shapeHandles=getappdata(0,'shapeHandles');
+%       setappdata(0,'shapeHandles',shapeHandles);
+      %guidata(hObject, handles);
       return;
     else
-      objectNameList=fieldnames(handles.objects);
-      handles.parametersField{paramNr}= uicontrol(...
+      objectNameList=fieldnames(shapeHandles.objects);
+      shapeHandles.parametersField{paramNr}= uicontrol(...
         'Parent', handles.mainPanel, 'Style', 'popupmenu',...
         'String', objectList, 'Units', 'pixel',...
         'HorizontalAlignment','left',...
         'Position', [205 290-(paramNr*30) 200 20], ...
         'FontWeight', 'normal',...
         'TooltipString', shapeObj.get(propertyList{i}).description);
-      name=handles.subpop.find_shape_name(property.value);
+      name=shapeHandles.subpop.find_shape_name(property.value);
       if(~isempty(name))
-        set(handles.parametersField{paramNr},'Value',find(strcmp(objectNameList, name)));
+        set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(objectNameList, name)));
       end
     end
   end
   paramNr=paramNr+1;
 end
 % Update handles structure
+setappdata(0,'shapeHandles',shapeHandles);
 guidata(hObject, handles);
 
 
 %Remove all previous Model parameters
-function handles=clearAllParameters(handles)
+function handles=clearAllParameters()
 %Clear the all parameters
-if isfield(handles,'parametersLabel')
-  for i=1:length(handles.parametersLabel)
-    delete(handles.parametersLabel{i});
+
+shapeHandles=getappdata(0,'shapeHandles');
+if isfield(shapeHandles,'parametersLabel')
+  for i=1:length(shapeHandles.parametersLabel)
+    if(ishandle(shapeHandles.parametersLabel{i}))
+      delete(shapeHandles.parametersLabel{i});
+    end
   end
-handles=rmfield(handles,'parametersLabel');
+handles=rmfield(shapeHandles,'parametersLabel');
 end
-if isfield(handles,'parametersField')
-  for i=1:length(handles.parametersField)
-    delete(handles.parametersField{i});
+if isfield(shapeHandles,'parametersField')
+  for i=1:length(shapeHandles.parametersField)
+    if(ishandle(shapeHandles.parametersField{i}))
+      delete(shapeHandles.parametersField{i});
+    end
   end
-handles=rmfield(handles,'parametersField');
+handles=rmfield(shapeHandles,'parametersField');
+setappdata(0,'shapeHandles',shapeHandles);
 end
 
 
 %Return the cell list of Object of the current subpopulation minux the one
 %that we try to define (Used for Object depending on other object).
 function objectList2=getOtherObjectList(handles)
-objectList=fieldnames(handles.objects);
+shapeHandles=getappdata(0,'shapeHandles');
+objectList=fieldnames(shapeHandles.objects);
 objectList2=cell(0);
 counter=1;
 for i=1:length(objectList)
-  if(~strcmpi(objectList{i},handles.object_name))
+  if(~strcmpi(objectList{i},shapeHandles.object_name))
     objectList2{counter}=objectList{i};
     counter=counter+1;
   end
@@ -324,18 +355,47 @@ function SaveButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-%Create new Shape Model Object
-%get object type
+shapeHandles=getappdata(0,'shapeHandles');
+%Get the Object Type
 selectedString=get(handles.shapeModelCb,'String');
 selectedValue=get(handles.shapeModelCb,'Value');
+%Create new Shape Model Object
 shapeObj=eval(selectedString{selectedValue});
 
-for i=1:length(handles.parametersField)
-  label=get(handles.parametersLabel{i},'String');
-  
-%   gethandles.parametersField
-%   handles.parametersLabel
+%Get the property setted for this new object
+propertyList = properties(shapeObj);
+paramNr=1;
+for i=1:length(propertyList)
+  if (~isa(shapeObj.(propertyList{i}),'Parameter'))
+    continue;
+  end
+  propertyLabel=get(shapeHandles.parametersLabel{paramNr},'String');  
+  if(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.number)
+    propertyValue=get(shapeHandles.parametersField{paramNr},'String');
+    try
+      propertyValue=str2double(propertyValue);
+    catch
+      ;
+    end
+  elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.simucell_shape_model)
+    propertyValue=get(shapeHandles.parametersField{i},'String');
+    propertyIndex=get(shapeHandles.parametersField{i},'Value');
+    
+    propertyValue=shapeHandles.subpop.objects.(propertyValue{propertyIndex});
+    ;
+  elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.list)
+    ;
+  end
+  %Set the value to the corresponding parameter
+  set(shapeObj,propertyList{i},propertyValue);
+  paramNr=paramNr+1;
 end
+%Save the created Object
+shapeHandles.shapeObj=shapeObj;
+guidata(hObject, handles);
+%close(handles.figure1);
+setappdata(0,'shapeHandles',shapeHandles);
+uiresume;
 
 
 

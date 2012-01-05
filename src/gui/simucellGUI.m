@@ -178,9 +178,19 @@ subpop=myhandles.simucell_data.subpopulations{subpopSelected};
 
 
 currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
-define_shape_gui = define_shape(objectSelected,subpopSelected,...
+[shapeObj,name] = define_shape(objectSelected,subpopSelected,...
   myhandles.simucell_data.subpopulations{subpopSelected}.objects,...
   currentObject,subpop);
+%uiwait;
+myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected)=shapeObj;
+setappdata(0,'myhandles',myhandles);
+populateTable(hObject,handles);
+
+
+
+%Delete the previous object if existed and if shapeObj is not null
+%Save by the new one using the new name 
+
 
 
 % --- Executes on button press in RemoveSubpop.
