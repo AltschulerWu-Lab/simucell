@@ -33,8 +33,14 @@ classdef Constant_dependant_marker_level_operation <SimuCell_Marker_Operation
         
         
         
-        function result=Apply(obj,x)
-            result=x+obj.level;
+        function result=Apply(obj,current_marker,current_shape_mask,other_cells_mask,needed_shapes,needed_markers)
+            shape_mask=needed_shapes{1};
+            other_marker=needed_markers{1};
+            masked_marker=other_marker(shape_mask);
+            level=mean(masked_marker(:));
+            level=min(max(obj.slope.value*level+obj.intercept.value,0),1);
+            current_marker(current_shape_mask)=level;
+            result=current_marker;
         end
         
         function pre_list=prerendered_marker_list(obj)

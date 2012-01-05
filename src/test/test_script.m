@@ -1,4 +1,4 @@
-function [a,b,c]=test_script()
+function [a,b,c,d]=test_script()
 subpop=cell(0);
 
 
@@ -21,22 +21,22 @@ markers1=subpop{1}.markers;
 markers1.addprop('DAPI');
 markers1.DAPI=Marker(objects1);
 op=Constant_marker_level_operation();
-set(op,'level',1);
+set(op,'level',0.5);
 markers1.DAPI.cytoplasm.AddOperation(op);
 op=Constant_dependant_marker_level_operation();
-set(op,'marker',markers1.DAPI.cytoplasm,'region',objects1.nucleus);
+set(op,'marker',markers1.DAPI.cytoplasm,'region',objects1.nucleus,'slope',0.5);
 markers1.DAPI.nucleus.AddOperation(op);
 
 overlap=Overlap_Specification;
 overlap.AddOverlap({objects1.cytoplasm},0);
 
 simucell_data.population_fractions=[1];
-simucell_data.number_of_cells=15;
+simucell_data.number_of_cells=5;
 simucell_data.simucell_image_size=[500,500];
 
 simucell_data.subpopulations=subpop;
 simucell_data.overlap=overlap;
 
-[a,b,c]=SimuCell_Engine(simucell_data);
+[a,b,c,d]=SimuCell_Engine(simucell_data);
 
 end

@@ -16,8 +16,9 @@ classdef Constant_marker_level_operation <SimuCell_Marker_Operation
         
         
         
-        function result=Apply(obj,x)
-            result=x+obj.level;
+        function result=Apply(obj,current_marker,current_shape_mask,other_cells_mask,needed_shapes,needed_markers)
+            current_marker(current_shape_mask)=obj.level.value;
+            result=current_marker;
         end
         
         function pre_list=prerendered_marker_list(obj)

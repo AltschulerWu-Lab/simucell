@@ -123,6 +123,32 @@ classdef Subpopulation <handle
                 end
             end
         end
+        
+        
+        function [marker_name,shape_name]=find_marker_name(obj,marker_object)
+            shape_names=properties(obj.objects);
+            marker_names=properties(obj.markers);
+            
+            marker_name=[];
+            shape_name=[];
+            for marker_counter=1:length(marker_names)
+                for shape_counter=1:length(shape_names)
+                    if(marker_object==...
+                            obj.markers.(marker_names{marker_counter})...
+                            .(shape_names{shape_counter}))
+                        marker_name=marker_names{marker_counter};
+                        shape_name=shape_names{shape_counter};
+                        return;
+                    end
+                    
+                end
+            end
+            
+            if(isempty(marker_name)||isempty(shape_name))
+                error('object passed to find_marker_name does not exist');
+            end
+        end
+        
         %         function obj=AddObject(obj,object)
         %             obj.Objects{length(obj.Objects)+1}=object;
         %             obj.Overlap_Matrix=0.9*triu(ones(length(obj.Objects)))+...

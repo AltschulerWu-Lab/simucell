@@ -1,4 +1,4 @@
-function [final_mask,object_structure,full_result]=SimuCell_Engine(SimuCell_Params)
+function [final_mask,object_structure,full_result,marker_structure]=SimuCell_Engine(SimuCell_Params)
 
 
 number_of_subpopulations=length(SimuCell_Params.subpopulations);
@@ -15,6 +15,7 @@ object_structure=struct; % Stores the shape of every object in every cell. Index
 
 %Generating cell-wise object shapes
 current_image_mask=false(SimuCell_Params.simucell_image_size);
+cell_masks=cell(SimuCell_Params.number_of_cells,1);
 
 full_result=cell(length(SimuCell_Params.overlap.ordered_shape_list),1);
 
@@ -55,8 +56,10 @@ for cell_number=1:SimuCell_Params.number_of_cells
         end
     end
     shapes=fieldnames(current_cell);
+    cell_masks{cell_number}=false(SimuCell_Params.simucell_image_size);
     for i=1:length(shapes)
         current_image_mask=current_image_mask|current_cell.(shapes{i});
+        cell_masks{cell_number}=cell_masks{cell_number}|current_cell.(shapes{i});
         object_structure(cell_number).(shapes{i})=sparse(current_cell.(shapes{i}));
         obj_num=SimuCell_Params.overlap.shape_to_number_map{subpopulation_number}(shapes{i});
         full_result{obj_num}=[full_result{obj_num} {sparse(current_cell.(shapes{i}))}];
@@ -66,24 +69,49 @@ for cell_number=1:SimuCell_Params.number_of_cells
 end
 final_mask=current_image_mask;
 
-
+marker_structure=struct;
 for cell_number=1:SimuCell_Params.number_of_cells
-    current_cell=struct;
+    
     subpopulation_number=subpopulation_number_of_cell(cell_number);
     
     %draw_order=(SimuCell_Params.subpopulations{subpopulation_number}.marker_draw_order);
-    number_of_markers=length(draw_order);
+    number_of_marker_shapes=length(SimuCell_Params.subpopulations{subpopulation_number}.marker_draw_order_objects);
     %calculate mask from other cells
-    
-    for object=1:number_of_objects
-        % marker draw order
-        for marker_number=1:number_of_markers
-            
-            
-            for operation_number=1:number_of_operations
-                
-            end
+    other_cells_mask=false(SimuCell_Params.simucell_image_size);
+    for i=1:SimuCell_Params.number_of_cells
+        if(i~=cell_number)
+            other_cells_mask=other_cells_mask|cell_masks{i};
         end
+    end
+    
+    for marker_shape_counter=1:number_of_marker_shapes
+        
+        temp=SimuCell_Params.subpopulations{subpopulation_number}.marker_draw_order_names{marker_shape_counter};
+        marker_name=temp{1};
+        shape_name=temp{2};
+        operations=SimuCell_Params.subpopulations{subpopulation_number}.marker_draw_order_objects{marker_shape_counter}.operations;
+        number_of_operations=length(operations);
+        current_marker=sparse(SimuCell_Params.simucell_image_size(1),SimuCell_Params.simucell_image_size(2));
+        for operation_number=1:number_of_operations
+            op=operations{operation_number};
+            needed_shapes=op.needed_shape_list();
+            shapes_passed=cell(length(needed_shapes),1);
+            for i=1:length(needed_shapes)
+                shape_name1= SimuCell_Params.subpopulations{1}.find_shape_name(needed_shapes{i});
+                shapes_passed{i}=object_structure(cell_number).(shape_name1);
+            end
+            needed_marker_shapes=op.prerendered_marker_list();
+            markers_passed=cell(length(needed_marker_shapes),1);
+            for i=1:length(needed_marker_shapes)
+                [marker_name1 shape_name1]=...
+                    SimuCell_Params.subpopulations{1}.find_marker_name(needed_marker_shapes{i});
+                markers_passed{i}=marker_structure(cell_number).(shape_name1).(marker_name1);
+            end
+            current_shape_mask=object_structure(cell_number).(shape_name);
+            current_marker=op.Apply(current_marker,current_shape_mask,...
+                other_cells_mask,shapes_passed,markers_passed);
+        end
+        marker_structure(cell_number).(shape_name).(marker_name)=current_marker;
     end
 end
 
