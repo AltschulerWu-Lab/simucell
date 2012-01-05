@@ -7,8 +7,7 @@ classdef SimuCell_Marker_Operation <SimuCell_Model
 %         default_values
 %         description
 %         parameters
-         needed_shape_list
-         prerendered_marker_list
+         
     end
     
     methods (Abstract)
@@ -17,6 +16,8 @@ classdef SimuCell_Marker_Operation <SimuCell_Model
 %         end
 
         Apply(numeric);
+        prerendered_marker_list(numeric);
+        needed_shape_list(numeric);
     end
     
 end
