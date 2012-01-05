@@ -1,4 +1,4 @@
-classdef Marker_Operation_Queue
+classdef Marker_Operation_Queue <handle
     %UNTITLED2 Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -19,7 +19,7 @@ classdef Marker_Operation_Queue
 %             obj.Density=density_model;
 %             obj.Texture=texture_model;
 %         end
-        function obj=AddOperation(obj,operation)
+        function AddOperation(obj,operation)
             obj.operations{end+1}=operation;
         end
       

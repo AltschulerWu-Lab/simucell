@@ -22,7 +22,10 @@ markers1.addprop('DAPI');
 markers1.DAPI=Marker(objects1);
 op=Constant_marker_level_operation();
 set(op,'level',1);
-markers1.DAPI.nucleus=markers1.DAPI.nucleus.AddOperation(op);
+markers1.DAPI.cytoplasm.AddOperation(op);
+op=Constant_dependant_marker_level_operation();
+set(op,'marker',markers1.DAPI.cytoplasm,'region',objects1.nucleus);
+markers1.DAPI.nucleus.AddOperation(op);
 
 overlap=Overlap_Specification;
 overlap.AddOverlap({objects1.cytoplasm},0);

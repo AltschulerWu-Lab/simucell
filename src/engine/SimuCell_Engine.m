@@ -3,9 +3,8 @@ function [final_mask,object_structure,full_result]=SimuCell_Engine(SimuCell_Para
 
 number_of_subpopulations=length(SimuCell_Params.subpopulations);
 for subpop=1:number_of_subpopulations
-    SimuCell_Params.subpopulations{subpop}=...
-        SimuCell_Params.subpopulations{subpop}.calculate_shape_draw_order;
-    
+     SimuCell_Params.subpopulations{subpop}.calculate_shape_draw_order;
+     SimuCell_Params.subpopulations{subpop}.calculate_marker_draw_order;
 end
 
 SimuCell_Params.overlap.Construct_Overlap_Matrix(SimuCell_Params.subpopulations);
