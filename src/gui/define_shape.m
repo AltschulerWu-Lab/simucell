@@ -55,18 +55,9 @@ function define_shape_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for define_shape
 handles.output = hObject;
 
-%Change the Title
 if (length(varargin) < 5) %|| ~isa(varargin{1}, 'importantObjectType')
      error ('you must pass your object name and subpopulation nr');
 end
-% handles.object_name = varargin{1};
-% handles.subpop_nr = varargin{2};
-% handles.objects=varargin{3};
-% handles.currentObject=varargin{4};
-% handles.subpop=varargin{5};
-
-
-shapeHandles.object_name = varargin{1};
 shapeHandles.object_name = varargin{1};
 shapeHandles.subpop_nr = varargin{2};
 shapeHandles.objects=varargin{3};
@@ -369,7 +360,6 @@ for i=1:length(propertyList)
   if (~isa(shapeObj.(propertyList{i}),'Parameter'))
     continue;
   end
-  propertyLabel=get(shapeHandles.parametersLabel{paramNr},'String');  
   if(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.number)
     propertyValue=get(shapeHandles.parametersField{paramNr},'String');
     try
@@ -405,3 +395,7 @@ function cancelButton_Callback(hObject, eventdata, handles)
 % hObject    handle to cancelButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+shapeHandles=getappdata(0,'shapeHandles');
+shapeHandles.shapeObj=[];
+setappdata(0,'shapeHandles',shapeHandles);
+uiresume;

@@ -22,7 +22,7 @@ function varargout = simucellGUI(varargin)
 
 % Edit the above text to modify the response to help simucellGUI
 
-% Last Modified by GUIDE v2.5 02-Jan-2012 12:15:51
+% Last Modified by GUIDE v2.5 05-Jan-2012 17:48:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -97,23 +97,63 @@ function varargout = simucellGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in pushbutton13.
-function pushbutton13_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton13 (see GCBO)
+% --- Executes on button press in editMarkerButton.
+function editMarkerButton_Callback(hObject, eventdata, handles)
+% hObject    handle to editMarkerButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myhandles=getappdata(0,'myhandles');
+selectedCellPosition = handles.selectedCells;
+%get the data from the UITABLE
+tableData = get(handles.uitable1,'data');
+subpopSelected=tableData{selectedCellPosition(1,1),1};
+objectSelected=tableData{selectedCellPosition(1,1),2};
+columnHeader=getColumnHeaders(handles);
+markerSelected=columnHeader{selectedCellPosition(1,2)};
+markerProperty=myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected);
+
+subpop=myhandles.simucell_data.subpopulations{subpopSelected};
+%currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
+[markerProperty,name] = define_marker(subpop,markerProperty,markerSelected,objectSelected,subpopSelected);
+if (~isempty(markerProperty.operations))
+  myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected)=markerProperty;
+  setappdata(0,'myhandles',myhandles);
+  populateTable(hObject,handles);
+end
 
 
-% --- Executes on button press in pushbutton11.
-function pushbutton11_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton11 (see GCBO)
+
+
+% --- Executes on button press in newMarkerButton.
+function newMarkerButton_Callback(hObject, eventdata, handles)
+% hObject    handle to newMarkerButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myhandles=getappdata(0,'myhandles');
+%selectedCellPosition = handles.selectedCells;
+%get the data from the UITABLE
+%tableData = get(handles.uitable1,'data');
+%subpopSelected=tableData{selectedCellPosition(1,1),1};
+prompt = {['Enter new Marker Name' ' :']};
+dlg_title = ['Add a new marker'] ;
+num_lines = 1;
+def = {'Name'};
+answer = inputdlg(prompt,dlg_title,num_lines,def);
+if isempty(answer)
+  return;
+end
+subpop=myhandles.simucell_data.subpopulations;
+for i=1:length(subpop)
+  subpop{i}.markers.addprop(answer{1});
+  subpop{i}.markers.(answer{1})=...
+    Marker(subpop{i}.objects);
+end
+setappdata(0,'myhandles',myhandles);
+populateTable(hObject,handles);
 
-
-% --- Executes on button press in pushbutton12.
-function pushbutton12_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton12 (see GCBO)
+% --- Executes on button press in removeMarkerButton.
+function removeMarkerButton_Callback(hObject, eventdata, handles)
+% hObject    handle to removeMarkerButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -130,11 +170,8 @@ tableData = get(handles.uitable1,'data');
 subpopSelected=tableData{selectedCellPosition(1,1),1};
 objectSelected=tableData{selectedCellPosition(1,1),2};
 myhandles.simucell_data.subpopulations{subpopSelected}.delete_shape(objectSelected);
-
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
-
-
 
 
 % --- Executes on button press in AddObject.
@@ -161,8 +198,6 @@ setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
 
 
-
-
 % --- Executes on button press in EditShape.
 function EditShape_Callback(hObject, eventdata, handles)
 % hObject    handle to EditShape (see GCBO)
@@ -175,22 +210,16 @@ tableData = get(handles.uitable1,'data');
 subpopSelected=tableData{selectedCellPosition(1,1),1};
 objectSelected=tableData{selectedCellPosition(1,1),2};
 subpop=myhandles.simucell_data.subpopulations{subpopSelected};
-
-
 currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
 [shapeObj,name] = define_shape(objectSelected,subpopSelected,...
   myhandles.simucell_data.subpopulations{subpopSelected}.objects,...
   currentObject,subpop);
 %uiwait;
-myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected)=shapeObj;
-setappdata(0,'myhandles',myhandles);
-populateTable(hObject,handles);
-
-
-
-%Delete the previous object if existed and if shapeObj is not null
-%Save by the new one using the new name 
-
+if (~isempty(shapeObj))
+  myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected)=shapeObj;
+  setappdata(0,'myhandles',myhandles);
+  populateTable(hObject,handles);
+end
 
 
 % --- Executes on button press in RemoveSubpop.
@@ -226,10 +255,16 @@ subpopNr=length(myhandles.simucell_data.subpopulations);
 myhandles.simucell_data.subpopulations{subpopNr+1}=Subpopulation();
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
+subpopList=[];
+for i=1:subpopNr+1
+  subpopList{i}=i;
+end
+set(handles.subpopNrCB,'String',subpopList);
 
 
 function columnHeaders=getColumnHeaders(handles)
   columnHeaders=get(handles.uitable1,'ColumnName');
+  
   
 function rowHeaders=getRowHeaders(handles)
   rowHeaders=get(handles.uitable1,'RowName');
@@ -249,37 +284,75 @@ rowNr=0;
 subpopNr=length(subpops);
 objectNr=0;
 for i=1:subpopNr
-  subpop=subpops{i};
   rowNr=rowNr+1;
   rowHeaders{rowNr}='Subpop';
   tableData{rowNr,1}=i;
   objs= properties(subpops{i}.objects);
-  for j=1:length(objs)
-    tableData{rowNr,1}=i;
-    obj=subpops{i}.objects.(objs{j});
-    if(~isempty(obj))
-      tableData{rowNr,3}='Defined';
-    else
-      tableData{rowNr,3}='-';
+  
+  if(~isempty(objs))
+    for j=1:length(objs)
+      tableData{rowNr,1}=i;
+      obj=subpops{i}.objects.(objs{j});
+      if(~isempty(obj))
+        tableData{rowNr,3}='Defined';
+      else
+        tableData{rowNr,3}='-';
+      end
+      tableData{rowNr,2}=objs{j};
+      if(j<length(objs))
+        rowNr=rowNr+1;
+      end
+      objectNr=objectNr+1;
     end
-    tableData{rowNr,2}=objs{j};
-    if(j<length(objs))
-      rowNr=rowNr+1;
-    end
-    objectNr=objectNr+1;
+  end  
+end
+%Count the number of marker
+%If not the same for all the subpopulation, give an error
+nrMarker=0;
+for i=1:subpopNr
+  if(isempty(properties(subpops{1}.markers)))
+    nrMark=0;
+  else
+    nrMark=length(properties(subpops{1}.markers));
+  end
+  if(i==1)
+    nrMarker=nrMark;
+  elseif(nrMarker~=nrMark)
+    errordlg('You have to define the same marker for all the subpopulation');
+  end
+end
+%Fill the table for the marker
+for i=1:nrMarker
+  markers=properties(subpops{1}.markers);
+  columnHeaders{3+i}=markers{i};
+  rowNr=0;
+  for j=1:subpopNr
+    rowNr=rowNr+1;
+    objs= properties(subpops{j}.objects);
+    if(~isempty(objs))
+      for k=1:length(objs)
+        if (isempty(subpops{j}.markers.(markers{i}).(objs{k}).operations))
+          tableData{rowNr,3+i}='-';          
+        else
+          tableData{rowNr,3+i}='Defined';          
+        end
+        if(k<length(objs))
+          rowNr=rowNr+1;
+        end  
+      end
+    end  
   end
 end
 if(objectNr>1)
   columnHeaders{2}='Object Name';
   columnHeaders{3}='Shape';
 end
-%set the row labels
+%Set the row labels
 set(handles.uitable1,'RowName',rowHeaders);
 set(handles.uitable1,'ColumnName',columnHeaders);
 set(handles.uitable1,'data',tableData);
-% Update handles structure
+%Update handles structure
 guidata(hObject, handles);
-
 
 
 function subpop=test()
@@ -296,13 +369,6 @@ set(objects1.cytoplasm,'radius',30,'eccentricity',0.2);
 objects1.addprop('nucleus');
 objects1.nucleus=Centered_nucleus_model;
 set(objects1.nucleus,'centered_around',objects1.cytoplasm,'eccentricity',0);
-
-
-
-
-
-
-
   
   
 function initMyHandle()
@@ -322,3 +388,155 @@ function uitable1_CellSelectionCallback(hObject, eventdata, handles)
 handles.selectedCells = eventdata.Indices;
 %update the gui data
 guidata(hObject, handles);
+
+
+
+function imageWidthEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to imageWidthEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of imageWidthEdit as text
+%        str2double(get(hObject,'String')) returns contents of imageWidthEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function imageWidthEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to imageWidthEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function imageHeightEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to imageHeightEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of imageHeightEdit as text
+%        str2double(get(hObject,'String')) returns contents of imageHeightEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function imageHeightEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to imageHeightEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function cellNrEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to cellNrEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of cellNrEdit as text
+%        str2double(get(hObject,'String')) returns contents of cellNrEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function cellNrEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to cellNrEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function imageNrEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to imageNrEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of imageNrEdit as text
+%        str2double(get(hObject,'String')) returns contents of imageNrEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function imageNrEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to imageNrEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in subpopNrCB.
+function subpopNrCB_Callback(hObject, eventdata, handles)
+% hObject    handle to subpopNrCB (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns subpopNrCB contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from subpopNrCB
+
+
+% --- Executes during object creation, after setting all properties.
+function subpopNrCB_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to subpopNrCB (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function fractionSubpopEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to fractionSubpopEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of fractionSubpopEdit as text
+%        str2double(get(hObject,'String')) returns contents of fractionSubpopEdit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function fractionSubpopEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fractionSubpopEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in saveSimucellButton.
+function saveSimucellButton_Callback(hObject, eventdata, handles)
+% hObject    handle to saveSimucellButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in runSimucellButton.
+function runSimucellButton_Callback(hObject, eventdata, handles)
+% hObject    handle to runSimucellButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

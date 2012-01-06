@@ -3,6 +3,7 @@ classdef Marker<dynamicprops
     %   Detailed explanation goes here
     
     properties
+      color
     end
     
     methods
