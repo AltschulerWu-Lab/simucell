@@ -115,7 +115,32 @@ for cell_number=1:SimuCell_Params.number_of_cells
     end
 end
 
-
+%composite images
+compositing_matrices=cell(number_of_subpopulations,1);
+composite_cell_images=struct;
+for subpop=1:number_of_subpopulations
+    cells_in_subpop=find(subpopulation_number_of_cell==subpop);
+    shapes=properties(SimuCell_Params.subpopulations{subpop}.objects);
+    object_masks=cell(length(cells_in_subpop),length(shapes));
+    for cell_number=1:length(cells_in_subpop)
+        for shape_number=1:length(shapes)
+           object_masks{cell_number,shape_number}=...
+               object_structure(cells_in_subpop(cell_number)).(shapes{shape_number}); 
+        end
+    end
+    compositing_matrices{subpop}=SimuCell_Params.subpopulations{subpop}.compositing.calculate_compositing_matrix(object_masks);
+%     composite_cell_images()
+    for cell_number=1:length(cells_in_subpop)
+        for shape_number1=1:length(shapes)
+            for shape_number2=1:length(shapes)
+                temp_mask=object_structure(cells_in_subpop(cell_number)).(shapes{shape_number1})+...
+                    object_structure(cells_in_subpop(cell_number)).(shapes{shape_number2});
+                
+            end
+        end
+    end
+end
+    
 %
 %final_image=zeros(image_size(1),image_size(2),number_of_markers);
 %full_image_textures=cell(number_of_markers,number_of_cells,number_of_objects_per_cell);

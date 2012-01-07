@@ -18,6 +18,8 @@ classdef Subpopulation <handle
         marker_draw_order_names
         marker_dependancy_matrix
         
+        compositing
+        
     end
     
     

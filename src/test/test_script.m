@@ -30,6 +30,10 @@ markers1.DAPI.nucleus.AddOperation(op);
 overlap=Overlap_Specification;
 overlap.AddOverlap({objects1.cytoplasm},0);
 
+subpop{1}.compositing=default_compositing();
+set(subpop{1}.compositing,'container_weight',0);
+
+
 simucell_data.population_fractions=[1];
 simucell_data.number_of_cells=5;
 simucell_data.simucell_image_size=[500,500];
