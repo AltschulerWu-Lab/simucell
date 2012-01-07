@@ -130,17 +130,60 @@ for subpop=1:number_of_subpopulations
     end
     compositing_matrices{subpop}=SimuCell_Params.subpopulations{subpop}.compositing.calculate_compositing_matrix(object_masks);
 %     composite_cell_images()
+  
     for cell_number=1:length(cells_in_subpop)
+%         composite=sparse(SimuCell_Params.simucell_image_size(1),SimuCell_Params.simucell_image_size(2));
+        weight_masks=cell(length(shapes),1);
+%         composite_mask=false(SimuCell_Params.simucell_image_size(1),SimuCell_Params.simucell_image_size(2));
+         number_shapes_overlapped=sparse(SimuCell_Params.simucell_image_size(1),SimuCell_Params.simucell_image_size(2));
+        for shape_number1=1:length(shapes) 
+            number_shapes_overlapped=number_shapes_overlapped+double(object_structure(cells_in_subpop(cell_number)).(shapes{shape_number1}));
+             weight_masks{shape_number1}=sparse(SimuCell_Params.simucell_image_size(1),SimuCell_Params.simucell_image_size(2));
+        end
+        number_shapes_overlapped(number_shapes_overlapped==1)=1;
+        for i=2:max(number_shapes_overlapped(:))
+            number_shapes_overlapped(number_shapes_overlapped==i)=1;%check expression
+        end
+       
         for shape_number1=1:length(shapes)
-            for shape_number2=1:length(shapes)
-                temp_mask=object_structure(cells_in_subpop(cell_number)).(shapes{shape_number1})+...
-                    object_structure(cells_in_subpop(cell_number)).(shapes{shape_number2});
+           
+            for shape_number2=1:shape_number1-1
                 
+                 overlap_region=object_structure(cells_in_subpop(cell_number)).(shapes{shape_number1})...
+                     & object_structure(cells_in_subpop(cell_number)).(shapes{shape_number2});
+                 only_shape1=~object_structure(cells_in_subpop(cell_number)).(shapes{shape_number2})...
+                     &object_structure(cells_in_subpop(cell_number)).(shapes{shape_number1});
+                 only_shape2=~object_structure(cells_in_subpop(cell_number)).(shapes{shape_number1})...
+                     &object_structure(cells_in_subpop(cell_number)).(shapes{shape_number2});
+                 weight_masks{shape_number1}(overlap_region)=weight_masks{shape_number1}(overlap_region)+...
+                     compositing_matrices{subpop}(shape_number1,shape_number2)*number_shapes_overlapped(overlap_region);
+                 weight_masks{shape_number1}(only_shape1)=weight_masks{shape_number1}(only_shape1)+...
+                     number_shapes_overlapped(only_shape1);
+                 weight_masks{shape_number2}(overlap_region)=weight_masks{shape_number2}(overlap_region)+...
+                     compositing_matrices{subpop}(shape_number2,shape_number1)*number_shapes_overlapped(overlap_region);
+                 weight_masks{shape_number2}(only_shape2)=weight_masks{shape_number2}(only_shape2)+...
+                     number_shapes_overlapped(only_shape2);
+            end
+        end
+        markers=properties(SimuCell_Params.subpopulations{subpop}.markers);
+        
+        for marker_number=1:length(markers)
+            composite_cell_images(cells_in_subpop(cell_number)).(markers{marker_number})=...
+                sparse(SimuCell_Params.simucell_image_size(1),SimuCell_Params.simucell_image_size(2));
+            for shape_number=1:length(shapes)
+                composite_cell_images(cells_in_subpop(cell_number)).(markers{marker_number})=...
+                    composite_cell_images(cells_in_subpop(cell_number)).(markers{marker_number})+...
+                    weight_masks{shape_number}.*...
+                    marker_structure(cells_in_subpop(cell_number)).(shapes{shape_number}).(markers{marker_number});
             end
         end
     end
 end
     
+
+
+
+
 %
 %final_image=zeros(image_size(1),image_size(2),number_of_markers);
 %full_image_textures=cell(number_of_markers,number_of_cells,number_of_objects_per_cell);
