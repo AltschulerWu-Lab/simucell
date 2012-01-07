@@ -1,7 +1,12 @@
 %TODO: Add more colors
 %Enum the list of color: enumeration Colors
+%get the number of Colors:
+% mc = ?Colors;
+% length(mc.EnumeratedValues);
+%Get first color:
+%mc.EnumeratedValues{1}.Name
 %Get the rgb color value:
-%redColor=Colors.red;
+%redColor=Colors.Red;
 %color=[redColor.R redColor.B redColor.G];
 
 classdef Colors
