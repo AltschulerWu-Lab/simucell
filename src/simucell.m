@@ -1,4 +1,4 @@
-function [a,b,c,d]=simucell(varargin)
+function [a,b,c,d,e]=simucell(varargin)
 
   addpath(genpath('gui'));
   addpath(genpath('test'));
@@ -7,7 +7,7 @@ function [a,b,c,d]=simucell(varargin)
   addpath(genpath('plugins'));
 
   if(nargin>0)
-        [a,b,c,d]=eval(varargin{1});
+        [a,b,c,d,e]=eval(varargin{1});
   end
         
 end

@@ -7,11 +7,17 @@ classdef Marker<dynamicprops
     end
     
     methods
-        function obj=Marker(objects)
-            props=properties(objects);
-            for i=1:length(props)
-               obj.addprop(props{i});
-               obj.(props{i})=Marker_Operation_Queue;
+        function obj=Marker(varargin)
+            obj.color=Colors.Red;
+            if(nargin>0)
+                props=properties(varargin{1});
+                for i=1:length(props)
+                    obj.addprop(props{i});
+                    obj.(props{i})=marker_operation_queue;
+                end
+                if(nargin>1)
+                    obj.color=varargin{2};
+                end
             end
         end
     end

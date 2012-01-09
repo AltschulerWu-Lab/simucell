@@ -533,6 +533,11 @@ function saveSimucellButton_Callback(hObject, eventdata, handles)
 % hObject    handle to saveSimucellButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+setup_simucell_params(hObject, eventdata, handles)
+myhandles=getappdata(0,'myhandles');
+[FileName,PathName]=uiputfile('*.mat','Save SimuCell Params');
+simucell_data=myhandles.simucell_data;
+save([PathName filesep FileName],'simucell_data');
 
 
 % --- Executes on button press in runSimucellButton.
@@ -540,3 +545,45 @@ function runSimucellButton_Callback(hObject, eventdata, handles)
 % hObject    handle to runSimucellButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+setup_simucell_params(hObject, eventdata, handles)
+myhandles=getappdata(0,'myhandles');
+
+[a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
+figure;
+image(a);
+axis off;axis equal;
+
+function setup_simucell_params(hObject, eventdata, handles)
+myhandles=getappdata(0,'myhandles');
+
+
+%Overlap assumed to be on cytoplasm(THIS IS JUST WRONG), change this to draw on the overlap menu 
+overlap=Overlap_Specification;
+overlap_areas=cell(0);
+for subpop_num=1:length(myhandles.simucell_data.subpopulations)
+    overlap_areas{subpop_num}=myhandles.simucell_data.subpopulations{subpop_num}.objects.cytoplasm;
+end
+overlap.AddOverlap(overlap_areas,0);
+myhandles.simucell_data.overlap=overlap;
+
+%Assuming equal subpop-fractions for now, change this to use the GUI params
+myhandles.simucell_data.population_fractions=ones(length(myhandles.simucell_data.subpopulations),1)/length(myhandles.simucell_data.subpopulations);
+
+% This needs to use the placement framework
+for subpop_num=1:length(myhandles.simucell_data.subpopulations)
+    myhandles.simucell_data.subpopulations{subpop_num}.placement=Random_Placement();
+    set(myhandles.simucell_data.subpopulations{subpop_num}.placement,'boundary',100);
+end
+
+% This needs to use the placement framework
+for subpop_num=1:length(myhandles.simucell_data.subpopulations)
+    myhandles.simucell_data.subpopulations{subpop_num}.compositing=default_compositing();
+    set(myhandles.simucell_data.subpopulations{subpop_num}.compositing,'container_weight',0);
+end
+
+%These should be okay
+myhandles.simucell_data.number_of_cells=str2double(get(handles.cellNrEdit,'String'));
+myhandles.simucell_data.simucell_image_size=...
+    [str2double(get(handles.imageWidthEdit,'String')),str2double(get(handles.imageHeightEdit,'String'))];
+
+setappdata(0,'myhandles',myhandles);

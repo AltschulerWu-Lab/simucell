@@ -3,21 +3,24 @@ classdef Constant_marker_level_operation <SimuCell_Marker_Operation
     %   Detailed explanation goes here
     
     properties
-        level
-        description='Constant Marker Level';
+        mean_level
+        sd_level
+        description='Constant Marker Level. This level is sampled from a Normal Distribution with Specified Mean and Standard Deviation';
     end
     
     methods
         function obj=Constant_marker_level_operation()
-            obj.level=Parameter('Marker Level',0.5,SimuCell_Class_Type.number,...
-                [0,1],'Marker Level[0-low, 1-High]');
-           
+            obj.mean_level=Parameter('Mean Marker Level',0.5,SimuCell_Class_Type.number,...
+                [0,1],'Mean Marker Level[0-low, 1-High]');
+            obj.sd_level=Parameter('Marker Level Sigma',0.2,SimuCell_Class_Type.number,...
+                [0,Inf],'Standard Deviation [0- all cells have same level, Inf- uniform sampling]');
         end
         
         
         
         function result=Apply(obj,current_marker,current_shape_mask,other_cells_mask,needed_shapes,needed_markers)
-            current_marker(current_shape_mask)=obj.level.value;
+            chosen_level=obj.mean_level.value+obj.sd_level.value*randn();
+            current_marker(current_shape_mask)=max(0,min(1,chosen_level));
             result=current_marker;
         end
         
