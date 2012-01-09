@@ -18,7 +18,7 @@ classdef Overlap_Specification <handle
         end
         
         
-        function Construct_Overlap_Matrix(obj,subpopulations)
+        function construct_overlap_matrix(obj,subpopulations)
             obj.ordered_shape_list=cell(0);
             obj.shape_to_number_map=cell(0);
             number_of_subpopulations=length(subpopulations);

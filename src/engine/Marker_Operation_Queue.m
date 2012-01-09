@@ -22,7 +22,32 @@ classdef Marker_Operation_Queue <handle
         function AddOperation(obj,operation)
             obj.operations{end+1}=operation;
         end
-      
+        
+        function DeleteOperation(obj,operation)
+            if(isnumeric(operation))
+                if(operation>=1 && operation<= length(obj.operations))
+                    obj.operations(operation)=[];
+                end
+            end
+        end
+        
+        function obj1=CloneOperationQueue(obj)
+            obj1=Marker_Operation_Queue();
+            number_of_operations=length(obj.operations);
+            for op_num=1:number_of_operations
+               op_temp=eval(class(obj.operations{op_num}));
+               params=properties(obj.operations{op_num});
+               for i=1:length(params)
+                  if(isa(op_temp.(params{i}),'Parameter')) 
+                    op_temp.(params{i}).value=obj.operations{op_num}.(params{i}).value; 
+                  end
+               end
+               obj1.AddOperation(op_temp);
+            end
+           
+            
+            
+        end
         
     end
     
