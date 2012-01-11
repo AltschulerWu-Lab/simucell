@@ -71,8 +71,8 @@ set(handles.title,'String',['Define your object '...
 
 shapeHandles.selectedType=[];
 shapeHandles.selectedModel=[];
-if(~isempty(shapeHandles.currentObject))
-  currentClassName=class(shapeHandles.currentObject);
+if(~isempty(shapeHandles.currentObject.model))
+  currentClassName=class(shapeHandles.currentObject.model);
   shapeListFile=getAllFiles('plugins/shape/');
   shapeListFile = strrep(shapeListFile, 'plugins/shape/', '');
   result=cellfun(@(x)regexp(x,[currentClassName '.m']),shapeListFile,...
@@ -103,7 +103,7 @@ if(~isempty(shapeHandles.selectedType))
   
   
   %Set the parameters field
-  setParametersPanel(hObject,handles,shapeHandles.currentObject);
+  setParametersPanel(hObject,handles,shapeHandles.currentObject.model);
   
 else
   set(handles.shapeTypeCb,'String',dirList);
@@ -381,7 +381,7 @@ for i=1:length(propertyList)
   paramNr=paramNr+1;
 end
 %Save the created Object
-shapeHandles.shapeObj=shapeObj;
+shapeHandles.shapeObj.model=shapeObj;
 guidata(hObject, handles);
 %close(handles.figure1);
 setappdata(0,'shapeHandles',shapeHandles);

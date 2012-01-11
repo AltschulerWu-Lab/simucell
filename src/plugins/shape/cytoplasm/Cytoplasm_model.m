@@ -1,4 +1,4 @@
-classdef Cytoplasm_model <SimuCell_Object
+classdef Cytoplasm_model <SimuCell_Object_Model
     %UNTITLED3 Summary of this class goes here
     %   Detailed explanation goes here
     

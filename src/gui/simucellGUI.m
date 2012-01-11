@@ -116,7 +116,7 @@ subpop=myhandles.simucell_data.subpopulations{subpopSelected};
 %currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
 [markerProperty,name] = define_marker(subpop,markerProperty,markerSelected,objectSelected,subpopSelected);
 if (~isempty(markerProperty.operations))
-  myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected)=markerProperty;
+  myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected).operations=markerProperty.operations;
   setappdata(0,'myhandles',myhandles);
   populateTable(hObject,handles);
 end
@@ -216,7 +216,7 @@ currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(ob
   currentObject,subpop);
 %uiwait;
 if (~isempty(shapeObj))
-  myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected)=shapeObj;
+  myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected).model=shapeObj.model;
   setappdata(0,'myhandles',myhandles);
   populateTable(hObject,handles);
 end
@@ -360,15 +360,14 @@ subpop=cell(0);
 subpop{1}=Subpopulation();
 subpop{1}.placement=Random_Placement();
 set(subpop{1}.placement,'boundary',100);
-objects1=subpop{1}.objects;
 
-objects1.addprop('cytoplasm');
-objects1.cytoplasm=Cytoplasm_model;
-set(objects1.cytoplasm,'radius',30,'eccentricity',0.2);
+add_object(subpop{1},'cytoplasm');
+subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
+set(subpop{1}.objects.cytoplasm.model,'radius',30,'eccentricity',0.2);
 
-objects1.addprop('nucleus');
-objects1.nucleus=Centered_nucleus_model;
-set(objects1.nucleus,'centered_around',objects1.cytoplasm,'eccentricity',0);
+add_object(subpop{1},'nucleus');
+subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
   
   
 function initMyHandle()

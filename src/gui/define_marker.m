@@ -69,7 +69,7 @@ shapeHandles.markerProperty = varargin{2};
 shapeHandles.markerName=varargin{3};
 shapeHandles.objectName=varargin{4};
 shapeHandles.subpopNr=varargin{4};
-shapeHandles.temp_operation_queue=shapeHandles.markerProperty.CloneOperationQueue();
+shapeHandles.temp_operation_queue=shapeHandles.markerProperty.operations;
 
 setappdata(0,'shapeHandles',shapeHandles);
 fileList=dir('plugins/markers/');
@@ -145,7 +145,7 @@ shapeHandles=getappdata(0,'shapeHandles');
 %Get the description of the first selected Model
 %selectedString=get(handles.operationListbox,'String');
 selectedValue=get(handles.operationListbox,'Value');
-shapeObj=shapeHandles.temp_operation_queue.operations{selectedValue};
+shapeObj=shapeHandles.temp_operation_queue{selectedValue};
 %shapeObj=eval(selectedString{selectedValue});
 set(handles.descriptionText,'String',shapeObj.description);
 setParametersPanel(hObject,handles,shapeObj);
@@ -174,10 +174,10 @@ function addOperationButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 shapeHandles=getappdata(0,'shapeHandles');
-shapeHandles.temp_operation_queue.AddOperation(Constant_marker_level_operation());
+shapeHandles.temp_operation_queue{end+1}=Constant_marker_level_operation();
 setappdata(0,'shapeHandles',shapeHandles);
 updateOperationList(hObject, eventdata, handles);
-set(handles.operationListbox,'Value',length(shapeHandles.temp_operation_queue.operations));
+set(handles.operationListbox,'Value',length(shapeHandles.temp_operation_queue));
 guidata(hObject, handles);
 operationListbox_Callback(hObject, eventdata, handles);
 
@@ -191,7 +191,7 @@ function removeOperationButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 shapeHandles=getappdata(0,'shapeHandles');
 operation_to_remove=get(handles.operationListbox,'Value');
-shapeHandles.temp_operation_queue.DeleteOperation(operation_to_remove);
+shapeHandles.temp_operation_queue(operation_to_remove)=[];
 setappdata(0,'shapeHandles',shapeHandles);
 updateOperationList(hObject, eventdata, handles);
 set(handles.operationListbox,'Value',max(get(handles.operationListbox,'Value')-1,1));
@@ -322,7 +322,7 @@ for i=1:length(propertyList)
 end
 %Save the created Object
 operation_number=get(handles.operationListbox,'Value');
-shapeHandles.temp_operation_queue.operations{operation_number}=shapeObj;
+shapeHandles.temp_operation_queue{operation_number}=shapeObj;
 updateOperationList(hObject, eventdata, handles);
 guidata(hObject, handles);
 %close(handles.figure1);
@@ -371,9 +371,9 @@ function pushbutton5_Callback(hObject, eventdata, handles)
 
 function updateOperationList(hObject, eventdata, handles)
 shapeHandles=getappdata(0,'shapeHandles');
-operation_names=cell(length(shapeHandles.temp_operation_queue.operations),1);
-for op_number=1:length(shapeHandles.temp_operation_queue.operations)
-    operation_names{op_number}=class(shapeHandles.temp_operation_queue.operations{op_number});
+operation_names=cell(length(shapeHandles.temp_operation_queue),1);
+for op_number=1:length(shapeHandles.temp_operation_queue)
+    operation_names{op_number}=class(shapeHandles.temp_operation_queue{op_number});
 end
 set(handles.operationListbox,'String',operation_names);
 guidata(hObject, handles);
@@ -462,9 +462,11 @@ for i=1:length(propertyList)
                 'Position', [box_xpos top_ypos-(paramNr*30) 200 20], ...
                 'FontWeight', 'normal',...
                 'TooltipString', markerObj.get(propertyList{i}).description);
-            name=shapeHandles.subpop.find_shape_name(property.value);
-            if(~isempty(name))
-                set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(objectNameList, name)));
+            if(property.value~=0)
+                name=shapeHandles.subpop.find_shape_name(property.value);
+                if(~isempty(name))
+                    set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(objectList, name)));
+                end
             end
         end
     elseif(property.type==SimuCell_Class_Type.simucell_marker_model)
@@ -506,7 +508,7 @@ for i=1:length(propertyList)
             if(property.value~=0)
                 [marker_name,shape_name]=shapeHandles.subpop.find_marker_name(property.value);
                 if(~isempty(marker_name))
-                    set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(objectNameList, [marker_name '>' shape_name])));
+                    set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(marker_list, [marker_name '>' shape_name])));
                 end
             end
         end
@@ -586,6 +588,6 @@ function DoneButton_Callback(hObject, eventdata, handles)
 
 shapeHandles=getappdata(0,'shapeHandles');
 
-shapeHandles.markerProperty=shapeHandles.temp_operation_queue;
+shapeHandles.markerProperty.operations=shapeHandles.temp_operation_queue;
 setappdata(0,'shapeHandles',shapeHandles);
 uiresume(handles.figure1);

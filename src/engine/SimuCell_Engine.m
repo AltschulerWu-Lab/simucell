@@ -39,7 +39,7 @@ for cell_number=1:simucell_params.number_of_cells
                 prerendered_shapes_in_cell{i}=current_cell.(prerendered_shape_names{i});
             end
             pos=simucell_params.subpopulations{subpopulation_number}.placement.pick_positions(current_image_mask);
-            shape=simucell_params.subpopulations{subpopulation_number}.objects.(draw_order{object_number}) ...
+            shape=simucell_params.subpopulations{subpopulation_number}.objects.(draw_order{object_number}).model ...
                 .make_shape([pos(1),pos(2)],current_image_mask,prerendered_shapes_in_cell);
             current_cell.(draw_order{object_number})=shape;
             obj_num=simucell_params.overlap.shape_to_number_map{subpopulation_number}(draw_order{object_number});

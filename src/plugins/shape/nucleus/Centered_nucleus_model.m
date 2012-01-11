@@ -1,4 +1,4 @@
-classdef Centered_nucleus_model <SimuCell_Object
+classdef Centered_nucleus_model <SimuCell_Object_Model
     %UNTITLED3 Summary of this class goes here
     %   Detailed explanation goes here
     

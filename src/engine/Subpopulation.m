@@ -34,7 +34,7 @@ classdef Subpopulation <handle
             shapes=properties(obj.objects);
             obj.object_dependancy_matrix=false(length(shapes));
             for i=1:length(shapes)
-                dependancies=obj.objects.(shapes{i}).prerendered_object_list();
+                dependancies=obj.objects.(shapes{i}).model.prerendered_object_list();
                 obj.object_dependancy_struct.(shapes{i})=cell(0);
                 for k=1:length(dependancies)
                     for j=1:length(shapes)
@@ -106,9 +106,18 @@ classdef Subpopulation <handle
             end
         end
         
+        function add_object(obj,obj_name)
+            obj.objects.addprop(obj_name);
+            obj.objects.(obj_name)=SimuCell_Object();
+        end
         
         function delete_shape(obj,shape_name)
             delete(findprop(obj.objects,shape_name));
+        end
+        
+        function add_marker(obj,marker_name)
+            obj.markers.addprop(marker_name);
+            obj.markers.(marker_name)=Marker(obj.objects);
         end
         
         function delete_marker(obj,marker_name)
