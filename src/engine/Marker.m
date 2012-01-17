@@ -13,7 +13,7 @@ classdef Marker<dynamicprops
                 props=properties(varargin{1});
                 for i=1:length(props)
                     obj.addprop(props{i});
-                    obj.(props{i})=marker_operation_queue;
+                    obj.(props{i})=Marker_Operation_Queue;
                 end
                 if(nargin>1)
                     obj.color=varargin{2};

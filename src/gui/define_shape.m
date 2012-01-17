@@ -132,8 +132,9 @@ function varargout = define_shape_OutputFcn(hObject, eventdata, handles)
 shapeHandles=getappdata(0,'shapeHandles');
 varargout{1}=shapeHandles.shapeObj;
 varargout{2}=shapeHandles.object_name;
-
-delete(handles.figure1);
+if(~isempty(handles))
+  delete(handles.figure1);
+end
 
 % --- Executes on selection change in shapeTypeCb.
 function shapeTypeCb_Callback(hObject, eventdata, handles)

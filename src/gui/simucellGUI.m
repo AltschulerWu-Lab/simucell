@@ -22,7 +22,7 @@ function varargout = simucellGUI(varargin)
 
 % Edit the above text to modify the response to help simucellGUI
 
-% Last Modified by GUIDE v2.5 05-Jan-2012 17:48:42
+% Last Modified by GUIDE v2.5 13-Jan-2012 17:29:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -134,19 +134,28 @@ myhandles=getappdata(0,'myhandles');
 %get the data from the UITABLE
 %tableData = get(handles.uitable1,'data');
 %subpopSelected=tableData{selectedCellPosition(1,1),1};
-prompt = {['Enter new Marker Name' ' :']};
-dlg_title = ['Add a new marker'] ;
-num_lines = 1;
-def = {'Name'};
-answer = inputdlg(prompt,dlg_title,num_lines,def);
-if isempty(answer)
+mc = ?Colors;
+nrColor = length(mc.EnumeratedValues);
+for i=1:nrColor
+  colorList{1,i}=mc.EnumeratedValues{i}.Name;
+end
+S.Name   = { '' '' };
+S.Color = {colorList};
+answer = StructDlg(S,'Add a New Marker','',[50 40 50 10]);
+
+% prompt = {['Enter new Marker Name' ' :']};
+% dlg_title = ['Add a new marker'] ;
+% num_lines = 1;
+% def = {'Name'};
+% answer = inputdlg(prompt,dlg_title,num_lines,def);
+if isempty(answer) || isempty(answer.Name)
   return;
 end
 subpop=myhandles.simucell_data.subpopulations;
 for i=1:length(subpop)
-  subpop{i}.markers.addprop(answer{1});
-  subpop{i}.markers.(answer{1})=...
-    Marker(subpop{i}.objects);
+  subpop{i}.markers.addprop(answer.Name);
+  subpop{i}.markers.(answer.Name)=...
+    Marker(subpop{i}.objects,Colors.(answer.Color));
 end
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
@@ -192,8 +201,9 @@ answer = inputdlg(prompt,dlg_title,num_lines,def);
 if isempty(answer)
   return;
 end
-objectList=myhandles.simucell_data.subpopulations{subpopSelected}.objects;
-objectList.addprop(answer{1});
+%objectList=myhandles.simucell_data.subpopulations{subpopSelected}.objects;
+%objectList.addprop(answer{1});
+myhandles.simucell_data.subpopulations{subpopSelected}.add_object(answer{1});
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
 
@@ -293,7 +303,7 @@ for i=1:subpopNr
     for j=1:length(objs)
       tableData{rowNr,1}=i;
       obj=subpops{i}.objects.(objs{j});
-      if(~isempty(obj))
+      if(~isempty(obj.model))
         tableData{rowNr,3}='Defined';
       else
         tableData{rowNr,3}='-';
@@ -366,8 +376,8 @@ subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
 set(subpop{1}.objects.cytoplasm.model,'radius',30,'eccentricity',0.2);
 
 add_object(subpop{1},'nucleus');
-subpop{1}.objects.nucleus.model=Centered_nucleus_model;
-set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+%subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+%set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
   
   
 function initMyHandle()
@@ -586,3 +596,10 @@ myhandles.simucell_data.simucell_image_size=...
     [str2double(get(handles.imageWidthEdit,'String')),str2double(get(handles.imageHeightEdit,'String'))];
 
 setappdata(0,'myhandles',myhandles);
+
+
+% --- Executes on button press in editColorButton.
+function editColorButton_Callback(hObject, eventdata, handles)
+% hObject    handle to editColorButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

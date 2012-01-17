@@ -21,8 +21,13 @@ classdef Colors
     end
   end
   enumeration
-    Red   (1, 0, 0)
-    Green (0, 1, 0)
-    Blue  (0, 0, 1)
+    Red     (1,   0,  0)
+    Green   (0,   1,  0)
+    Blue    (0,   0,  1)
+    Cyan    (0,   1,  1)
+    Magenta (1,   0,  1)
+    Yellow  (1,   1,  0)
+    Orange  (1,  .5,  0)
+    Gray    (.5, .5, .5)
   end
 end

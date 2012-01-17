@@ -22,7 +22,7 @@ function varargout = define_marker(varargin)
 
 % Edit the above text to modify the response to help define_marker
 
-% Last Modified by GUIDE v2.5 09-Jan-2012 02:04:59
+% Last Modified by GUIDE v2.5 13-Jan-2012 16:12:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -102,7 +102,7 @@ set(handles.objectCB,'String',{shapeHandles.objectName});
 % end
 updateOperationList(hObject, eventdata, handles);
 
-
+operationListbox_Callback(hObject, eventdata, handles);
 
 
 % set(handles.title,'String',['Define marker ' shapeHandles.markerName...
@@ -126,8 +126,9 @@ function varargout = define_marker_OutputFcn(hObject, eventdata, handles)
 shapeHandles=getappdata(0,'shapeHandles');
 varargout{1}=shapeHandles.markerProperty;
 varargout{2}=shapeHandles.markerName;
-
-delete(handles.figure1);
+if(~isempty(handles))
+  delete(handles.figure1);
+end
 
 
 % --- Executes on selection change in operationListbox.
@@ -145,6 +146,12 @@ shapeHandles=getappdata(0,'shapeHandles');
 %Get the description of the first selected Model
 %selectedString=get(handles.operationListbox,'String');
 selectedValue=get(handles.operationListbox,'Value');
+if(isempty(shapeHandles.temp_operation_queue))
+  hideOperationParameterPanel(handles,'off');
+  return;
+else  
+  hideOperationParameterPanel(handles,'on');
+end
 shapeObj=shapeHandles.temp_operation_queue{selectedValue};
 %shapeObj=eval(selectedString{selectedValue});
 set(handles.descriptionText,'String',shapeObj.description);
@@ -362,9 +369,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton5.
-function pushbutton5_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton5 (see GCBO)
+% --- Executes on button press in viewButton.
+function viewButton_Callback(hObject, eventdata, handles)
+% hObject    handle to viewButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -591,3 +598,9 @@ shapeHandles=getappdata(0,'shapeHandles');
 shapeHandles.markerProperty.operations=shapeHandles.temp_operation_queue;
 setappdata(0,'shapeHandles',shapeHandles);
 uiresume(handles.figure1);
+
+function hideOperationParameterPanel(handles,isVisible)
+set(handles.text2,'Visible',isVisible);
+set(handles.operation_type_popupmenu,'Visible',isVisible);
+set(handles.SaveButton,'Visible',isVisible);
+set(handles.viewButton,'Visible',isVisible);
