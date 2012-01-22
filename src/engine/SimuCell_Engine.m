@@ -1,4 +1,4 @@
-function [combined_channel_image,object_structure,full_result,marker_structure,combined_cell_images]=simucell_engine(simucell_params)
+function [combined_channel_image,object_structure,full_result,marker_structure,combined_cell_images]=SimuCell_Engine(simucell_params)
 
 
 number_of_subpopulations=length(simucell_params.subpopulations);
@@ -118,6 +118,7 @@ end
 %composite images
 compositing_matrices=cell(number_of_subpopulations,1);
 composite_cell_images=struct;
+blurred_cell_images=struct;
 for subpop=1:number_of_subpopulations
     cells_in_subpop=find(subpopulation_number_of_cell==subpop);
     shapes=properties(simucell_params.subpopulations{subpop}.objects);
@@ -177,18 +178,52 @@ for subpop=1:number_of_subpopulations
                     marker_structure(cells_in_subpop(cell_number)).(shapes{shape_number}).(markers{marker_number});
             end
         end
+        
+        
     end
+    
+    
+    
+    
+    
+    %Insert check for existance
+    operation_list=simucell_params.subpopulations{subpop}.cell_artifacts;
+    
+    
+    temp=cell(length(cells_in_subpop),length(markers));
+    for marker_number=1:length(markers)
+        for cell_number=1:length(cells_in_subpop)
+            temp{cell_number,marker_number}=composite_cell_images(cells_in_subpop(cell_number)).(markers{marker_number});
+        end
+    end
+    
+    for op_number=1:length(operation_list)
+        temp=operation_list{op_number}.Apply(temp);
+    end
+    
+    
+    for marker_number=1:length(markers)
+        for cell_number=1:length(cells_in_subpop)
+            
+            blurred_cell_images(cells_in_subpop(cell_number)).(markers{marker_number})=temp{cell_number,marker_number};
+        end
+    end
+    
+    
+    
+    
+    
 end
 
 
 %assuming all cells have same markers for now
-marker_names=fieldnames(composite_cell_images);
+marker_names=fieldnames(blurred_cell_images);
 combined_cell_images=struct;
 combined_channel_image=zeros(simucell_params.simucell_image_size(1),simucell_params.simucell_image_size(2),3);
 for marker_number=1:length(marker_names)
     temp_intensity_list=cell(simucell_params.number_of_cells,1);
     for cell_number=1:simucell_params.number_of_cells
-        temp_intensity_list{cell_number}=composite_cell_images(cell_number).(marker_names{marker_number});
+        temp_intensity_list{cell_number}=blurred_cell_images(cell_number).(marker_names{marker_number});
     end
     combined_cell_images.(marker_names{marker_number})=Merge_cell_intensities(temp_intensity_list,0.85);
     combined_channel_image(:,:,marker_number)= combined_cell_images.(marker_names{marker_number});

@@ -37,7 +37,6 @@ subpop{1}.compositing=default_compositing();
 set(subpop{1}.compositing,'container_weight',0);
 
 
-
 %subpopulation 2
 subpop{2}=Subpopulation();
 subpop{2}.placement=Random_Placement();
@@ -75,13 +74,18 @@ set(subpop{2}.compositing,'container_weight',0);
 
 
 overlap=Overlap_Specification;
-overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.2);
+overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
 
+
+op=Out_Of_Focus_Cells();
+set(op,'fraction_blurred',0.2,'blur_radius',10);
+subpop{1}.add_cell_artifact(op);
+subpop{2}.add_cell_artifact(op);
 
 
 simucell_data.population_fractions=[0.5,0.5];
-simucell_data.number_of_cells=10;
-simucell_data.simucell_image_size=[500,500];
+simucell_data.number_of_cells=30;
+simucell_data.simucell_image_size=[800,800];
 
 simucell_data.subpopulations=subpop;
 simucell_data.overlap=overlap;
