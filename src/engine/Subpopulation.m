@@ -118,9 +118,13 @@ classdef Subpopulation <handle
             delete(findprop(obj.objects,shape_name));
         end
         
-        function add_marker(obj,marker_name)
+        function add_marker(obj,marker_name,marker_color)
             obj.markers.addprop(marker_name);
-            obj.markers.(marker_name)=Marker(obj.objects);
+            if(nargin>1)
+                obj.markers.(marker_name)=Marker(obj.objects,marker_color);
+            else
+                 obj.markers.(marker_name)=Marker(obj.objects);
+            end
         end
         
         function delete_marker(obj,marker_name)

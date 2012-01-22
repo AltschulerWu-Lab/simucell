@@ -215,21 +215,69 @@ for subpop=1:number_of_subpopulations
     
 end
 
-
-%assuming all cells have same markers for now
-marker_names=fieldnames(blurred_cell_images);
+color_group_struct=calculate_color_groups(simucell_params.subpopulations);
+color_names=fieldnames(color_group_struct);
 combined_cell_images=struct;
-combined_channel_image=zeros(simucell_params.simucell_image_size(1),simucell_params.simucell_image_size(2),3);
-for marker_number=1:length(marker_names)
-    temp_intensity_list=cell(simucell_params.number_of_cells,1);
-    for cell_number=1:simucell_params.number_of_cells
-        temp_intensity_list{cell_number}=blurred_cell_images(cell_number).(marker_names{marker_number});
+
+for color_number=1:length(color_names)
+    
+    temp_intensity_list=cell(0);
+    marker_list=color_group_struct.(color_names{color_number});
+    counter=1;
+    for i=1:size(marker_list,1)
+        cells_in_subpop=find(subpopulation_number_of_cell==marker_list{i,1});
+        for cell_number=1:length(cells_in_subpop)
+            temp_intensity_list{counter}=blurred_cell_images(cells_in_subpop(cell_number)).(marker_list{i,2});
+            counter=counter+1;
+        end
     end
-    combined_cell_images.(marker_names{marker_number})=Merge_cell_intensities(temp_intensity_list,0.85);
-    combined_channel_image(:,:,marker_number)= combined_cell_images.(marker_names{marker_number});
+    
+  
+    combined_cell_images.(color_names{color_number})=Merge_cell_intensities(temp_intensity_list,0.85);
+    
+end
+
+temp=cell(length(color_names),1);
+for color_number=1:length(color_names)
+    temp{color_number}= combined_cell_images.(color_names{color_number});
+end
+
+operation_list=simucell_params.image_artifacts;
+for op_num=1:length(operation_list)
+   temp=operation_list{op_num}.Apply(temp);
+end
+
+for color_number=1:length(color_names)
+    combined_cell_images.(color_names{color_number})=temp{color_number};
 end
 
 
+combined_channel_image=zeros(simucell_params.simucell_image_size(1),simucell_params.simucell_image_size(2),3);
+for color_number=1:length(color_names)
+   
+    combined_channel_image(:,:,1)=  min(combined_channel_image(:,:,1)+Colors.(color_names{color_number}).R*...
+        combined_cell_images.(color_names{color_number}),1);
+    combined_channel_image(:,:,2)= min(combined_channel_image(:,:,2)+Colors.(color_names{color_number}).G*...
+        combined_cell_images.(color_names{color_number}),1);
+    combined_channel_image(:,:,3)=min(combined_channel_image(:,:,3) +Colors.(color_names{color_number}).B*...
+        combined_cell_images.(color_names{color_number}),1);
+end
+% 
+% 
+% %assuming all cells have same markers for now
+% marker_names=fieldnames(blurred_cell_images);
+% combined_cell_images=struct;
+% combined_channel_image=zeros(simucell_params.simucell_image_size(1),simucell_params.simucell_image_size(2),3);
+% for marker_number=1:length(marker_names)
+%     temp_intensity_list=cell(simucell_params.number_of_cells,1);
+%     for cell_number=1:simucell_params.number_of_cells
+%         temp_intensity_list{cell_number}=blurred_cell_images(cell_number).(marker_names{marker_number});
+%     end
+%     combined_cell_images.(marker_names{marker_number})=Merge_cell_intensities(temp_intensity_list,0.85);
+%     combined_channel_image(:,:,marker_number)= combined_cell_images.(marker_names{marker_number});
+% end
+% 
+% 
 
 %
 %final_image=zeros(image_size(1),image_size(2),number_of_markers);
