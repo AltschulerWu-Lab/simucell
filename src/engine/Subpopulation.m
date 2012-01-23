@@ -20,6 +20,9 @@ classdef Subpopulation <handle
         
         compositing
         
+        cell_artifacts
+     
+        
     end
     
     
@@ -115,9 +118,13 @@ classdef Subpopulation <handle
             delete(findprop(obj.objects,shape_name));
         end
         
-        function add_marker(obj,marker_name)
+        function add_marker(obj,marker_name,marker_color)
             obj.markers.addprop(marker_name);
-            obj.markers.(marker_name)=Marker(obj.objects);
+            if(nargin>1)
+                obj.markers.(marker_name)=Marker(obj.objects,marker_color);
+            else
+                 obj.markers.(marker_name)=Marker(obj.objects);
+            end
         end
         
         function delete_marker(obj,marker_name)
@@ -158,6 +165,30 @@ classdef Subpopulation <handle
             if(isempty(marker_name)||isempty(shape_name))
                 error('object passed to find_marker_name does not exist');
             end
+        end
+        
+        function add_cell_artifact(obj,operation)
+            if(isempty(obj.cell_artifacts))
+                obj.cell_artifacts=cell(0);
+            end
+             obj.cell_artifacts{end+1}=operation;
+%             marker_names=properties(obj.markers);
+%             if(isempty(obj.cell_artifacts))
+%                 obj.cell_artifacts=struct;
+%                 
+%                 for marker_num=1:length(marker_names)
+%                     obj.cell_artifacts.(marker_names{marker_num})=cell(0);
+%                 end
+%             end
+%             
+%             for marker_num=1:length(marker_names)
+%                 if(obj.markers.(marker_names{marker_num})==marker)
+%                     obj.cell_artifacts.(marker_names{marker_num}){end+1}=operation;
+%                     return;
+%                 end
+%             end
+%             error('Marker Not Found in Subpopulation!');
+            
         end
         
         %         function obj=AddObject(obj,object)

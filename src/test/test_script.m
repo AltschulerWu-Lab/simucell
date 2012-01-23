@@ -17,7 +17,7 @@ set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplas
 
 markers1=subpop{1}.markers;
 
-add_marker(subpop{1},'DAPI');
+add_marker(subpop{1},'DAPI',Colors.Blue);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.5,'sd_level',0.1);
 markers1.DAPI.cytoplasm.AddOperation(op);
@@ -25,7 +25,7 @@ op=Constant_dependant_marker_level_operation();
 set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slope',0.5);
 markers1.DAPI.nucleus.AddOperation(op);
 
-add_marker(subpop{1},'Actin');
+add_marker(subpop{1},'Actin',Colors.Green);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.7,'sd_level',0.1);
 markers1.Actin.cytoplasm.AddOperation(op);
@@ -35,7 +35,6 @@ markers1.Actin.nucleus.AddOperation(op);
 
 subpop{1}.compositing=default_compositing();
 set(subpop{1}.compositing,'container_weight',0);
-
 
 
 %subpopulation 2
@@ -53,7 +52,7 @@ set(subpop{2}.objects.nucleus.model,'centered_around',subpop{2}.objects.cytoplas
 
 markers1=subpop{2}.markers;
 
-add_marker(subpop{2},'DAPI');
+add_marker(subpop{2},'DAPI',Colors.Blue);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.5,'sd_level',0.1);
 markers1.DAPI.cytoplasm.AddOperation(op);
@@ -61,7 +60,7 @@ op=Constant_dependant_marker_level_operation();
 set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{2}.objects.nucleus,'slope',0.5);
 markers1.DAPI.nucleus.AddOperation(op);
 
-add_marker(subpop{2},'Actin');
+add_marker(subpop{2},'Actin',Colors.Green);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.7,'sd_level',0.1);
 markers1.Actin.cytoplasm.AddOperation(op);
@@ -75,12 +74,22 @@ set(subpop{2}.compositing,'container_weight',0);
 
 
 overlap=Overlap_Specification;
-overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.2);
+overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
 
 
+op=Out_Of_Focus_Cells();
+set(op,'fraction_blurred',0.2,'blur_radius',10);
+subpop{1}.add_cell_artifact(op);
+subpop{2}.add_cell_artifact(op);
+
+
+simucell_data.image_artifacts=cell(0);
+op=Add_Basal_Brightness();
+set(op,'basal_level',0.15);
+simucell_data.image_artifacts{1}=op;
 
 simucell_data.population_fractions=[0.5,0.5];
-simucell_data.number_of_cells=10;
+simucell_data.number_of_cells=5;
 simucell_data.simucell_image_size=[500,500];
 
 simucell_data.subpopulations=subpop;
