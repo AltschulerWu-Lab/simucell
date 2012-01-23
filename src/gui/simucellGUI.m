@@ -366,7 +366,19 @@ guidata(hObject, handles);
 
 
 function subpop=test()
-subpop=cell(0);
+% subpop=cell(0);
+% subpop{1}=Subpopulation();
+% subpop{1}.placement=Random_Placement();
+% set(subpop{1}.placement,'boundary',100);
+% 
+% add_object(subpop{1},'cytoplasm');
+% subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
+% set(subpop{1}.objects.cytoplasm.model,'radius',30,'eccentricity',0.2);
+% 
+% add_object(subpop{1},'nucleus');
+%subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+%set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+%subpopulation 1
 subpop{1}=Subpopulation();
 subpop{1}.placement=Random_Placement();
 set(subpop{1}.placement,'boundary',100);
@@ -376,8 +388,63 @@ subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
 set(subpop{1}.objects.cytoplasm.model,'radius',30,'eccentricity',0.2);
 
 add_object(subpop{1},'nucleus');
-%subpop{1}.objects.nucleus.model=Centered_nucleus_model;
-%set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+
+markers1=subpop{1}.markers;
+
+add_marker(subpop{1},'DAPI');
+op=Constant_marker_level_operation();
+set(op,'mean_level',0.5,'sd_level',0.1);
+markers1.DAPI.cytoplasm.AddOperation(op);
+op=Constant_dependant_marker_level_operation();
+set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slope',0.5);
+markers1.DAPI.nucleus.AddOperation(op);
+
+add_marker(subpop{1},'Actin');
+op=Constant_marker_level_operation();
+set(op,'mean_level',0.7,'sd_level',0.1);
+markers1.Actin.cytoplasm.AddOperation(op);
+op=Constant_marker_level_operation();
+set(op,'mean_level',0,'sd_level',0);
+markers1.Actin.nucleus.AddOperation(op);
+
+subpop{1}.compositing=default_compositing();
+set(subpop{1}.compositing,'container_weight',0);
+
+%subpopulation 2
+subpop{2}=Subpopulation();
+subpop{2}.placement=Random_Placement();
+set(subpop{2}.placement,'boundary',100);
+
+add_object(subpop{2},'cytoplasm');
+subpop{2}.objects.cytoplasm.model=Cytoplasm_model;
+set(subpop{2}.objects.cytoplasm.model,'radius',40,'eccentricity',0.2);
+
+add_object(subpop{2},'nucleus');
+subpop{2}.objects.nucleus.model=Centered_nucleus_model;
+set(subpop{2}.objects.nucleus.model,'centered_around',subpop{2}.objects.cytoplasm,'eccentricity',0);
+
+markers1=subpop{2}.markers;
+
+add_marker(subpop{2},'DAPI');
+op=Constant_marker_level_operation();
+set(op,'mean_level',0.5,'sd_level',0.1);
+markers1.DAPI.cytoplasm.AddOperation(op);
+op=Constant_dependant_marker_level_operation();
+set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{2}.objects.nucleus,'slope',0.5);
+markers1.DAPI.nucleus.AddOperation(op);
+
+add_marker(subpop{2},'Actin');
+op=Constant_marker_level_operation();
+set(op,'mean_level',0.7,'sd_level',0.1);
+markers1.Actin.cytoplasm.AddOperation(op);
+op=Constant_marker_level_operation();
+set(op,'mean_level',0,'sd_level',0);
+markers1.Actin.nucleus.AddOperation(op);
+
+
+
   
   
 function initMyHandle()
@@ -542,11 +609,12 @@ function saveSimucellButton_Callback(hObject, eventdata, handles)
 % hObject    handle to saveSimucellButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-setup_simucell_params(hObject, eventdata, handles)
 myhandles=getappdata(0,'myhandles');
-[FileName,PathName]=uiputfile('*.mat','Save SimuCell Params');
-simucell_data=myhandles.simucell_data;
-save([PathName filesep FileName],'simucell_data');
+generate_script_from_simucell(myhandles.simucell_data,'/tmp/test.txt');
+
+%[FileName,PathName]=uiputfile('*.mat','Save SimuCell Params');
+%simucell_data=myhandles.simucell_data;
+%save([PathName filesep FileName],'simucell_data');
 
 
 % --- Executes on button press in runSimucellButton.
