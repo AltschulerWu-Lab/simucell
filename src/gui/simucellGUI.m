@@ -22,7 +22,7 @@ function varargout = simucellGUI(varargin)
 
 % Edit the above text to modify the response to help simucellGUI
 
-% Last Modified by GUIDE v2.5 13-Jan-2012 17:29:57
+% Last Modified by GUIDE v2.5 23-Jan-2012 18:03:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,6 +79,8 @@ guidata(hObject, handles);
 %initialize this selectedCellsVariable
 handles.selectedCells = [];
 populateTable(hObject,handles);
+myhandles=getappdata(0,'myhandles');
+populateImageParameters(handles,myhandles.simucell_data);
 
 
 
@@ -254,6 +256,18 @@ case 'Cancel'
 end
 myhandles.simucell_data.subpopulations=...
   removeFromCellArray(myhandles.simucell_data.subpopulations,subpopSelected);
+
+
+subpopNr=length(myhandles.simucell_data.subpopulations);
+subpopList=cell(1,subpopNr);
+for i=1:subpopNr
+  subpopList{i}=i;
+  myhandles.simucell_data.population_fractions(i)=1/(subpopNr);
+end
+setappdata(0,'myhandles',myhandles);  
+set(handles.subpopNrCB,'String',subpopList);
+set(handles.fractionSubpopEdit,'String',...
+  num2str(myhandles.simucell_data.population_fractions(1)*100));
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
 
@@ -265,11 +279,16 @@ subpopNr=length(myhandles.simucell_data.subpopulations);
 myhandles.simucell_data.subpopulations{subpopNr+1}=Subpopulation();
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
-subpopList=[];
+subpopList=cell(1,subpopNr+1);
 for i=1:subpopNr+1
   subpopList{i}=i;
+  myhandles.simucell_data.population_fractions(i)=1/(subpopNr+1);
 end
+setappdata(0,'myhandles',myhandles);  
 set(handles.subpopNrCB,'String',subpopList);
+set(handles.fractionSubpopEdit,'String',...
+  num2str(myhandles.simucell_data.population_fractions(1)*100));
+
 
 
 function columnHeaders=getColumnHeaders(handles)
@@ -365,7 +384,7 @@ set(handles.uitable1,'data',tableData);
 guidata(hObject, handles);
 
 
-function subpop=test()
+function simucell_data=test()
 % subpop=cell(0);
 % subpop{1}=Subpopulation();
 % subpop{1}.placement=Random_Placement();
@@ -443,13 +462,43 @@ op=Constant_marker_level_operation();
 set(op,'mean_level',0,'sd_level',0);
 markers1.Actin.nucleus.AddOperation(op);
 
+subpop{2}.compositing=default_compositing();
+set(subpop{2}.compositing,'container_weight',0);
+
+
+
+op=Out_Of_Focus_Cells();
+set(op,'fraction_blurred',0.2,'blur_radius',10);
+subpop{1}.add_cell_artifact(op);
+subpop{2}.add_cell_artifact(op);
+
+%% Simucell Data Operation that have to be done from the GUI
+%% Create the simucell_data structure and add the subpopulation
+simucell_data.subpopulations=subpop;
+%% Add Image Artifacts
+simucell_data.image_artifacts=cell(0);
+op=Add_Basal_Brightness();
+set(op,'basal_level',0.15);
+simucell_data.image_artifacts{1}=op;
+%% Population Fraction
+simucell_data.population_fractions=[0.4,0.6];
+%% Number of cells
+simucell_data.number_of_cells=5;
+%% Image Size
+simucell_data.simucell_image_size=[800,600];
+%% Overlap
+overlap=Overlap_Specification;
+overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
+simucell_data.overlap=overlap;
+
+
 
 
   
   
 function initMyHandle()
   %myhandles.simucell_data.subpopulations{1}=Subpopulation();
-  myhandles.simucell_data.subpopulations=test();
+  myhandles.simucell_data=test();
   setappdata(0,'myhandles',myhandles);  
 
 
@@ -566,6 +615,12 @@ function subpopNrCB_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns subpopNrCB contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from subpopNrCB
+myhandles=getappdata(0,'myhandles');
+propertyValue=get(handles.subpopNrCB,'Value');
+set(handles.fractionSubpopEdit,'String',...
+  num2str(myhandles.simucell_data.population_fractions(propertyValue)*100));
+
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -610,11 +665,55 @@ function saveSimucellButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 myhandles=getappdata(0,'myhandles');
-generate_script_from_simucell(myhandles.simucell_data,'/tmp/test.txt');
+
+simucell_data = populateSimucell_data(handles,myhandles.simucell_data);
+if(simucell_data==-1)
+  return;
+end
+generate_script_from_simucell(simucell_data,'/tmp/test.txt');
+myhandles.simucell_data=simucell_data;
 
 %[FileName,PathName]=uiputfile('*.mat','Save SimuCell Params');
 %simucell_data=myhandles.simucell_data;
 %save([PathName filesep FileName],'simucell_data');
+
+
+function simucell_data=populateSimucell_data(handles,simucell_data)
+imageWidth=get(handles.imageWidthEdit,'String');
+imageWidth=str2double(imageWidth);
+imageHeight=get(handles.imageHeightEdit,'String');
+imageHeight=str2double(imageHeight);
+if(~isnumeric(imageWidth ) || ~isnumeric(imageHeight) )
+  simucell_data=-1;
+  errordlg('Image Size MUST be a number');
+  return;
+end
+simucell_data.simucell_image_size=[imageWidth,imageHeight];
+cellNr=get(handles.cellNrEdit,'String');
+cellNr=str2double(cellNr);
+if(~isnumeric(cellNr ) )
+  simucell_data=-1;
+  errordlg('# Cell MUST be a number');
+  return;
+end
+simucell_data.number_of_cells=cellNr;
+
+function populateImageParameters(handles,simucell_data)
+set(handles.imageWidthEdit,'String',num2str(simucell_data.simucell_image_size(1)));
+set(handles.imageHeightEdit,'String',num2str(simucell_data.simucell_image_size(2)));
+set(handles.cellNrEdit,'String',num2str(simucell_data.number_of_cells));
+subpopNr=length(simucell_data.subpopulations);
+subpopList=cell(1,subpopNr);
+for i=1:subpopNr
+  subpopList{i}=i;
+end
+set(handles.subpopNrCB,'String',subpopList);
+set(handles.fractionSubpopEdit,'String',...
+  num2str(simucell_data.population_fractions(1)*100));
+
+
+
+
 
 
 % --- Executes on button press in runSimucellButton.
@@ -669,5 +768,54 @@ setappdata(0,'myhandles',myhandles);
 % --- Executes on button press in editColorButton.
 function editColorButton_Callback(hObject, eventdata, handles)
 % hObject    handle to editColorButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in artifactButton.
+function artifactButton_Callback(hObject, eventdata, handles)
+% hObject    handle to artifactButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in placementButton.
+function placementButton_Callback(hObject, eventdata, handles)
+% hObject    handle to placementButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myhandles=getappdata(0,'myhandles');
+tableData = get(handles.uitable1,'data');
+selectedCellPosition = handles.selectedCells;
+if(~isempty(selectedCellPosition))
+  subpopSelected=tableData{selectedCellPosition(1,1),1};
+else
+  subpopSelected=1;
+end
+%currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
+%[simucell_data] = define_placement(myhandles.simucell_data, subpopSelected);
+[overlap_lists overlap_values placement] =...
+  define_placement(myhandles.simucell_data.overlap.overlap_lists,...
+  myhandles.simucell_data.overlap.overlap_values,...
+  myhandles.simucell_data.subpopulations{subpopSelected}.placement,...
+  subpopSelected, myhandles.simucell_data);
+
+if (~isempty(overlap_lists)|| ~isempty(overlap_values))
+  myhandles.simucell_data.overlap.overlap_lists=overlap_lists;
+  myhandles.simucell_data.overlap.overlap_values=overlap_values;  
+  myhandles.simucell_data.subpopulations{subpopSelected}.placement=placement;  
+  setappdata(0,'myhandles',myhandles);
+end
+
+% --- Executes on button press in advancedButton.
+function advancedButton_Callback(hObject, eventdata, handles)
+% hObject    handle to advancedButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton26.
+function pushbutton26_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton26 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)

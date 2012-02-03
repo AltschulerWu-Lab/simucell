@@ -120,7 +120,7 @@ classdef Subpopulation <handle
         
         function add_marker(obj,marker_name,marker_color)
             obj.markers.addprop(marker_name);
-            if(nargin>1)
+            if(nargin>2)
                 obj.markers.(marker_name)=Marker(obj.objects,marker_color);
             else
                  obj.markers.(marker_name)=Marker(obj.objects);
