@@ -64,14 +64,14 @@ end
 % handles.subpop=varargin{5};
 
 
-shapeHandles.subpop = varargin{1};
-shapeHandles.markerProperty = varargin{2};
-shapeHandles.markerName=varargin{3};
-shapeHandles.objectName=varargin{4};
-shapeHandles.subpopNr=varargin{4};
-shapeHandles.temp_operation_queue=shapeHandles.markerProperty.operations;
+markerHandles.subpop = varargin{1};
+markerHandles.markerProperty = varargin{2};
+markerHandles.markerName=varargin{3};
+markerHandles.objectName=varargin{4};
+markerHandles.subpopNr=varargin{4};
+markerHandles.temp_operation_queue=markerHandles.markerProperty.operations;
 
-setappdata(0,'shapeHandles',shapeHandles);
+setappdata(0,'markerHandles',markerHandles);
 fileList=dir('plugins/markers/');
 fileList = {fileList(find([fileList.isdir]==0)).name};
 
@@ -79,10 +79,10 @@ for i=1:length(fileList)
     fileList{i}=fileList{i}(1:end-2);
 end
 set(handles.operation_type_popupmenu,'String',fileList);
-set(handles.objectCB,'String',{shapeHandles.objectName});
+set(handles.objectCB,'String',{markerHandles.objectName});
 
-% if(~isempty(shapeHandles.selectedType))
-%   valueSelected=find(strcmp(dirList, shapeHandles.selectedType));
+% if(~isempty(markerHandles.selectedType))
+%   valueSelected=find(strcmp(dirList, markerHandles.selectedType));
 %   %Set the shape Type
 %   set(handles.shapeTypeCb,'String',dirList,'Value',valueSelected);
 %   %Set the shape Model
@@ -90,12 +90,12 @@ set(handles.objectCB,'String',{shapeHandles.objectName});
 %   shapeTypeCb_Callback(hObject, eventdata, handles);
 %   modelList=get(handles.shapeModelCb,'String');
 %
-%   valueSelected=find(strcmp(modelList, shapeHandles.selectedModel));
+%   valueSelected=find(strcmp(modelList, markerHandles.selectedModel));
 %   set(handles.shapeModelCb,'Value',valueSelected);
 %
 %
 %   %Set the parameters field
-%   setParametersPanel(hObject,handles,shapeHandles.currentObject);
+%   setParametersPanel(hObject,handles,markerHandles.currentObject);
 %
 % else
 %   set(handles.shapeTypeCb,'String',dirList);
@@ -105,9 +105,9 @@ updateOperationList(hObject, eventdata, handles);
 operationListbox_Callback(hObject, eventdata, handles);
 
 
-% set(handles.title,'String',['Define marker ' shapeHandles.markerName...
-%   ' for object ' shapeHandles.objectName...
-%   ' of subpopulation ' num2str(shapeHandles.subpopNrsubpopNr)]);
+% set(handles.title,'String',['Define marker ' markerHandles.markerName...
+%   ' for object ' markerHandles.objectName...
+%   ' of subpopulation ' num2str(markerHandles.subpopNrsubpopNr)]);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -123,9 +123,9 @@ function varargout = define_marker_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-shapeHandles=getappdata(0,'shapeHandles');
-varargout{1}=shapeHandles.markerProperty;
-varargout{2}=shapeHandles.markerName;
+markerHandles=getappdata(0,'markerHandles');
+varargout{1}=markerHandles.markerProperty;
+varargout{2}=markerHandles.markerName;
 if(~isempty(handles))
   delete(handles.figure1);
 end
@@ -136,23 +136,23 @@ function operationListbox_Callback(hObject, eventdata, handles)
 % hObject    handle to operationListbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% shapeHandles=getappdata(0,'shapeHandles');
+% markerHandles=getappdata(0,'markerHandles');
 % operation_to_remove=get(handles.operationListbox,'Value');
-% shapeHandles.markerProperty.DeleteOperation(operation_to_remove);
-% setappdata(0,'shapeHandles',shapeHandles);
+% markerHandles.markerProperty.DeleteOperation(operation_to_remove);
+% setappdata(0,'markerHandles',markerHandles);
 % updateOperationList(hObject, eventdata, handles);
 
-shapeHandles=getappdata(0,'shapeHandles');
+markerHandles=getappdata(0,'markerHandles');
 %Get the description of the first selected Model
 %selectedString=get(handles.operationListbox,'String');
 selectedValue=get(handles.operationListbox,'Value');
-if(isempty(shapeHandles.temp_operation_queue))
+if(isempty(markerHandles.temp_operation_queue))
   hideOperationParameterPanel(handles,'off');
   return;
 else  
   hideOperationParameterPanel(handles,'on');
 end
-shapeObj=shapeHandles.temp_operation_queue{selectedValue};
+shapeObj=markerHandles.temp_operation_queue{selectedValue};
 %shapeObj=eval(selectedString{selectedValue});
 set(handles.descriptionText,'String',shapeObj.description);
 setParametersPanel(hObject,handles,shapeObj);
@@ -180,11 +180,11 @@ function addOperationButton_Callback(hObject, eventdata, handles)
 % hObject    handle to addOperationButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-shapeHandles=getappdata(0,'shapeHandles');
-shapeHandles.temp_operation_queue{end+1}=Constant_marker_level_operation();
-setappdata(0,'shapeHandles',shapeHandles);
+markerHandles=getappdata(0,'markerHandles');
+markerHandles.temp_operation_queue{end+1}=Constant_marker_level_operation();
+setappdata(0,'markerHandles',markerHandles);
 updateOperationList(hObject, eventdata, handles);
-set(handles.operationListbox,'Value',length(shapeHandles.temp_operation_queue));
+set(handles.operationListbox,'Value',length(markerHandles.temp_operation_queue));
 guidata(hObject, handles);
 operationListbox_Callback(hObject, eventdata, handles);
 
@@ -196,10 +196,10 @@ function removeOperationButton_Callback(hObject, eventdata, handles)
 % hObject    handle to removeOperationButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-shapeHandles=getappdata(0,'shapeHandles');
+markerHandles=getappdata(0,'markerHandles');
 operation_to_remove=get(handles.operationListbox,'Value');
-shapeHandles.temp_operation_queue(operation_to_remove)=[];
-setappdata(0,'shapeHandles',shapeHandles);
+markerHandles.temp_operation_queue(operation_to_remove)=[];
+setappdata(0,'markerHandles',markerHandles);
 updateOperationList(hObject, eventdata, handles);
 set(handles.operationListbox,'Value',max(get(handles.operationListbox,'Value')-1,1));
 guidata(hObject, handles);
@@ -284,7 +284,7 @@ function SaveButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-shapeHandles=getappdata(0,'shapeHandles');
+markerHandles=getappdata(0,'markerHandles');
 %Get the Object Type
 selectedString=get(handles.operation_type_popupmenu,'String');
 selectedValue=get(handles.operation_type_popupmenu,'Value');
@@ -299,29 +299,29 @@ for i=1:length(propertyList)
         continue;
     end
     if(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.number)
-        propertyValue=get(shapeHandles.parametersField{paramNr},'String');
+        propertyValue=get(markerHandles.parametersField{paramNr},'String');
         try
             propertyValue=str2double(propertyValue);
         catch
             ;
         end
     elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.list)
-        propertyValue=get(shapeHandles.parametersField{i},'String');
-        propertyIndex=get(shapeHandles.parametersField{i},'Value');
+        propertyValue=get(markerHandles.parametersField{i},'String');
+        propertyIndex=get(markerHandles.parametersField{i},'Value');
         
         propertyValue=propertyValue{propertyIndex};
     elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.simucell_shape_model)
-        propertyValue=get(shapeHandles.parametersField{i},'String');
-        propertyIndex=get(shapeHandles.parametersField{i},'Value');
+        propertyValue=get(markerHandles.parametersField{i},'String');
+        propertyIndex=get(markerHandles.parametersField{i},'Value');
         
-        propertyValue=shapeHandles.subpop.objects.(propertyValue{propertyIndex});
+        propertyValue=markerHandles.subpop.objects.(propertyValue{propertyIndex});
         
     elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.simucell_marker_model)
-        propertyValue=get(shapeHandles.parametersField{i},'String');
-        propertyIndex=get(shapeHandles.parametersField{i},'Value');
+        propertyValue=get(markerHandles.parametersField{i},'String');
+        propertyIndex=get(markerHandles.parametersField{i},'Value');
         split_vals=regexpi(propertyValue{propertyIndex},'>','split');
         
-        propertyValue=shapeHandles.subpop.markers.(split_vals{1}).(split_vals{2});
+        propertyValue=markerHandles.subpop.markers.(split_vals{1}).(split_vals{2});
     end
     %Set the value to the corresponding parameter
     set(shapeObj,propertyList{i},propertyValue);
@@ -329,21 +329,12 @@ for i=1:length(propertyList)
 end
 %Save the created Object
 operation_number=get(handles.operationListbox,'Value');
-shapeHandles.temp_operation_queue{operation_number}=shapeObj;
+markerHandles.temp_operation_queue{operation_number}=shapeObj;
 updateOperationList(hObject, eventdata, handles);
 guidata(hObject, handles);
 %close(handles.figure1);
-setappdata(0,'shapeHandles',shapeHandles);
+setappdata(0,'markerHandles',markerHandles);
 %uiresume;
-
-
-
-
-% --- Executes on button press in cancelButton.
-function cancelButton_Callback(hObject, eventdata, handles)
-% hObject    handle to cancelButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on selection change in objectCB.
@@ -377,10 +368,10 @@ function viewButton_Callback(hObject, eventdata, handles)
 
 
 function updateOperationList(hObject, eventdata, handles)
-shapeHandles=getappdata(0,'shapeHandles');
-operation_names=cell(length(shapeHandles.temp_operation_queue),1);
-for op_number=1:length(shapeHandles.temp_operation_queue)
-    operation_names{op_number}=class(shapeHandles.temp_operation_queue{op_number});
+markerHandles=getappdata(0,'markerHandles');
+operation_names=cell(length(markerHandles.temp_operation_queue),1);
+for op_number=1:length(markerHandles.temp_operation_queue)
+    operation_names{op_number}=class(markerHandles.temp_operation_queue{op_number});
 end
 set(handles.operationListbox,'String',operation_names);
 guidata(hObject, handles);
@@ -392,7 +383,7 @@ function setParametersPanel(hObject,handles,markerObj)
 propertyList = properties(markerObj);
 
 
-shapeHandles=getappdata(0,'shapeHandles');
+markerHandles=getappdata(0,'markerHandles');
 %Clear the all parameters
 clearAllParameters();
 %Populate the new one
@@ -415,7 +406,7 @@ for i=1:length(propertyList)
     propertyName= markerObj.get(propertyList{i}).name;
     propertyAllowedValues= markerObj.get(propertyList{i}).allowed_values;
     
-    shapeHandles.parametersLabel{paramNr}= uicontrol(...
+    markerHandles.parametersLabel{paramNr}= uicontrol(...
         'Parent', handles.mainPanel, 'Style', 'text',...
         'String', propertyName, 'Units', 'pixel',...
         'HorizontalAlignment','right',...
@@ -425,7 +416,7 @@ for i=1:length(propertyList)
     
     %If the property is a number, use edit ui
     if(property.type==SimuCell_Class_Type.number)
-        shapeHandles.parametersField{paramNr}= uicontrol(...
+        markerHandles.parametersField{paramNr}= uicontrol(...
             'Parent', handles.mainPanel, 'Style', 'edit',...
             'String', property.value, 'Units', 'pixel',...
             'HorizontalAlignment','left',...
@@ -439,7 +430,7 @@ for i=1:length(propertyList)
         
         [is_value_inlist, index] = ismember(property.value, propertyAllowedValues);
         
-        shapeHandles.parametersField{paramNr}= uicontrol(...
+        markerHandles.parametersField{paramNr}= uicontrol(...
             'Parent', handles.mainPanel, 'Style', 'popupmenu',...
             'Value',index,'String', propertyAllowedValues, 'Units', 'pixel',...
             'HorizontalAlignment','left',...
@@ -448,21 +439,21 @@ for i=1:length(propertyList)
             'TooltipString', markerObj.get(propertyList{i}).description);
         %If the property is a simucell_shape_model, use list ui
     elseif(property.type==SimuCell_Class_Type.simucell_shape_model)
-        objectList=properties(shapeHandles.subpop.objects);
+        objectList=properties(markerHandles.subpop.objects);
         if(isempty(objectList))
             warndlg({['You MUST have defined a object PREVIOUSLY in order to '...
                 'use this model.'],
                 'Please Cancel or choose and other Type/Model.'});
-            setappdata(0,'shapeHandles',shapeHandles);
+            setappdata(0,'markerHandles',markerHandles);
             handles=clearAllParameters();
-            %       shapeHandles=getappdata(0,'shapeHandles');
-            %       setappdata(0,'shapeHandles',shapeHandles);
+            %       markerHandles=getappdata(0,'markerHandles');
+            %       setappdata(0,'markerHandles',markerHandles);
             %guidata(hObject, handles);
             return;
         else
-            %objectNameList=fieldnames(shapeHandles.objects);
+            %objectNameList=fieldnames(markerHandles.objects);
             
-            shapeHandles.parametersField{paramNr}= uicontrol(...
+            markerHandles.parametersField{paramNr}= uicontrol(...
                 'Parent', handles.mainPanel, 'Style', 'popupmenu',...
                 'String', objectList, 'Units', 'pixel',...
                 'HorizontalAlignment','left',...
@@ -470,20 +461,20 @@ for i=1:length(propertyList)
                 'FontWeight', 'normal',...
                 'TooltipString', markerObj.get(propertyList{i}).description);
             if(property.value~=0)
-                name=shapeHandles.subpop.find_shape_name(property.value);
+                name=markerHandles.subpop.find_shape_name(property.value);
                 if(~isempty(name))
-                    set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(objectList, name)));
+                    set(markerHandles.parametersField{paramNr},'Value',find(strcmp(objectList, name)));
                 end
             end
         end
     elseif(property.type==SimuCell_Class_Type.simucell_marker_model)
         marker_list=cell(0);
-        markers=properties(shapeHandles.subpop.markers);
+        markers=properties(markerHandles.subpop.markers);
         counter=1;
         for marker_num=1:length(markers)
-            objects=properties(shapeHandles.subpop.markers.(markers{marker_num}));
+            objects=properties(markerHandles.subpop.markers.(markers{marker_num}));
             for object_num=1:length(objects)
-                if(isa(shapeHandles.subpop.markers.(markers{marker_num}).(objects{object_num}),...
+                if(isa(markerHandles.subpop.markers.(markers{marker_num}).(objects{object_num}),...
                         'Marker_Operation_Queue'))
                     marker_list{counter}=[markers{marker_num} '>' objects{object_num}];
                     counter=counter+1;
@@ -497,15 +488,15 @@ for i=1:length(propertyList)
             warndlg({['You MUST have defined a marker PREVIOUSLY in order to '...
                 'use this model.'],
                 'Please Cancel or choose and other Type/Model.'});
-            setappdata(0,'shapeHandles',shapeHandles);
+            setappdata(0,'markerHandles',markerHandles);
             handles=clearAllParameters();
-            %       shapeHandles=getappdata(0,'shapeHandles');
-            %       setappdata(0,'shapeHandles',shapeHandles);
+            %       markerHandles=getappdata(0,'markerHandles');
+            %       setappdata(0,'markerHandles',markerHandles);
             %guidata(hObject, handles);
             return;
         else
             
-            shapeHandles.parametersField{paramNr}= uicontrol(...
+            markerHandles.parametersField{paramNr}= uicontrol(...
                 'Parent', handles.mainPanel, 'Style', 'popupmenu',...
                 'String', marker_list, 'Units', 'pixel',...
                 'HorizontalAlignment','left',...
@@ -513,9 +504,9 @@ for i=1:length(propertyList)
                 'FontWeight', 'normal',...
                 'TooltipString', markerObj.get(propertyList{i}).description);
             if(property.value~=0)
-                [marker_name,shape_name]=shapeHandles.subpop.find_marker_name(property.value);
+                [marker_name,shape_name]=markerHandles.subpop.find_marker_name(property.value);
                 if(~isempty(marker_name))
-                    set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(marker_list, [marker_name '>' shape_name])));
+                    set(markerHandles.parametersField{paramNr},'Value',find(strcmp(marker_list, [marker_name '>' shape_name])));
                 end
             end
         end
@@ -526,7 +517,7 @@ for i=1:length(propertyList)
     paramNr=paramNr+1;
 end
 % Update handles structure
-setappdata(0,'shapeHandles',shapeHandles);
+setappdata(0,'markerHandles',markerHandles);
 guidata(hObject, handles);
 
 
@@ -534,23 +525,23 @@ guidata(hObject, handles);
 function handles=clearAllParameters()
 %Clear the all parameters
 
-shapeHandles=getappdata(0,'shapeHandles');
-if isfield(shapeHandles,'parametersLabel')
-    for i=1:length(shapeHandles.parametersLabel)
-        if(ishandle(shapeHandles.parametersLabel{i}))
-            delete(shapeHandles.parametersLabel{i});
+markerHandles=getappdata(0,'markerHandles');
+if isfield(markerHandles,'parametersLabel')
+    for i=1:length(markerHandles.parametersLabel)
+        if(ishandle(markerHandles.parametersLabel{i}))
+            delete(markerHandles.parametersLabel{i});
         end
     end
-    handles=rmfield(shapeHandles,'parametersLabel');
+    handles=rmfield(markerHandles,'parametersLabel');
 end
-if isfield(shapeHandles,'parametersField')
-    for i=1:length(shapeHandles.parametersField)
-        if(ishandle(shapeHandles.parametersField{i}))
-            delete(shapeHandles.parametersField{i});
+if isfield(markerHandles,'parametersField')
+    for i=1:length(markerHandles.parametersField)
+        if(ishandle(markerHandles.parametersField{i}))
+            delete(markerHandles.parametersField{i});
         end
     end
-    handles=rmfield(shapeHandles,'parametersField');
-    setappdata(0,'shapeHandles',shapeHandles);
+    handles=rmfield(markerHandles,'parametersField');
+    setappdata(0,'markerHandles',markerHandles);
 end
 
 
@@ -561,11 +552,11 @@ function operation_type_popupmenu_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-shapeHandles=getappdata(0,'shapeHandles');
+markerHandles=getappdata(0,'markerHandles');
 %Get the description of the first selected Model
 selectedString=get(handles.operation_type_popupmenu,'String');
 selectedValue=get(handles.operation_type_popupmenu,'Value');
-%shapeObj=shapeHandles.temp_operation_queue.operations{selectedValue};
+%shapeObj=markerHandles.temp_operation_queue.operations{selectedValue};
 shapeObj=eval(selectedString{selectedValue});
 set(handles.descriptionText,'String',shapeObj.description);
 setParametersPanel(hObject,handles,shapeObj);
@@ -586,18 +577,29 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% --- Executes on button press in cancelButton.
+function cancelButton_Callback(hObject, eventdata, handles)
+% hObject    handle to cancelButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%markerHandles=getappdata(0,'markerHandles');
+%markerHandles.markerProperty.operations=[];
+%setappdata(0,'markerHandles',markerHandles);
+uiresume(handles.figure1);
 
 % --- Executes on button press in DoneButton.
 function DoneButton_Callback(hObject, eventdata, handles)
 % hObject    handle to DoneButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-shapeHandles=getappdata(0,'shapeHandles');
-
-shapeHandles.markerProperty.operations=shapeHandles.temp_operation_queue;
-setappdata(0,'shapeHandles',shapeHandles);
+markerHandles=getappdata(0,'markerHandles');
+%Replace in Marker Property Object the variable operations by the temp one
+%So Modify the Marker Property Object therefore no need to return or save
+%it (since it overclass handle, it is saved by reference).
+markerHandles.markerProperty.operations=markerHandles.temp_operation_queue;
+setappdata(0,'markerHandles',markerHandles);
 uiresume(handles.figure1);
+
 
 function hideOperationParameterPanel(handles,isVisible)
 set(handles.text2,'Visible',isVisible);

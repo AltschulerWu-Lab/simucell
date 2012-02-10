@@ -22,7 +22,7 @@ function varargout = simucellGUI(varargin)
 
 % Edit the above text to modify the response to help simucellGUI
 
-% Last Modified by GUIDE v2.5 23-Jan-2012 18:03:45
+% Last Modified by GUIDE v2.5 09-Feb-2012 16:23:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -113,15 +113,21 @@ objectSelected=tableData{selectedCellPosition(1,1),2};
 columnHeader=getColumnHeaders(handles);
 markerSelected=columnHeader{selectedCellPosition(1,2)};
 markerProperty=myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected);
-
+%TODO WRONG SHOUDL PASS A LIST AND NOT THE OBJECT  Marker_Operation_Queue
+%OTHERWISE MODIFICATION ON IT LATER WILL AFFECT THE OTIGINAL OBJECT (PASSED
+%BY REFERENCE...)
+%NEED TO PASS
+%myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected).operations
+%%INSTEAD
+%OR USE CLONE CloneOperationQueue ?
 subpop=myhandles.simucell_data.subpopulations{subpopSelected};
 %currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
 [markerProperty,name] = define_marker(subpop,markerProperty,markerSelected,objectSelected,subpopSelected);
-if (~isempty(markerProperty.operations))
-  myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected).operations=markerProperty.operations;
-  setappdata(0,'myhandles',myhandles);
-  populateTable(hObject,handles);
-end
+%if (~isempty(markerProperty.operations))
+%   myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected).operations=markerProperty.operations;
+%   setappdata(0,'myhandles',myhandles);
+%   populateTable(hObject,handles);
+%end
 
 
 
@@ -400,7 +406,7 @@ function simucell_data=test()
 %subpopulation 1
 subpop{1}=Subpopulation();
 subpop{1}.placement=Random_Placement();
-set(subpop{1}.placement,'boundary',100);
+set(subpop{1}.placement,'boundary',99);
 
 add_object(subpop{1},'cytoplasm');
 subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
@@ -434,7 +440,7 @@ set(subpop{1}.compositing,'container_weight',0);
 %subpopulation 2
 subpop{2}=Subpopulation();
 subpop{2}.placement=Random_Placement();
-set(subpop{2}.placement,'boundary',100);
+set(subpop{2}.placement,'boundary',101);
 
 add_object(subpop{2},'cytoplasm');
 subpop{2}.objects.cytoplasm.model=Cytoplasm_model;
@@ -475,11 +481,6 @@ subpop{2}.add_cell_artifact(op);
 %% Simucell Data Operation that have to be done from the GUI
 %% Create the simucell_data structure and add the subpopulation
 simucell_data.subpopulations=subpop;
-%% Add Image Artifacts
-simucell_data.image_artifacts=cell(0);
-op=Add_Basal_Brightness();
-set(op,'basal_level',0.15);
-simucell_data.image_artifacts{1}=op;
 %% Population Fraction
 simucell_data.population_fractions=[0.4,0.6];
 %% Number of cells
@@ -490,7 +491,19 @@ simucell_data.simucell_image_size=[800,600];
 overlap=Overlap_Specification;
 overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
 simucell_data.overlap=overlap;
-
+%% Add Cell Artifact
+op=Out_Of_Focus_Cells();
+set(op,'fraction_blurred',0.2,'blur_radius',10);
+subpop{1}.add_cell_artifact(op);
+subpop{2}.add_cell_artifact(op);
+%% Add Image Artifact
+simucell_data.image_artifacts=cell(0);
+op=Add_Basal_Brightness();
+set(op,'basal_level',0.15);
+simucell_data.image_artifacts=cell(0);
+op=Add_Basal_Brightness();
+set(op,'basal_level',0.20);
+simucell_data.image_artifacts{2}=op;
 
 
 
@@ -794,11 +807,14 @@ else
 end
 %currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
 %[simucell_data] = define_placement(myhandles.simucell_data, subpopSelected);
-[overlap_lists overlap_values placement] =...
+% [overlap_lists overlap_values placement] =...
+%   define_placement(myhandles.simucell_data.overlap.overlap_lists,...
+%   myhandles.simucell_data.overlap.overlap_values,...
+%   myhandles.simucell_data.subpopulations{subpopSelected}.placement,...
+%   subpopSelected, myhandles.simucell_data);
+[overlap_lists overlap_values] =...
   define_placement(myhandles.simucell_data.overlap.overlap_lists,...
-  myhandles.simucell_data.overlap.overlap_values,...
-  myhandles.simucell_data.subpopulations{subpopSelected}.placement,...
-  subpopSelected, myhandles.simucell_data);
+  myhandles.simucell_data.overlap.overlap_values, myhandles.simucell_data);
 
 if (~isempty(overlap_lists)|| ~isempty(overlap_values))
   myhandles.simucell_data.overlap.overlap_lists=overlap_lists;
@@ -819,3 +835,28 @@ function pushbutton26_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton26 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in cellPlacementButton.
+function cellPlacementButton_Callback(hObject, eventdata, handles)
+% hObject    handle to cellPlacementButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myhandles=getappdata(0,'myhandles');
+tableData = get(handles.uitable1,'data');
+selectedCellPosition = handles.selectedCells;
+if(~isempty(selectedCellPosition))
+  subpopSelected=tableData{selectedCellPosition(1,1),1};
+else
+  subpopSelected=1;
+end
+subpopulations =...
+  define_cell_placement(myhandles.simucell_data.subpopulations,...
+  subpopSelected);
+myhandles.simucell_data.subpopulations=subpopulations;
+% if (~isempty(overlap_lists)|| ~isempty(overlap_values))
+%   myhandles.simucell_data.overlap.overlap_lists=overlap_lists;
+%   myhandles.simucell_data.overlap.overlap_values=overlap_values;  
+%   myhandles.simucell_data.subpopulations{subpopSelected}.placement=placement;  
+%   setappdata(0,'myhandles',myhandles);
+% end

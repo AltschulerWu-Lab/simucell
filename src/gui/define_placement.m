@@ -59,23 +59,23 @@ if (length(varargin) < 3) %|| ~isa(varargin{1}, 'importantObjectType')
 end
 placementHandles.overlap_lists = varargin{1};
 placementHandles.overlap_values = varargin{2};
-placementHandles.placement = varargin{3};
-subpop_nr =  varargin{4};
-placementHandles.simucell_data =  varargin{5};
+% placementHandles.placement = varargin{3};
+% subpop_nr =  varargin{4};
+placementHandles.simucell_data =  varargin{3};
 setappdata(0,'placementHandles',placementHandles);
 
-%Populate the subpopulation Combo Box
-subpopNr=length(placementHandles.simucell_data.subpopulations);
-set(handles.subpopNrCB,'String',num2cell(1:subpopNr),'Value',subpop_nr);
-%Populate the Placement ComboBox list (just once)
-fileList=dir('plugins/placement/');
-fileList = {fileList(find([fileList.isdir]==0)).name};
-for i=1:length(fileList)
-  fileList{i}=fileList{i}(1:end-2);
-end
-set(handles.placementCB,'String',fileList);
-%Set the Cell placement type for the selected subpopulation
-populateCellPlacementType(subpop_nr,handles);
+% %Populate the subpopulation Combo Box
+% subpopNr=length(placementHandles.simucell_data.subpopulations);
+% set(handles.subpopNrCB,'String',num2cell(1:subpopNr),'Value',subpop_nr);
+% %Populate the Placement ComboBox list (just once)
+% fileList=dir('plugins/placement/');
+% fileList = {fileList(find([fileList.isdir]==0)).name};
+% for i=1:length(fileList)
+%   fileList{i}=fileList{i}(1:end-2);
+% end
+% set(handles.placementCB,'String',fileList);
+% %Set the Cell placement type for the selected subpopulation
+% populateCellPlacementType(subpop_nr,handles);
 %Populate the Overlap list
 overlapListSize=length(placementHandles.simucell_data.overlap.overlap_lists);
 set(handles.overlapList,'String',num2cell(1:overlapListSize),'Value',1);
