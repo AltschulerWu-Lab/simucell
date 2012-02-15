@@ -17,7 +17,7 @@ classdef Add_Basal_Brightness <SimuCell_CellArtifact_Operation
         
         
         function output_images=Apply(obj,input_images)
-          number_of_channels=size(input_images);
+          number_of_channels=size(input_images,1);
           output_images=cell(number_of_channels,1);
           for channel=1:number_of_channels
             output_images{channel}=min(input_images{channel}+obj.basal_level.value,1);

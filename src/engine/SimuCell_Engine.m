@@ -189,26 +189,28 @@ for subpop=1:number_of_subpopulations
     %Insert check for existance
     operation_list=simucell_params.subpopulations{subpop}.cell_artifacts;
     
-    
-    temp=cell(length(cells_in_subpop),length(markers));
-    for marker_number=1:length(markers)
-        for cell_number=1:length(cells_in_subpop)
-            temp{cell_number,marker_number}=composite_cell_images(cells_in_subpop(cell_number)).(markers{marker_number});
+    markers=properties(simucell_params.subpopulations{subpop}.markers);
+    if(length(cells_in_subpop)>0)
+        temp=cell(length(cells_in_subpop),length(markers));
+        for marker_number=1:length(markers)
+            for cell_number=1:length(cells_in_subpop)
+                temp{cell_number,marker_number}=composite_cell_images(cells_in_subpop(cell_number)).(markers{marker_number});
+            end
         end
-    end
-    
-    for op_number=1:length(operation_list)
-        temp=operation_list{op_number}.Apply(temp);
-    end
-    
-    
-    for marker_number=1:length(markers)
-        for cell_number=1:length(cells_in_subpop)
+        
+        for op_number=1:length(operation_list)
             
-            blurred_cell_images(cells_in_subpop(cell_number)).(markers{marker_number})=temp{cell_number,marker_number};
+            temp=operation_list{op_number}.Apply(temp);
+        end
+        
+        
+        for marker_number=1:length(markers)
+            for cell_number=1:length(cells_in_subpop)
+                
+                blurred_cell_images(cells_in_subpop(cell_number)).(markers{marker_number})=temp{cell_number,marker_number};
+            end
         end
     end
-    
     
     
     
