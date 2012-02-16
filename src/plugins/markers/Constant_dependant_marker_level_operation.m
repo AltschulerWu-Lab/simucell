@@ -36,7 +36,18 @@ classdef Constant_dependant_marker_level_operation <SimuCell_Marker_Operation
             shape_mask=needed_shapes{1};
             other_marker=needed_markers{1};
             masked_marker=other_marker(shape_mask);
-            level=mean(masked_marker(:));
+            switch obj.func.value
+                case 'Mean'
+                    level=mean(masked_marker(:));
+                case 'Median'
+                   level=median(masked_marker(:));
+                case 'Max'
+                   level=max(masked_marker(:));
+                case  'Min'
+                   level=min(masked_marker(:));
+                    
+            end
+            
             level=min(max(obj.slope.value*level+obj.intercept.value,0),1);
             current_marker(current_shape_mask)=level;
             result=current_marker;

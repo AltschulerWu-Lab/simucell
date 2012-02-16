@@ -35,10 +35,9 @@ markers1.Actin.cytoplasm.AddOperation(op);
 op=Angular_marker_gradient();
 set(op,'center','Furthest From Edge','falloff_type','Exponential','angular_width',180);
 markers1.Actin.cytoplasm.AddOperation(op);
-
-% op=Constant_marker_level_operation();
-% set(op,'mean_level',0,'sd_level',0);
-% markers1.Actin.nucleus.AddOperation(op);
+op=Constant_dependant_marker_level_operation();
+set(op,'slope',-1,'intercept',0.5,'marker',markers1.Actin.cytoplasm,'region',subpop{1}.objects.cytoplasm);
+markers1.Actin.nucleus.AddOperation(op);
 
 subpop{1}.compositing=default_compositing();
 set(subpop{1}.compositing,'container_weight',0);
@@ -119,7 +118,7 @@ set(op,'falloff_type','Sigmoidal','falloff_radius',100);
 
 
 simucell_data.population_fractions=[1,0];
-simucell_data.number_of_cells=15;
+simucell_data.number_of_cells=10;
 simucell_data.simucell_image_size=[500,500];
 
 simucell_data.subpopulations=subpop;
