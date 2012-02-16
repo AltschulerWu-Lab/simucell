@@ -26,12 +26,19 @@ set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slop
 markers1.DAPI.nucleus.AddOperation(op);
 
 add_marker(subpop{1},'Actin',Colors.Green);
-op=Constant_marker_level_operation();
-set(op,'mean_level',0.7,'sd_level',0.1);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0.7,'sd_level',0.1);
+% markers1.Actin.cytoplasm.AddOperation(op);
+op=Cell_Density_Dependant_Marker_Level();
+set(op,'falloff_type','Linear','falloff_coefficient',10,'increasing_or_decreasing','Decreasing');
 markers1.Actin.cytoplasm.AddOperation(op);
-op=Constant_marker_level_operation();
-set(op,'mean_level',0,'sd_level',0);
-markers1.Actin.nucleus.AddOperation(op);
+op=Angular_marker_gradient();
+set(op,'center','Furthest From Edge','falloff_type','Exponential','angular_width',180);
+markers1.Actin.cytoplasm.AddOperation(op);
+
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0,'sd_level',0);
+% markers1.Actin.nucleus.AddOperation(op);
 
 subpop{1}.compositing=default_compositing();
 set(subpop{1}.compositing,'container_weight',0);
@@ -61,15 +68,25 @@ set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{2}.objects.nucleus,'slop
 markers1.DAPI.nucleus.AddOperation(op);
 
 add_marker(subpop{2},'Actin',Colors.Green);
-op=Constant_marker_level_operation();
-set(op,'mean_level',0.7,'sd_level',0.1);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0.7,'sd_level',0.1);
+% markers1.Actin.cytoplasm.AddOperation(op);
+op=Cell_Density_Dependant_Marker_Level();
+set(op,'falloff_type','Exponential','falloff_coefficient',2,'increasing_or_decreasing','Increasing');
 markers1.Actin.cytoplasm.AddOperation(op);
+
+
 % op=Linear_marker_gradient();
 % set(op,'falloff_type','Linear','falloff_coefficient',0.5);
 % markers1.Actin.cytoplasm.AddOperation(op);
-op=Distance_to_edge_marker_gradient();
-set(op,'falloff_type','Gaussian','falloff_coefficient',10,'increasing_or_decreasing','Decreasing');
-markers1.Actin.cytoplasm.AddOperation(op);
+% op=Distance_to_edge_marker_gradient();
+% set(op,'falloff_type','Gaussian','falloff_coefficient',10,'increasing_or_decreasing','Decreasing');
+% markers1.Actin.cytoplasm.AddOperation(op);
+% op=Distance_to_shape_marker_gradient();
+% set(op,'distance_to',subpop{2}.objects.nucleus,'falloff_type','Exponential','falloff_coefficient',2,'increasing_or_decreasing','Decreasing');
+% markers1.Actin.cytoplasm.AddOperation(op);
+
+
 op=Constant_marker_level_operation();
 set(op,'mean_level',0,'sd_level',0);
 markers1.Actin.nucleus.AddOperation(op);
@@ -84,7 +101,7 @@ overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.0
 
 
 op=Out_Of_Focus_Cells();
-set(op,'fraction_blurred',0.2,'blur_radius',10);
+set(op,'fraction_blurred',0.2,'blur_radius',5);
 subpop{1}.add_cell_artifact(op);
 subpop{2}.add_cell_artifact(op);
 
@@ -101,8 +118,8 @@ simucell_data.image_artifacts{2}=op;
 set(op,'falloff_type','Sigmoidal','falloff_radius',100);
 
 
-simucell_data.population_fractions=[0.5,0.5];
-simucell_data.number_of_cells=5;
+simucell_data.population_fractions=[1,0];
+simucell_data.number_of_cells=15;
 simucell_data.simucell_image_size=[500,500];
 
 simucell_data.subpopulations=subpop;
