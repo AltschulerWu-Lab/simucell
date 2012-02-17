@@ -35,6 +35,9 @@ markers1.Actin.cytoplasm.AddOperation(op);
 op=Angular_marker_gradient();
 set(op,'center','Furthest From Edge','falloff_type','Exponential','angular_width',180);
 markers1.Actin.cytoplasm.AddOperation(op);
+op=Perlin_Texture();
+markers1.Actin.cytoplasm.AddOperation(op);
+
 op=Constant_dependant_marker_level_operation();
 set(op,'slope',-1,'intercept',0.5,'marker',markers1.Actin.cytoplasm,'region',subpop{1}.objects.cytoplasm);
 markers1.Actin.nucleus.AddOperation(op);
