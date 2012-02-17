@@ -4,16 +4,22 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
     
     properties
         amplitude
-        scale
-        description='Constant Marker Level. This level is sampled from a Normal Distribution with Specified Mean and Standard Deviation';
+        length_scale
+        frequency_falloff
+        noise_type
+        description='Perlin Texture. This level is sampled from a Normal Distribution with Specified Mean and Standard Deviation';
     end
     
     methods
         function obj=Perlin_Texture()
-            obj.amplitude=Parameter('Scale',0.5,SimuCell_Class_Type.number,...
-                [0,1],'Amplitude of Noise [0-low, 1-High]');
-            obj.scale=Parameter('Amplitude',1,SimuCell_Class_Type.number,...
-                [1,5],'Scale of Noise [1 - long length scale, 5-short]]');
+            obj.amplitude=Parameter('Noise Amplitude',0.5,SimuCell_Class_Type.number,...
+                [0,Inf],'Amplitude of Noise [0-low, 1-High]');
+            obj.length_scale=Parameter('Length Scale',1,SimuCell_Class_Type.number,...
+                [2,6],'Scale of Noise [2 - long length scale, 5-short]]');
+            obj.frequency_falloff=Parameter('Frequency Falloff',1,SimuCell_Class_Type.number,...
+                [1,5],'Scale of Noise [2 - long length scale, 5-short]]');
+             obj.noise_type=Parameter('Noise Type','Standard 1/f',SimuCell_Class_Type.list,...
+                {'Standard 1/f','Turbulent'},'Noise Type');
         end
         
         
@@ -23,14 +29,51 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
             
             tex=zeros(size(current_marker));
             [row,col]=find(current_shape_mask);
-            tex(min(row):max(row),min(col):max(col))=texture(...
-                [max(row)-min(row)+1,max(col)-min(col)+1],obj.amplitude.value,2,...
-                2+round(obj.scale.value),0.1);
-           
-%             tex(object_mask)=tex(object_mask)./...
-%             mean(mean(tex(object_mask)));
-             result=min(current_marker.*sparse(tex),1);
-
+            
+            noise=zeros(max(row)-min(row)+1,max(col)-min(col)+1);
+            
+            for scale = obj.length_scale.value:6
+                
+                f = power(2,scale);
+                
+                weight = power(obj.frequency_falloff.value,scale);
+                
+                random_lattice = rand(f);
+                random_lattice = [random_lattice(:,1) random_lattice random_lattice(:,end)];
+                random_lattice = [random_lattice(1,:); random_lattice; random_lattice(end,:)];
+                
+                h = ones(3)/9;
+                smoothed_random_lattice = conv2(random_lattice,h,'valid');
+                
+                y = linspace(1,size(smoothed_random_lattice,1),max(row)-min(row)+1);
+                x = linspace(1,size(smoothed_random_lattice,2),max(col)-min(col)+1)';
+                
+                if f < 3
+                    method = 'bilinear';
+                else
+                    method = 'bicubic';
+                end
+                
+                    
+               
+                temp_noise=interp2(smoothed_random_lattice,x,y,method);
+                temp_noise=(temp_noise-min(temp_noise(:)))/(max(temp_noise(:))-min(temp_noise(:)));
+                switch(obj.noise_type.value)
+                    case 'Standard 1/f'
+                         noise = noise + weight*temp_noise;
+                    case 'Turbulent'
+                        noise = noise + weight*abs(temp_noise);
+                end
+               
+            end
+            noise=(noise-min(noise(:)))/(max(noise(:))-min(noise(:)));
+            noise= obj.amplitude.value*noise/std(noise(:));
+            
+            tex(min(row):max(row),min(col):max(col))=noise;
+            %             tex(object_mask)=tex(object_mask)./...
+            %             mean(mean(tex(object_mask)));
+            result=min(current_marker.*sparse(tex),1);
+            
             
             
         end
@@ -42,6 +85,6 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
         function pre_list=needed_shape_list(obj)
             pre_list=cell(0);
         end
-       
+        
     end
 end
