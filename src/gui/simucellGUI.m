@@ -22,7 +22,7 @@ function varargout = simucellGUI(varargin)
 
 % Edit the above text to modify the response to help simucellGUI
 
-% Last Modified by GUIDE v2.5 09-Feb-2012 16:23:40
+% Last Modified by GUIDE v2.5 15-Feb-2012 16:25:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
