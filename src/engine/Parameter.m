@@ -15,7 +15,10 @@ classdef Parameter <hgsetget
    properties(Dependent)
      value
    end
-    
+   events
+    Parameter_Set
+   end
+   
     methods
         function obj=Parameter(name,value,type,allowed_values,description)
             obj.name=name;
@@ -37,6 +40,14 @@ classdef Parameter <hgsetget
             if(obj.type==SimuCell_Class_Type.number)
                 if(val<obj.allowed_values(1)|| val>obj.allowed_values(2))
                     error('Value is outside allowed range');
+                end
+            end
+            if(obj.type==SimuCell_Class_Type.file_name)
+                if(~isa(obj.allowed_values,'function_handle'))
+                    error('allowed_values not a function_handle');
+                end
+                if(~obj.allowed_values(val))
+                    error('Not a valid file type');
                 end
             end
             obj.value_private=val;

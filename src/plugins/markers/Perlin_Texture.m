@@ -7,17 +7,17 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
         length_scale
         frequency_falloff
         noise_type
-        description='Perlin Texture. This level is sampled from a Normal Distribution with Specified Mean and Standard Deviation';
+        description='Perlin Texture. Scales the intensity by a randomly generated texture function';
     end
     
     methods
         function obj=Perlin_Texture()
             obj.amplitude=Parameter('Noise Amplitude',0.5,SimuCell_Class_Type.number,...
                 [0,Inf],'Amplitude of Noise [0-low, 1-High]');
-            obj.length_scale=Parameter('Length Scale',1,SimuCell_Class_Type.number,...
+            obj.length_scale=Parameter('Length Scale',2,SimuCell_Class_Type.number,...
                 [2,6],'Scale of Noise [2 - long length scale, 5-short]]');
-            obj.frequency_falloff=Parameter('Frequency Falloff',1,SimuCell_Class_Type.number,...
-                [1,5],'Scale of Noise [2 - long length scale, 5-short]]');
+            obj.frequency_falloff=Parameter('Frequency Falloff',0.5,SimuCell_Class_Type.number,...
+                [0,1],'Scale of Noise [2 - long length scale, 5-short]]');
              obj.noise_type=Parameter('Noise Type','Standard 1/f',SimuCell_Class_Type.list,...
                 {'Standard 1/f','Turbulent'},'Noise Type');
         end

@@ -28,11 +28,17 @@ classdef SimuCell_Model <hgsetget
                 for i=1:length(chosen_fields)
                     if(isa(obj.(chosen_fields{i}),'Parameter'))
                         obj.(chosen_fields{i}).value=p.Results.(chosen_fields{i});
+                        
                     else
                         obj.(chosen_fields{i})=p.Results.(chosen_fields{i});
                     end
                 end
-                
+                for i=1:length(chosen_fields)
+                    if(isa(obj.(chosen_fields{i}),'Parameter'))
+                        
+                        notify(obj.(chosen_fields{i}),'Parameter_Set');
+                    end
+                end
          end
     end
     
