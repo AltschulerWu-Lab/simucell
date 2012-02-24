@@ -66,9 +66,6 @@ shapeHandles.subpop=varargin{5};
 set(handles.title,'String',['Define your object '...
   ' for subpopulation ' num2str(shapeHandles.subpop_nr)]);
 
-
-
-
 shapeHandles.selectedType=[];
 shapeHandles.selectedModel=[];
 if(~isempty(shapeHandles.currentObject.model))
@@ -100,11 +97,11 @@ if(~isempty(shapeHandles.selectedType))
   
   valueSelected=find(strcmp(modelList, shapeHandles.selectedModel));
   set(handles.shapeModelCb,'Value',valueSelected);
-  
-  
-  %Set the parameters field
-  setParametersPanel(hObject,handles,shapeHandles.currentObject.model);
-  
+  %Set the parameters field  
+  shapeHandles=getappdata(0,'shapeHandles');
+  setShapeParametersPanel(hObject,handles,...
+    shapeHandles.currentObject.model,shapeHandles);
+  %setParametersPanel(hObject,handles,shapeHandles.currentObject.model);  
 else
   set(handles.shapeTypeCb,'String',dirList);
 end
@@ -130,7 +127,11 @@ function varargout = define_shape_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 %varargout{1} = handles.output;
 shapeHandles=getappdata(0,'shapeHandles');
-varargout{1}=shapeHandles.shapeObj;
+if(isfield(shapeHandles,'shapeObj'))
+  varargout{1}=shapeHandles.shapeObj;
+else
+  varargout{1}=[];
+end
 varargout{2}=shapeHandles.object_name;
 if(~isempty(handles))
   delete(handles.figure1);
@@ -147,18 +148,13 @@ function shapeTypeCb_Callback(hObject, eventdata, handles)
 %Populate the Model ComboBox on fly
 selectedString=get(handles.shapeTypeCb,'String');
 selectedValue=get(handles.shapeTypeCb,'Value');
-
 fileList=dir(['plugins/shape/' selectedString{selectedValue}]);
 fileList = {fileList(find([fileList.isdir]==0)).name};
-
 for i=1:length(fileList)
   fileList{i}=fileList{i}(1:end-2);
 end
 set(handles.shapeModelCb,'String',fileList);
 shapeModelCb_Callback(hObject, eventdata, handles);
-
-% selectedString=get(handles.shapeModelCb,'String');
-% selectedValue=get(handles.shapeModelCb,'Value');
 
 
 % --- Executes during object creation, after setting all properties.
@@ -188,87 +184,35 @@ selectedString=get(handles.shapeModelCb,'String');
 selectedValue=get(handles.shapeModelCb,'Value');
 shapeObj=eval(selectedString{selectedValue});
 set(handles.descriptionText,'String',shapeObj.description);
-setParametersPanel(hObject,handles,shapeObj);
-
-
-function setParametersPanel(hObject,handles,shapeObj)
-propertyList = properties(shapeObj);
-
-
 shapeHandles=getappdata(0,'shapeHandles');
-%Clear the all parameters
-clearAllParameters();
-%Populate the new one
-paramNr=1;
-for i=1:length(propertyList)
-  %if(strcmpi(propertyList{i},'description'))
-  if (~isa(shapeObj.(propertyList{i}),'Parameter'))
-    continue;
-  end
-  property=shapeObj.get(propertyList{i});
-  propertyName= shapeObj.get(propertyList{i}).name;
-  
-  shapeHandles.parametersLabel{paramNr}= uicontrol(...
-    'Parent', handles.mainPanel, 'Style', 'text',...
-    'String', propertyName, 'Units', 'pixel',...
-    'HorizontalAlignment','right',...
-    'Position', [1 290-(paramNr*30) 200 20], ...
-    'FontWeight', 'normal',...
-    'TooltipString', shapeObj.get(propertyList{i}).description);  
-  
-  %If the property is a number, use edit ui
-  if(property.type==SimuCell_Class_Type.number)
-    shapeHandles.parametersField{paramNr}= uicontrol(...
-      'Parent', handles.mainPanel, 'Style', 'edit',...
-      'String', property.value, 'Units', 'pixel',...
-      'HorizontalAlignment','left',...
-      'Position', [205 290-(paramNr*30) 200 20], ...
-      'FontWeight', 'normal',...
-      'TooltipString', shapeObj.get(propertyList{i}).description);
-    
-    
-  %If the property is a list, use list ui
-  elseif(property.type==SimuCell_Class_Type.list)
-    ;
-  %If the property is a simucell_shape_model, use list ui
-  elseif(property.type==SimuCell_Class_Type.simucell_shape_model)
-    objectList=getOtherObjectList(handles);
-    if(isempty(objectList))
-      warndlg({['You MUST have defined a object PREVIOUSLY in order to '...
-        'use this model.'],
-        'Please Cancel or choose and other Type/Model.'});
-      setappdata(0,'shapeHandles',shapeHandles);
-      handles=clearAllParameters();
-%       shapeHandles=getappdata(0,'shapeHandles');
-%       setappdata(0,'shapeHandles',shapeHandles);
-      %guidata(hObject, handles);
-      return;
-    else
-      objectNameList=fieldnames(shapeHandles.objects);
-      shapeHandles.parametersField{paramNr}= uicontrol(...
-        'Parent', handles.mainPanel, 'Style', 'popupmenu',...
-        'String', objectList, 'Units', 'pixel',...
-        'HorizontalAlignment','left',...
-        'Position', [205 290-(paramNr*30) 200 20], ...
-        'FontWeight', 'normal',...
-        'TooltipString', shapeObj.get(propertyList{i}).description);
-      name=shapeHandles.subpop.find_shape_name(property.value);
-      if(~isempty(name))
-        set(shapeHandles.parametersField{paramNr},'Value',find(strcmp(objectNameList, name)));
-      end
-    end
-  end
-  paramNr=paramNr+1;
-end
-% Update handles structure
+setShapeParametersPanel(hObject,handles,shapeObj,shapeHandles);
+
+
+function setShapeParametersPanel(hObject,handles,operationObj,shapeHandles)
+objectDescriptionHandle=handles.descriptionText;
+handleName='shapeHandles';
+allowed_types=get(     handles.shapeModelCb,'String');
+operationTypePopupMenu=handles.shapeModelCb;
+artifactHandles.parametersLabel=[];
+artifactHandles.parametersField=[];
+parametersLabelList=artifactHandles.parametersLabel;
+parametersFieldList=artifactHandles.parametersField;
+parentPanel=handles.mainPanel;
+subpopulation=shapeHandles.subpop;
+%Bottom:290px
+[parametersLabelList,parametersFieldList]=setParametersPanel(hObject,handles,...
+  operationObj,objectDescriptionHandle,handleName,...
+  @clearAllParameters,...
+  allowed_types,operationTypePopupMenu,parametersLabelList,...
+  parametersFieldList,parentPanel,subpopulation);
+shapeHandles.parametersLabel=parametersLabelList;
+shapeHandles.parametersField=parametersFieldList;
 setappdata(0,'shapeHandles',shapeHandles);
-guidata(hObject, handles);
 
 
 %Remove all previous Model parameters
 function handles=clearAllParameters()
 %Clear the all parameters
-
 shapeHandles=getappdata(0,'shapeHandles');
 if isfield(shapeHandles,'parametersLabel')
   for i=1:length(shapeHandles.parametersLabel)
@@ -304,7 +248,6 @@ for i=1:length(objectList)
 end
 
 
-
 % --- Executes during object creation, after setting all properties.
 function shapeModelCb_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to shapeModelCb (see GCBO)
@@ -313,10 +256,10 @@ function shapeModelCb_CreateFcn(hObject, eventdata, handles)
 
 % Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+if ispc && isequal(get(hObject,'BackgroundColor'),...
+    get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function nameEdit_Callback(hObject, eventdata, handles)
@@ -336,7 +279,8 @@ function nameEdit_CreateFcn(hObject, eventdata, handles)
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+if ispc && isequal(get(hObject,'BackgroundColor'),...
+    get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
@@ -346,49 +290,20 @@ function SaveButton_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 shapeHandles=getappdata(0,'shapeHandles');
 %Get the Object Type
 selectedString=get(handles.shapeModelCb,'String');
 selectedValue=get(handles.shapeModelCb,'Value');
 %Create new Shape Model Object
 shapeObj=eval(selectedString{selectedValue});
-
-%Get the property setted for this new object
-propertyList = properties(shapeObj);
-paramNr=1;
-for i=1:length(propertyList)
-  if (~isa(shapeObj.(propertyList{i}),'Parameter'))
-    continue;
-  end
-  if(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.number)
-    propertyValue=get(shapeHandles.parametersField{paramNr},'String');
-    try
-      propertyValue=str2double(propertyValue);
-    catch
-      ;
-    end
-  elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.simucell_shape_model)
-    propertyValue=get(shapeHandles.parametersField{i},'String');
-    propertyIndex=get(shapeHandles.parametersField{i},'Value');
-    
-    propertyValue=shapeHandles.subpop.objects.(propertyValue{propertyIndex});
-    ;
-  elseif(shapeObj.(propertyList{i}).type==SimuCell_Class_Type.list)
-    ;
-  end
-  %Set the value to the corresponding parameter
-  set(shapeObj,propertyList{i},propertyValue);
-  paramNr=paramNr+1;
-end
+shapeObj=saveObjectFromParameters(shapeObj,shapeHandles.parametersField,...
+  shapeHandles.subpop);
 %Save the created Object
 shapeHandles.shapeObj.model=shapeObj;
 guidata(hObject, handles);
 %close(handles.figure1);
 setappdata(0,'shapeHandles',shapeHandles);
 uiresume;
-
-
 
 
 % --- Executes on button press in cancelButton.

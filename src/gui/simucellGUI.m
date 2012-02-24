@@ -113,23 +113,8 @@ objectSelected=tableData{selectedCellPosition(1,1),2};
 columnHeader=getColumnHeaders(handles);
 markerSelected=columnHeader{selectedCellPosition(1,2)};
 markerProperty=myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected);
-%TODO WRONG SHOUDL PASS A LIST AND NOT THE OBJECT  Marker_Operation_Queue
-%OTHERWISE MODIFICATION ON IT LATER WILL AFFECT THE OTIGINAL OBJECT (PASSED
-%BY REFERENCE...)
-%NEED TO PASS
-%myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected).operations
-%%INSTEAD
-%OR USE CLONE CloneOperationQueue ?
 subpop=myhandles.simucell_data.subpopulations{subpopSelected};
-%currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
 [markerProperty,name] = define_marker(subpop,markerProperty,markerSelected,objectSelected,subpopSelected);
-%if (~isempty(markerProperty.operations))
-%   myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected).operations=markerProperty.operations;
-%   setappdata(0,'myhandles',myhandles);
-%   populateTable(hObject,handles);
-%end
-
-
 
 
 % --- Executes on button press in newMarkerButton.
@@ -197,21 +182,51 @@ function AddObject_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 myhandles=getappdata(0,'myhandles');
-selectedCellPosition = handles.selectedCells;
-%get the data from the UITABLE
-tableData = get(handles.uitable1,'data');
-subpopSelected=tableData{selectedCellPosition(1,1),1};
-prompt = {['Enter new Object Name for subpopulation ' num2str(subpopSelected) ' :']};
-dlg_title = ['Add a new object for subpopulation' num2str(subpopSelected)] ;
-num_lines = 1;
-def = {'Name'};
-answer = inputdlg(prompt,dlg_title,num_lines,def);
-if isempty(answer)
+
+
+for i=1:length(myhandles.simucell_data.subpopulations)
+  subpopList{1,i}=num2str(i);
+end
+S.Name   = { '' '' };
+S.Subpopulation = {subpopList};
+answer = StructDlg(S,'Add a New Marker','',[50 40 50 10]);
+
+
+if isempty(answer.Name)
+  errordlg('You must set a name to the new Marker (can not be empty)','Enter a Name for the Marker');
   return;
 end
-%objectList=myhandles.simucell_data.subpopulations{subpopSelected}.objects;
-%objectList.addprop(answer{1});
-myhandles.simucell_data.subpopulations{subpopSelected}.add_object(answer{1});
+
+
+
+
+
+
+
+
+
+
+%get the data from the UITABLE
+% tableData = get(handles.uitable1,'data');
+% selectedCellPosition = handles.selectedCells;
+% if(~isempty(selectedCellPosition))
+%   subpopSelected=tableData{selectedCellPosition(1,1),1};
+% else
+%   
+%   errordlg('Choose a subpopulation by selecting a cell in the Object Table before to create a new Object','Select your subpopulation first');
+% end
+% prompt = {['Enter new Object Name for subpopulation ' num2str(subpopSelected) ' :']};
+% dlg_title = ['Add a new object for subpopulation' num2str(subpopSelected)] ;
+% num_lines = 1;
+% def = {'Name'};
+% answer = inputdlg(prompt,dlg_title,num_lines,def);
+% if isempty(answer)
+%   return;
+% end
+objectList=myhandles.simucell_data.subpopulations{answer.Subpopulation}.objects;
+objectList.addprop(answer.Name);
+myhandles.simucell_data.subpopulations{answer.Subpopulation}.add_object(answer.Name);
+%myhandles.simucell_data.subpopulations{subpopSelected}.add_object(answer{1});
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
 
@@ -473,10 +488,6 @@ set(subpop{2}.compositing,'container_weight',0);
 
 
 
-op=Out_Of_Focus_Cells();
-set(op,'fraction_blurred',0.2,'blur_radius',10);
-subpop{1}.add_cell_artifact(op);
-subpop{2}.add_cell_artifact(op);
 
 %% Simucell Data Operation that have to be done from the GUI
 %% Create the simucell_data structure and add the subpopulation
@@ -493,17 +504,28 @@ overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.0
 simucell_data.overlap=overlap;
 %% Add Cell Artifact
 op=Out_Of_Focus_Cells();
-set(op,'fraction_blurred',0.2,'blur_radius',10);
+set(op,'fraction_blurred',0.1,'blur_radius',9);
 subpop{1}.add_cell_artifact(op);
-subpop{2}.add_cell_artifact(op);
+op2=Out_Of_Focus_Cells();
+set(op2,'fraction_blurred',0.1,'blur_radius',11);
+subpop{1}.add_cell_artifact(op2);
+op3=Out_Of_Focus_Cells();
+set(op3,'fraction_blurred',0.2,'blur_radius',12);
+subpop{2}.add_cell_artifact(op3);
+op4=Out_Of_Focus_Cells();
+set(op4,'fraction_blurred',0.2,'blur_radius',14);
+subpop{2}.add_cell_artifact(op4);
 %% Add Image Artifact
 simucell_data.image_artifacts=cell(0);
-op=Add_Basal_Brightness();
-set(op,'basal_level',0.15);
-simucell_data.image_artifacts=cell(0);
-op=Add_Basal_Brightness();
-set(op,'basal_level',0.20);
-simucell_data.image_artifacts{2}=op;
+op5=Add_Basal_Brightness();
+set(op5,'basal_level',0.15);
+simucell_data.image_artifacts{1}=op5;
+op6=Linear_Image_Gradient();
+set(op6,'falloff_type','Linear');
+set(op6,'falloff_coefficient',0.20);
+set(op6,'max_multiplier',2);
+set(op6,'min_multiplier',3);
+simucell_data.image_artifacts{2}=op6;
 
 
 
@@ -790,6 +812,21 @@ function artifactButton_Callback(hObject, eventdata, handles)
 % hObject    handle to artifactButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myhandles=getappdata(0,'myhandles');
+tableData = get(handles.uitable1,'data');
+selectedCellPosition = handles.selectedCells;
+if(~isempty(selectedCellPosition))
+  subpopSelected=tableData{selectedCellPosition(1,1),1};
+else
+  subpopSelected=1;
+end
+subpop=myhandles.simucell_data.subpopulations;
+image_artifact_list=define_artifact(subpop,subpopSelected,myhandles.simucell_data.image_artifacts);
+myhandles.simucell_data.image_artifacts=image_artifact_list;
+setappdata(0,'myhandles',myhandles);
+
+
+
 
 
 % --- Executes on button press in placementButton.
