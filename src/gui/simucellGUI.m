@@ -778,7 +778,8 @@ overlap.AddOverlap(overlap_areas,0);
 myhandles.simucell_data.overlap=overlap;
 
 %Assuming equal subpop-fractions for now, change this to use the GUI params
-myhandles.simucell_data.population_fractions=ones(length(myhandles.simucell_data.subpopulations),1)/length(myhandles.simucell_data.subpopulations);
+myhandles.simucell_data.population_fractions=myhandles.simucell_data.population_fractions';
+%myhandles.simucell_data.population_fractions=ones(length(myhandles.simucell_data.subpopulations),1)/length(myhandles.simucell_data.subpopulations);
 
 % This needs to use the placement framework
 for subpop_num=1:length(myhandles.simucell_data.subpopulations)

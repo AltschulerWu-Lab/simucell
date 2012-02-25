@@ -26,7 +26,7 @@ classdef Linear_Image_Gradient <SimuCell_CellArtifact_Operation
         
         function output_images=Apply(obj,input_images)
           [xres,yres]=size(input_images{1}) ;
-          [X,Y]=meshgrid(1:xres,1:yres);
+          [X,Y]=meshgrid(1:yres,1:xres);
           theta=2*pi*rand();
           z=cos(theta)*X+sin(theta)*Y;
           switch obj.falloff_type.value
