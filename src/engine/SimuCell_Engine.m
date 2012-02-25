@@ -153,6 +153,8 @@ for subpop=1:number_of_subpopulations
                         object_structure(cells_in_subpop(cell_number)).(shapes{shape_number2});
                     weight_masks{shape_number1}(temp_mask)=weight_masks{shape_number1}(temp_mask)+...
                     compositing_matrices{subpop}(shape_number1,shape_number2)/nchoosek( overlap_number,2);
+                    weight_masks{shape_number2}(temp_mask)=weight_masks{shape_number2}(temp_mask)+...
+                    compositing_matrices{subpop}(shape_number2,shape_number1)/nchoosek( overlap_number,2);
                 end
             end
         end

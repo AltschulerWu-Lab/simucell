@@ -46,7 +46,10 @@ markers1=subpop{1}.markers;
 
 add_marker(subpop{1},'DAPI',Colors.Blue);
 op=Constant_marker_level_operation();
-set(op,'mean_level',0.5,'sd_level',0.1);
+set(op,'mean_level',1,'sd_level',0.1);
+markers1.DAPI.nucleus.AddOperation(op);
+op=Perlin_Texture();
+set(op,'length_scale',4,'frequency_falloff',1,'amplitude',0.25);
 markers1.DAPI.nucleus.AddOperation(op);
 % op=Constant_marker_level_operation();
 % set(op,'mean_level',0.5,'sd_level',0.1);
@@ -82,20 +85,20 @@ markers1.Actin.lipid_droplets.AddOperation(op);
 
 add_marker(subpop{1},'MT',Colors.Red);
 op=Constant_marker_level_operation();
-set(op,'mean_level',0,'sd_level',0);
-markers1.MT.nucleus.AddOperation(op);
-op=Constant_marker_level_operation();
-set(op,'mean_level',0,'sd_level',0);
-markers1.MT.cytoplasm.AddOperation(op);
-op=Constant_marker_level_operation();
-set(op,'mean_level',0,'sd_level',0);
-markers1.MT.lipid_droplets.AddOperation(op);
+% set(op,'mean_level',0,'sd_level',0);
+% markers1.MT.nucleus.AddOperation(op);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0,'sd_level',0);
+% markers1.MT.cytoplasm.AddOperation(op);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0,'sd_level',0);
+% markers1.MT.lipid_droplets.AddOperation(op);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.1,'sd_level',0);
 markers1.MT.fiber.AddOperation(op);
-% op=Perlin_Texture();
-% set(op,'length_scale',3,'amplitude',1);
-% markers1.MT.fiber.AddOperation(op);
+op=Perlin_Texture();
+set(op,'length_scale',6,'amplitude',1);
+markers1.MT.fiber.AddOperation(op);
 % op=Distance_to_edge_marker_gradient();
 % markers1.MT.fiber.AddOperation(op);
 
@@ -165,12 +168,12 @@ subpop{1}.add_cell_artifact(op);
 subpop{2}.add_cell_artifact(op);
 
 % op=Cell_Staining_Artifacts();
-% set(op,'fraction_unstained',0.05,'unstained_multiplier',0.05,'fraction_bleached',0.05);
+% set(op,'fraction_unstained',0.05,'unstained_multiplier',0.05,'fraction_bleached',0.05,'bleaching_multiplier',50);
 % subpop{1}.add_cell_artifact(op);
 % op=Cell_Staining_Artifacts();
-% set(op,'fraction_bleached',0.05,'bleaching_multiplier',10,'fraction_unstained',0.05);
+% set(op,'fraction_bleached',0.05,'bleaching_multiplier',50,'fraction_unstained',0.05);
 % subpop{2}.add_cell_artifact(op);
-
+% 
 
 simucell_data.image_artifacts=cell(0);
 op=Add_Basal_Brightness();
@@ -179,9 +182,9 @@ simucell_data.image_artifacts{1}=op;
 % op=Linear_Image_Gradient();
 % simucell_data.image_artifacts{2}=op;
 % set(op,'falloff_type','Exponential','falloff_coefficient',0.1);
-% op=Radial_Image_Gradient();
-% simucell_data.image_artifacts{2}=op;
-% set(op,'falloff_type','Sigmoidal','falloff_radius',100);
+op=Radial_Image_Gradient();
+simucell_data.image_artifacts{2}=op;
+set(op,'falloff_type','Sigmoidal','falloff_radius',100);
 
 
 simucell_data.population_fractions=[1,0];
