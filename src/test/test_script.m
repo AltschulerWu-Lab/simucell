@@ -5,7 +5,8 @@ subpop=cell(0);
 %subpopulation 1
 subpop{1}=Subpopulation();
 subpop{1}.placement=Random_Placement();
-set(subpop{1}.placement,'boundary',100);
+% subpop{1}.placement=Clustered_Placement();
+% set(subpop{1}.placement,'boundary',100,'cluster_width',100);
 
 
 add_object(subpop{1},'nucleus');
@@ -46,7 +47,7 @@ markers1=subpop{1}.markers;
 
 add_marker(subpop{1},'DAPI',Colors.Blue);
 op=Constant_marker_level_operation();
-set(op,'mean_level',1,'sd_level',0.1);
+set(op,'mean_level',0.5,'sd_level',0.1);
 markers1.DAPI.nucleus.AddOperation(op);
 op=Perlin_Texture();
 set(op,'length_scale',4,'frequency_falloff',1,'amplitude',0.25);
@@ -97,7 +98,7 @@ op=Constant_marker_level_operation();
 set(op,'mean_level',0.1,'sd_level',0);
 markers1.MT.fiber.AddOperation(op);
 op=Perlin_Texture();
-set(op,'length_scale',6,'amplitude',1);
+set(op,'length_scale',6,'amplitude',0.1,'add_or_multiply','Add');
 markers1.MT.fiber.AddOperation(op);
 % op=Distance_to_edge_marker_gradient();
 % markers1.MT.fiber.AddOperation(op);
@@ -184,7 +185,7 @@ simucell_data.image_artifacts{1}=op;
 % set(op,'falloff_type','Exponential','falloff_coefficient',0.1);
 op=Radial_Image_Gradient();
 simucell_data.image_artifacts{2}=op;
-set(op,'falloff_type','Sigmoidal','falloff_radius',100);
+set(op,'falloff_type','Sigmoidal','falloff_radius',50);
 
 
 simucell_data.population_fractions=[1,0];
