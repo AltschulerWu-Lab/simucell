@@ -55,9 +55,9 @@ markers1.DAPI.nucleus.AddOperation(op);
 % op=Constant_marker_level_operation();
 % set(op,'mean_level',0.5,'sd_level',0.1);
 % markers1.DAPI.cytoplasm.AddOperation(op);
-% op=Constant_dependant_marker_level_operation();
-% set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slope',0.5);
-% markers1.DAPI.nucleus.AddOperation(op);
+op=Constant_dependant_marker_level_operation();
+set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slope',0.5);
+markers1.DAPI.nucleus.AddOperation(op);
 
 add_marker(subpop{1},'Actin',Colors.Green);
 op=Constant_marker_level_operation();
@@ -194,7 +194,13 @@ simucell_data.simucell_image_size=[500,500];
 
 simucell_data.subpopulations=subpop;
 simucell_data.overlap=overlap;
-
+% 
+% [obv_del,all_del]=simucell_data.subpopulations{1}.calculate_all_dependancies(...
+%     simucell_data.subpopulations{1}.objects.lipid_droplets);
+% 
+% [obv_del,all_del]=simucell_data.subpopulations{1}.calculate_all_dependancies(...
+%     simucell_data.subpopulations{1}.markers.DAPI);
+% 
 [a,b,c,d,e]=SimuCell_Engine(simucell_data);
 
 end

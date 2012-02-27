@@ -158,6 +158,50 @@ function removeMarkerButton_Callback(hObject, eventdata, handles)
 % hObject    handle to removeMarkerButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myhandles=getappdata(0,'myhandles');
+selectedCellPosition = handles.selectedCells;
+%get the data from the UITABLE
+tableData = get(handles.uitable1,'data');
+subpopSelected=tableData{selectedCellPosition(1,1),1};
+columnHeader=getColumnHeaders(handles);
+to_be_deleted_name=columnHeader{selectedCellPosition(1,2)};
+
+number_of_subpopulations=length(myhandles.simucell_data.subpopulations);
+obv_del=cell(number_of_subpopulations,1);
+all_del=cell(number_of_subpopulations,1);
+prob_del=cell(number_of_subpopulations,1);
+all_probs=cell(0);
+all_obv=cell(0);
+for subpop_num=1:number_of_subpopulations
+    to_be_deleted_class= myhandles.simucell_data.subpopulations{subpop_num}.markers.(to_be_deleted_name);
+    [obv_del{subpop_num},all_del{subpop_num}]=myhandles.simucell_data.subpopulations{subpop_num}.calculate_all_dependancies(...
+    to_be_deleted_class);
+    prob_del{subpop_num}=setxor(obv_del{subpop_num},all_del{subpop_num});
+    prob_del{subpop_num}=cellfun(@(z) [ num2str(subpop_num) '>' z ],prob_del{subpop_num},'UniformOutput',false);
+    if(~isempty(prob_del{subpop_num}))
+        all_probs={all_probs{:}, prob_del{subpop_num}{:}};
+    end
+    if(~isempty(obv_del{subpop_num}))
+        all_obv={all_obv{:},obv_del{subpop_num}{:}};
+    end
+end
+
+if(isempty(all_probs))
+    button=questdlg({'Removing the following:',all_obv{:}},'Confirm Delete','Delete','Cancel','Cancel');
+    switch button
+        case 'Delete'
+            for subpop_num=1:number_of_subpopulations
+                myhandles.simucell_data.subpopulations{subpop_num}.delete_marker(to_be_deleted_name);
+            end
+        otherwise
+            
+    end
+else
+    msgbox({'Attempting to remove:',to_be_deleted_name,...
+        'However these objects will be affected:',all_probs{:}},'Delete Aborted!','error');
+end
+setappdata(0,'myhandles',myhandles);
+populateTable(hObject,handles);
 
 
 % --- Executes on button press in RemoveObject.
@@ -170,10 +214,64 @@ selectedCellPosition = handles.selectedCells;
 %get the data from the UITABLE
 tableData = get(handles.uitable1,'data');
 subpopSelected=tableData{selectedCellPosition(1,1),1};
-objectSelected=tableData{selectedCellPosition(1,1),2};
-myhandles.simucell_data.subpopulations{subpopSelected}.delete_shape(objectSelected);
+to_be_deleted_name=tableData{selectedCellPosition(1,1),2};
+to_be_deleted_class= myhandles.simucell_data.subpopulations{subpopSelected}.objects.(to_be_deleted_name);
+
+[obv_del,all_del]=myhandles.simucell_data.subpopulations{subpopSelected}.calculate_all_dependancies(...
+    to_be_deleted_class);
+
+if(isempty(setxor(obv_del,all_del)))
+    button=questdlg({'Removing the following:',obv_del{:}},'Confirm Delete','Delete','Cancel','Cancel');
+    switch button
+        case 'Delete'
+            if isa(to_be_deleted_class,'SimuCell_Object')
+                myhandles.simucell_data.subpopulations{subpopSelected}.delete_shape(to_be_deleted_name);
+            elseif(isa(to_be_deleted_class,'Marker'))
+                myhandles.simucell_data.subpopulations{subpopSelected}.delete_marker(to_be_deleted_name);
+            else
+                disp('Confused by object type');
+            end
+        otherwise
+            
+    end
+else
+    prob_del=setxor(obv_del,all_del);
+    msgbox({'Attempting to remove:',obv_del{:},...
+        'However these objects will be affected:',prob_del{:}},'Delete Aborted!','error'); 
+    
+end
 setappdata(0,'myhandles',myhandles);
+%remove_function(subpopSelected,to_be_deleted_class,to_be_deleted_name);
 populateTable(hObject,handles);
+
+function remove_function(subpopSelected,to_be_deleted_class,to_be_deleted_name)
+myhandles=getappdata(0,'myhandles');
+
+
+[obv_del,all_del]=myhandles.simucell_data.subpopulations{subpopSelected}.calculate_all_dependancies(...
+    to_be_deleted_class);
+
+if(isempty(setxor(obv_del,all_del)))
+    button=questdlg({'Removing the following:',obv_del{:}},'Confirm Delete','Delete','Cancel','Cancel');
+    switch button
+        case 'Delete'
+            if isa(to_be_deleted_class,'SimuCell_Object')
+                myhandles.simucell_data.subpopulations{subpopSelected}.delete_shape(to_be_deleted_name);
+            elseif(isa(to_be_deleted_class,'Marker'))
+                myhandles.simucell_data.subpopulations{subpopSelected}.delete_marker(to_be_deleted_name);
+            else
+                disp('Confused by object type');
+            end
+        otherwise
+            
+    end
+else
+    prob_del=setxor(obv_del,all_del);
+    msgbox({'Attempting to remove:',obv_del{:},...
+        'However these objects will be affected:',prob_del{:}},'Delete Aborted!','error'); 
+    
+end
+setappdata(0,'myhandles',myhandles);
 
 
 % --- Executes on button press in AddObject.
