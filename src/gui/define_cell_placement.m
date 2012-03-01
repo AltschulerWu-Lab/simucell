@@ -91,8 +91,8 @@ uiwait(handles.figure1);
 
 function populateCellPlacementType(subpopNr,handles)
 %Next 2 lines need to be done only once
-dirList=dir('plugins/placement/');
-dirList=dirList(3:end);
+fileList=dir('plugins/placement/');
+fileList = {fileList(find([fileList.isdir]==0)).name};
 cellPlacementHandles=getappdata(0,'cellPlacementHandles');
 %Get the selected SubpopNr
 currentSubPopNr=get(handles.subpopNrCB,'Value');
@@ -104,7 +104,7 @@ if(~isempty(currentPlacement));
   selectedPlacement=currentClassName;
 end
 if(~isempty(selectedPlacement))
-   valueSelected=find(strcmp(dirList.name, [selectedPlacement '.m']));
+   valueSelected=find(strcmp(fileList, [selectedPlacement '.m']));
    %Set the Placement Type
    set(handles.placementCB,'Value',valueSelected);
 end

@@ -469,9 +469,17 @@ for i=1:subpopNr
     errordlg('You have to define the same marker for all the subpopulation');
   end
 end
+
+
+markers=cell(0);
+for i=1:length(subpops)
+  markers=union(markers,properties(subpops{1}.markers));
+end
+
+
 %Fill the table for the marker
 for i=1:nrMarker
-  markers=properties(subpops{1}.markers);
+  %markers=properties(subpops{1}.markers);
   columnHeaders{3+i}=markers{i};
   rowNr=0;
   for j=1:subpopNr
@@ -479,6 +487,13 @@ for i=1:nrMarker
     objs= properties(subpops{j}.objects);
     if(~isempty(objs))
       for k=1:length(objs)
+        %Create the marker for the subpopulation that didn't have it so
+        %all subpopulations will have the same marker
+        if(length(findprop(subpops{j}.markers,markers{i}))==0)          
+          add_marker(subpops{j},markers{i},Colors.Blue);
+        end
+        
+        
         if (isempty(subpops{j}.markers.(markers{i}).(objs{k}).operations))
           tableData{rowNr,3+i}='-';          
         else
@@ -503,57 +518,185 @@ set(handles.uitable1,'data',tableData);
 guidata(hObject, handles);
 
 
-function simucell_data=test()
-% subpop=cell(0);
+% function simucell_data=test()
+% %subpopulation 1
 % subpop{1}=Subpopulation();
 % subpop{1}.placement=Random_Placement();
-% set(subpop{1}.placement,'boundary',100);
+% set(subpop{1}.placement,'boundary',99);
 % 
 % add_object(subpop{1},'cytoplasm');
 % subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
 % set(subpop{1}.objects.cytoplasm.model,'radius',30,'eccentricity',0.2);
 % 
 % add_object(subpop{1},'nucleus');
-%subpop{1}.objects.nucleus.model=Centered_nucleus_model;
-%set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+% subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+% set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+% 
+% markers1=subpop{1}.markers;
+% 
+% add_marker(subpop{1},'DAPI',Colors.Blue);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0.5,'sd_level',0.1);
+% markers1.DAPI.cytoplasm.AddOperation(op);
+% op=Constant_dependant_marker_level_operation();
+% set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slope',0.5);
+% markers1.DAPI.nucleus.AddOperation(op);
+% 
+% add_marker(subpop{1},'Actin',Colors.Red);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0.7,'sd_level',0.1);
+% markers1.Actin.cytoplasm.AddOperation(op);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0,'sd_level',0);
+% markers1.Actin.nucleus.AddOperation(op);
+% 
+% subpop{1}.compositing=default_compositing();
+% set(subpop{1}.compositing,'container_weight',0);
+% 
+% %subpopulation 2
+% subpop{2}=Subpopulation();
+% subpop{2}.placement=Random_Placement();
+% set(subpop{2}.placement,'boundary',101);
+% 
+% add_object(subpop{2},'cytoplasm');
+% subpop{2}.objects.cytoplasm.model=Cytoplasm_model;
+% set(subpop{2}.objects.cytoplasm.model,'radius',40,'eccentricity',0.2);
+% 
+% add_object(subpop{2},'nucleus');
+% subpop{2}.objects.nucleus.model=Centered_nucleus_model;
+% set(subpop{2}.objects.nucleus.model,'centered_around',subpop{2}.objects.cytoplasm,'eccentricity',0);
+% 
+% markers1=subpop{2}.markers;
+% 
+% add_marker(subpop{2},'DAPI');
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0.5,'sd_level',0.1);
+% markers1.DAPI.cytoplasm.AddOperation(op);
+% op=Constant_dependant_marker_level_operation();
+% set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{2}.objects.nucleus,'slope',0.5);
+% markers1.DAPI.nucleus.AddOperation(op);
+% 
+% add_marker(subpop{2},'Actin');
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0.7,'sd_level',0.1);
+% markers1.Actin.cytoplasm.AddOperation(op);
+% op=Constant_marker_level_operation();
+% set(op,'mean_level',0,'sd_level',0);
+% markers1.Actin.nucleus.AddOperation(op);
+% subpop{2}.compositing=default_compositing();
+% set(subpop{2}.compositing,'container_weight',0);
+% %% Simucell Data Operation that have to be done from the GUI
+% %% Create the simucell_data structure and add the subpopulation
+% simucell_data.subpopulations=subpop;
+% %% Population Fraction
+% simucell_data.population_fractions=[0.4,0.6];
+% %% Number of cells
+% simucell_data.number_of_cells=5;
+% %% Image Size
+% simucell_data.simucell_image_size=[800,600];
+% %% Overlap
+% overlap=Overlap_Specification;
+% overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
+% simucell_data.overlap=overlap;
+% %% Add Cell Artifact
+% op=Out_Of_Focus_Cells();
+% set(op,'fraction_blurred',0.1,'blur_radius',9);
+% subpop{1}.add_cell_artifact(op);
+% op2=Out_Of_Focus_Cells();
+% set(op2,'fraction_blurred',0.1,'blur_radius',11);
+% subpop{1}.add_cell_artifact(op2);
+% op3=Out_Of_Focus_Cells();
+% set(op3,'fraction_blurred',0.2,'blur_radius',12);
+% subpop{2}.add_cell_artifact(op3);
+% op4=Out_Of_Focus_Cells();
+% set(op4,'fraction_blurred',0.2,'blur_radius',14);
+% subpop{2}.add_cell_artifact(op4);
+% %% Add Image Artifact
+% simucell_data.image_artifacts=cell(0);
+% op5=Add_Basal_Brightness();
+% set(op5,'basal_level',0.15);
+% simucell_data.image_artifacts{1}=op5;
+% op6=Linear_Image_Gradient();
+% set(op6,'falloff_type','Linear');
+% set(op6,'falloff_coefficient',0.20);
+% set(op6,'max_multiplier',2);
+% set(op6,'min_multiplier',3);
+% simucell_data.image_artifacts{2}=op6;
+
+
+function simucell_data=test()
+subpop=cell(0);
 %subpopulation 1
 subpop{1}=Subpopulation();
 subpop{1}.placement=Random_Placement();
-set(subpop{1}.placement,'boundary',99);
 
-add_object(subpop{1},'cytoplasm');
-subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
-set(subpop{1}.objects.cytoplasm.model,'radius',30,'eccentricity',0.2);
 
 add_object(subpop{1},'nucleus');
-subpop{1}.objects.nucleus.model=Centered_nucleus_model;
-set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm,'eccentricity',0);
+subpop{1}.objects.nucleus.model=Elliptical_nucleus_model;
+set(subpop{1}.objects.nucleus.model,'radius',15,'eccentricity',0.7);
+
+% add_object(subpop{1},'nucleus');
+% subpop{1}.objects.nucleus.model=SLML_nucleus_model;
+% set(subpop{1}.objects.nucleus.model,'radius',30,...
+%     'filename','/home/srajaram/Work/Code/SimuCell/Code/src/test/test_slml/endosome.mat');
+
+add_object(subpop{1},'cytoplasm');
+subpop{1}.objects.cytoplasm.model=Elliptical_cytoplasm_model;
+set(subpop{1}.objects.cytoplasm.model,'radius',60,'eccentricity',0.9,'randomness',0.3,'centered_around',subpop{1}.objects.nucleus);
+
+
+add_object(subpop{1},'lipid_droplets');
+subpop{1}.objects.lipid_droplets.model=Lipid_droplet_model;
+set(subpop{1}.objects.lipid_droplets.model,'droplet_radius',5,...
+    'number_of_droplets',5,'number_of_clusters',2,...
+    'nucleus',subpop{1}.objects.nucleus,'cytoplasm',subpop{1}.objects.cytoplasm);
+
+
+add_object(subpop{1},'fiber');
+subpop{1}.objects.fiber.model=Microtubule_fibre_model;
+set(subpop{1}.objects.fiber.model,'nucleus',subpop{1}.objects.nucleus,...
+    'cytoplasm',subpop{1}.objects.cytoplasm);
 
 markers1=subpop{1}.markers;
 
-add_marker(subpop{1},'DAPI');
+add_marker(subpop{1},'DAPI',Colors.Blue);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.5,'sd_level',0.1);
-markers1.DAPI.cytoplasm.AddOperation(op);
+markers1.DAPI.nucleus.AddOperation(op);
+op=Perlin_Texture();
+set(op,'length_scale',4,'frequency_falloff',1,'amplitude',0.25);
+markers1.DAPI.nucleus.AddOperation(op);
 op=Constant_dependant_marker_level_operation();
 set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{1}.objects.nucleus,'slope',0.5);
 markers1.DAPI.nucleus.AddOperation(op);
 
-add_marker(subpop{1},'Actin');
+add_marker(subpop{1},'Actin',Colors.Green);
 op=Constant_marker_level_operation();
-set(op,'mean_level',0.7,'sd_level',0.1);
+set(op,'mean_level',0.1,'sd_level',0);
+markers1.Actin.cytoplasm.AddOperation(op);
+op=Perlin_Texture();
 markers1.Actin.cytoplasm.AddOperation(op);
 op=Constant_marker_level_operation();
-set(op,'mean_level',0,'sd_level',0);
-markers1.Actin.nucleus.AddOperation(op);
+set(op,'mean_level',0.8,'sd_level',0.1);
+markers1.Actin.lipid_droplets.AddOperation(op);
+
+
+add_marker(subpop{1},'MT',Colors.Red);
+op=Constant_marker_level_operation();
+set(op,'mean_level',0.1,'sd_level',0);
+markers1.MT.fiber.AddOperation(op);
+op=Perlin_Texture();
+set(op,'length_scale',6,'amplitude',0.1,'add_or_multiply','Add');
+markers1.MT.fiber.AddOperation(op);
 
 subpop{1}.compositing=default_compositing();
 set(subpop{1}.compositing,'container_weight',0);
 
+
 %subpopulation 2
 subpop{2}=Subpopulation();
 subpop{2}.placement=Random_Placement();
-set(subpop{2}.placement,'boundary',101);
+set(subpop{2}.placement,'boundary',100);
 
 add_object(subpop{2},'cytoplasm');
 subpop{2}.objects.cytoplasm.model=Cytoplasm_model;
@@ -565,7 +708,7 @@ set(subpop{2}.objects.nucleus.model,'centered_around',subpop{2}.objects.cytoplas
 
 markers1=subpop{2}.markers;
 
-add_marker(subpop{2},'DAPI');
+add_marker(subpop{2},'DAPI',Colors.Blue);
 op=Constant_marker_level_operation();
 set(op,'mean_level',0.5,'sd_level',0.1);
 markers1.DAPI.cytoplasm.AddOperation(op);
@@ -573,10 +716,11 @@ op=Constant_dependant_marker_level_operation();
 set(op,'marker',markers1.DAPI.cytoplasm,'region',subpop{2}.objects.nucleus,'slope',0.5);
 markers1.DAPI.nucleus.AddOperation(op);
 
-add_marker(subpop{2},'Actin');
-op=Constant_marker_level_operation();
-set(op,'mean_level',0.7,'sd_level',0.1);
+add_marker(subpop{2},'Actin',Colors.Green);
+op=Cell_Density_Dependant_Marker_Level();
+set(op,'falloff_type','Exponential','falloff_coefficient',2,'increasing_or_decreasing','Increasing');
 markers1.Actin.cytoplasm.AddOperation(op);
+
 op=Constant_marker_level_operation();
 set(op,'mean_level',0,'sd_level',0);
 markers1.Actin.nucleus.AddOperation(op);
@@ -584,46 +728,30 @@ markers1.Actin.nucleus.AddOperation(op);
 subpop{2}.compositing=default_compositing();
 set(subpop{2}.compositing,'container_weight',0);
 
-
-
-
-%% Simucell Data Operation that have to be done from the GUI
-%% Create the simucell_data structure and add the subpopulation
-simucell_data.subpopulations=subpop;
-%% Population Fraction
-simucell_data.population_fractions=[0.4,0.6];
-%% Number of cells
-simucell_data.number_of_cells=5;
-%% Image Size
-simucell_data.simucell_image_size=[800,600];
-%% Overlap
 overlap=Overlap_Specification;
 overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
-simucell_data.overlap=overlap;
-%% Add Cell Artifact
+
 op=Out_Of_Focus_Cells();
-set(op,'fraction_blurred',0.1,'blur_radius',9);
+set(op,'fraction_blurred',0.05,'blur_radius',5);
 subpop{1}.add_cell_artifact(op);
-op2=Out_Of_Focus_Cells();
-set(op2,'fraction_blurred',0.1,'blur_radius',11);
-subpop{1}.add_cell_artifact(op2);
-op3=Out_Of_Focus_Cells();
-set(op3,'fraction_blurred',0.2,'blur_radius',12);
-subpop{2}.add_cell_artifact(op3);
-op4=Out_Of_Focus_Cells();
-set(op4,'fraction_blurred',0.2,'blur_radius',14);
-subpop{2}.add_cell_artifact(op4);
-%% Add Image Artifact
+op=Out_Of_Focus_Cells();
+set(op,'fraction_blurred',0.04,'blur_radius',4);
+subpop{2}.add_cell_artifact(op);
+
 simucell_data.image_artifacts=cell(0);
-op5=Add_Basal_Brightness();
-set(op5,'basal_level',0.15);
-simucell_data.image_artifacts{1}=op5;
-op6=Linear_Image_Gradient();
-set(op6,'falloff_type','Linear');
-set(op6,'falloff_coefficient',0.20);
-set(op6,'max_multiplier',2);
-set(op6,'min_multiplier',3);
-simucell_data.image_artifacts{2}=op6;
+op=Add_Basal_Brightness();
+set(op,'basal_level',0.15);
+simucell_data.image_artifacts{1}=op;
+op=Radial_Image_Gradient();
+simucell_data.image_artifacts{2}=op;
+set(op,'falloff_type','Sigmoidal','falloff_radius',50);
+
+simucell_data.population_fractions=[1,0];
+simucell_data.number_of_cells=5;
+simucell_data.simucell_image_size=[500,500];
+simucell_data.subpopulations=subpop;
+simucell_data.overlap=overlap;
+
 
 
 
