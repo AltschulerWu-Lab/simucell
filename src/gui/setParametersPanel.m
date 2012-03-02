@@ -156,4 +156,4 @@ function selectFile_Callback(hObject, eventdata, textField)
 if(isnumeric(pathname))%If user pressed cancel button
   return;
 end
-set(textField,'String',[pathname filesep filename]);
+set(textField,'String',[pathname filename]);

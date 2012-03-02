@@ -7,42 +7,49 @@ classdef SimuCell_Model <hgsetget
     end
     
     methods (Abstract)
-       %obj=set_default_parameters(obj);
-     
+        %obj=set_default_parameters(obj);
+        
     end
     
-    methods 
-         function obj= set(obj,varargin)  
-                p = inputParser;
-                props=properties(obj);
-                for i=1:length(props)
-                 if(isa(obj.(props{i}),'Parameter'))
-                    p.addParamValue(props{i},obj.(props{i}).value);
-                 else
-                    p.addParamValue(props{i},obj.(props{i})); 
-                 end
-                    
-                end
-                p.parse(varargin{:});
-                chosen_fields=fieldnames(p.Results);
-                for i=1:length(chosen_fields)
+    methods
+        function obj= set(obj,varargin)
+            p = inputParser;
+            p.KeepUnmatched = true;
+            %                props=properties(obj);
+            %                 for i=1:length(props)
+            %                  if(isa(obj.(props{i}),'Parameter'))
+            %                     %p.addParamValue(props{i},obj.(props{i}).value);
+            %                   % p.addOptional(props{i});
+            %                  else
+            %                     %p.addParamValue(props{i},obj.(props{i}));
+            %                  end
+            %
+            %                 end
+            p.parse(varargin{:});
+            chosen_fields=fieldnames(p.Unmatched);
+            
+            for i=1:length(chosen_fields)
+                if(isprop(obj,chosen_fields{i}))
                     if(isa(obj.(chosen_fields{i}),'Parameter'))
-                        obj.(chosen_fields{i}).value=p.Results.(chosen_fields{i});
+                        obj.(chosen_fields{i}).value=p.Unmatched.(chosen_fields{i});
                         
                     else
-                        obj.(chosen_fields{i})=p.Results.(chosen_fields{i});
+                        obj.(chosen_fields{i})=p.Unmatched.(chosen_fields{i});
                     end
+                else
+                    error([chosen_fields{i} ' is not a valid property']);
                 end
-                for i=1:length(chosen_fields)
-                    if(isa(obj.(chosen_fields{i}),'Parameter'))
-                        
-                        notify(obj.(chosen_fields{i}),'Parameter_Set');
-                    end
+            end
+            for i=1:length(chosen_fields)
+                if(isa(obj.(chosen_fields{i}),'Parameter'))
+                    
+                    notify(obj.(chosen_fields{i}),'Parameter_Set');
                 end
-         end
+            end
+        end
     end
     
- 
-  
+    
+    
 end
 

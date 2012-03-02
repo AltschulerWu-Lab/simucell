@@ -16,18 +16,21 @@ for i=1:length(propertyList)
           
     elseif(objectToSave.(propertyList{i}).type==SimuCell_Class_Type.file_name)
       childrenElement=get(parametersFieldList{paramNr},'Children');
-      filepath=[];
+      filePath=[];
       for j=1:length(childrenElement)
         filePath=get(childrenElement(j),'String');
         if(isMatFile(filePath))
           break;
         else
-          filepath=[];
+          filePath=[];
         end
       end
-      if isempty(filepath)
+      if isempty(filePath)
         errordlg('The selected file is not an SLML file. Please make sure you selected a SLML file!');
         return;
+      else
+        propertyValue=filePath;
+        
       end
         
     elseif(objectToSave.(propertyList{i}).type==SimuCell_Class_Type.list)

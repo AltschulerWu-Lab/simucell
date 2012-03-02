@@ -37,17 +37,30 @@ classdef Parameter <hgsetget
         end
         
         function set.value(obj,val)
+            
+            
             if(obj.type==SimuCell_Class_Type.number)
                 if(val<obj.allowed_values(1)|| val>obj.allowed_values(2))
                     error('Value is outside allowed range');
                 end
-            end
-            if(obj.type==SimuCell_Class_Type.file_name)
+            elseif(obj.type==SimuCell_Class_Type.file_name)
                 if(~isa(obj.allowed_values,'function_handle'))
                     error('allowed_values not a function_handle');
                 end
                 if(~obj.allowed_values(val))
                     error('Not a valid file type');
+                end
+            elseif(obj.type==SimuCell_Class_Type.simucell_marker_model)
+                if(~isa(val,'Marker_Operation_Queue'))
+                     error('Not a valid marker');
+                end
+            elseif(obj.type==SimuCell_Class_Type.simucell_shape_model)    
+                if(~isa(val,'SimuCell_Object'))
+                     error('Not a valid shape');
+                end
+            elseif(obj.type==SimuCell_Class_Type.list)
+                if(~ismember(val,obj.allowed_values))
+                   error('Not a valid list option'); 
                 end
             end
             obj.value_private=val;
