@@ -9,15 +9,15 @@ subpop{1}.placement=Random_Placement();
 % set(subpop{1}.placement,'boundary',100,'cluster_width',100);
 
 
-% add_object(subpop{1},'nucleus');
-% subpop{1}.objects.nucleus.model=Elliptical_nucleus_model;
-% set(subpop{1}.objects.nucleus.model,'radius',15,'eccentricity',0.7);
-
 add_object(subpop{1},'nucleus');
-subpop{1}.objects.nucleus.model=SLML_nucleus_model;
+subpop{1}.objects.nucleus.model=Elliptical_nucleus_model;
+set(subpop{1}.objects.nucleus.model,'radius',15,'eccentricity',0.7);
+
+%add_object(subpop{1},'nucleus');
+% subpop{1}.objects.nucleus.model=SLML_nucleus_model;
 %set(subpop{1}.objects.nucleus.model,'radius',30);
-set(subpop{1}.objects.nucleus.model,'radius',30,...
-    'filename','/home/srajaram/Work/Code/SimuCell/Code/src/test/test_slml/endosome.mat');
+%set(subpop{1}.objects.nucleus.model,'radius',30,...
+%    'filename','/home/srajaram/Work/Code/SimuCell/Code/src/test/test_slml/endosome.mat');
 
 add_object(subpop{1},'cytoplasm');
 subpop{1}.objects.cytoplasm.model=Elliptical_cytoplasm_model;

@@ -29,16 +29,18 @@ classdef SimuCell_Model <hgsetget
             chosen_fields=fieldnames(p.Unmatched);
             
             for i=1:length(chosen_fields)
-                if(isprop(obj,chosen_fields{i}))
-                    if(isa(obj.(chosen_fields{i}),'Parameter'))
-                        obj.(chosen_fields{i}).value=p.Unmatched.(chosen_fields{i});
-                        
-                    else
-                        obj.(chosen_fields{i})=p.Unmatched.(chosen_fields{i});
-                    end
+              %Following works only from Matlab version 2011a, not before
+              %if(isprop(obj,chosen_fields{i}))
+              %So replaced by:
+              if ~isempty(strcmp(chosen_fields{i}, properties(obj)))
+                if(isa(obj.(chosen_fields{i}),'Parameter'))
+                  obj.(chosen_fields{i}).value=p.Unmatched.(chosen_fields{i});
                 else
-                    error([chosen_fields{i} ' is not a valid property']);
+                  obj.(chosen_fields{i})=p.Unmatched.(chosen_fields{i});
                 end
+              else
+                error([chosen_fields{i} ' is not a valid property']);
+              end
             end
             for i=1:length(chosen_fields)
                 if(isa(obj.(chosen_fields{i}),'Parameter'))

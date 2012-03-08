@@ -61,7 +61,7 @@ markerHandles.subpop = varargin{1};
 markerHandles.markerProperty = varargin{2};
 markerHandles.markerName=varargin{3};
 markerHandles.objectName=varargin{4};
-markerHandles.subpopNr=varargin{4};
+markerHandles.subpopNr=varargin{5};
 markerHandles.temp_operation_queue=markerHandles.markerProperty.operations;
 
 setappdata(0,'markerHandles',markerHandles);
@@ -75,6 +75,20 @@ set(handles.operation_type_popupmenu,'String',fileList);
 set(handles.objectCB,'String',{markerHandles.objectName});
 updateOperationList(hObject, eventdata, handles);
 operationListbox_Callback(hObject, eventdata, handles);
+set(handles.markerLabel,'String',markerHandles.markerName);
+set(handles.subpopNrLabel,'String',num2str(markerHandles.subpopNr));
+mc = ?Colors;
+nrColor = length(mc.EnumeratedValues);
+for i=1:nrColor
+  colorList{1,i}=mc.EnumeratedValues{i}.Name;
+end
+markerColor=markerHandles.subpop.markers.(markerHandles.markerName).color.char;
+idxCell=strfind(colorList,markerColor);
+isFound = ~cellfun('isempty', idxCell); % Returns "0" if idxCell is empty and a "1" otherwise
+foundIdx = find(isFound);
+set(handles.colorCB,'String',colorList);
+set(handles.colorCB,'Value',foundIdx);
+
 % Update handles structure
 guidata(hObject, handles);
 uiwait(handles.figure1);
@@ -91,6 +105,9 @@ function varargout = define_marker_OutputFcn(hObject, eventdata, handles)
 markerHandles=getappdata(0,'markerHandles');
 varargout{1}=markerHandles.markerProperty;
 varargout{2}=markerHandles.markerName;
+colorList=get(handles.colorCB,'String');
+colorIndex=get(handles.colorCB,'Value');
+varargout{3}=colorList{colorIndex};
 if(~isempty(handles))
   delete(handles.figure1);
 end

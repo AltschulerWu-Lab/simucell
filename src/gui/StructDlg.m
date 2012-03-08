@@ -210,7 +210,7 @@ if (isstruct(struct_def)) % Init
       'Visible',             visible,...
       'DeleteFcn',           'StructDlg;', ...
       'CloseRequestFcn',     'StructDlg(''cancel'');',...
-      'WindowStyle',         'modal'); % Change to noraml when debugging
+      'WindowStyle',         'normal'); % Change to noraml when debugging
    
 
    lbl = zeros(1,length(fnames_lbl));
@@ -549,7 +549,7 @@ for i = 1:length(fnames)
 
    elseif (iscell(val))
       % Special requests
-      if ((length(val) == 1) & ischar(val{1}))
+      if ((length(val) == 1) & ischar(val{1}) && ~iscell(val))
          if (~isempty(strmatch('uigetfile',val{1})) | ...
                ~isempty(strmatch('uiputfile',val{1})) | ...
                ~isempty(strmatch('uigetdir',val{1})) )

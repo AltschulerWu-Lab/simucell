@@ -276,6 +276,9 @@ classdef Subpopulation <handle
         function add_object(obj,obj_name)
             obj.objects.addprop(obj_name);
             obj.objects.(obj_name)=SimuCell_Object();
+            %TODO
+            %Get Marker list and add this new object if not exist to all
+            %this marker
         end
         
         function delete_shape(obj,shape_name)
