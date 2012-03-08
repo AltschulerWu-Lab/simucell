@@ -9,12 +9,16 @@ classdef Overlap_Specification <handle
     
     methods
         function obj=Overlap_Specification()
-            obj.overlap_lists=cell(0);
+            obj.overlap_lists={{}};
             obj.overlap_values=[];
         end
         function AddOverlap(obj,object_list,overlap_value)
             obj.overlap_values=[obj.overlap_values(:) overlap_value];
-            obj.overlap_lists=[obj.overlap_lists {object_list}];
+            if(~isempty(obj.overlap_lists{end}))
+              obj.overlap_lists=[obj.overlap_lists {object_list}];
+            else
+              obj.overlap_lists={object_list};
+            end
         end
         
         

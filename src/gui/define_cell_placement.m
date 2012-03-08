@@ -102,11 +102,11 @@ currentPlacement=cellPlacementHandles.temp_placement_list{currentSubPopNr};
 if(~isempty(currentPlacement));
   currentClassName=class(currentPlacement);
   selectedPlacement=currentClassName;
-end
-if(~isempty(selectedPlacement))
-   valueSelected=find(strcmp(fileList, [selectedPlacement '.m']));
-   %Set the Placement Type
-   set(handles.placementCB,'Value',valueSelected);
+  if(~isempty(selectedPlacement))
+     valueSelected=find(strcmp(fileList, [selectedPlacement '.m']));
+     %Set the Placement Type
+     set(handles.placementCB,'Value',valueSelected);
+  end
 end
 
 % --- Outputs from this function are returned to the command line.
@@ -184,7 +184,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
+%TODO: USE THE GENERIC FUNCTION saveObjectFromParameters INSTEAD
 % --- Executes on button press in saveButton.
 function saveButton_Callback(hObject, eventdata, handles)
 % hObject    handle to saveButton (see GCBO)
@@ -269,7 +269,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
+%TODO USE THE GENERIC setParametersPanel function INSTEAD
 function setParametersPanel(hObject,handles,placementObj)
 propertyList = properties(placementObj);
 cellPlacementHandles=getappdata(0,'cellPlacementHandles');

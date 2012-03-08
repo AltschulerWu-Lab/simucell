@@ -193,10 +193,10 @@ objectDescriptionHandle=handles.descriptionText;
 handleName='shapeHandles';
 allowed_types=get(     handles.shapeModelCb,'String');
 operationTypePopupMenu=handles.shapeModelCb;
-artifactHandles.parametersLabel=[];
-artifactHandles.parametersField=[];
-parametersLabelList=artifactHandles.parametersLabel;
-parametersFieldList=artifactHandles.parametersField;
+shapeHandles.parametersLabel=[];
+shapeHandles.parametersField=[];
+parametersLabelList=shapeHandles.parametersLabel;
+parametersFieldList=shapeHandles.parametersField;
 parentPanel=handles.mainPanel;
 subpopulation=shapeHandles.subpop;
 %Bottom:290px
