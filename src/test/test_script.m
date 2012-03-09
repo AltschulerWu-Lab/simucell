@@ -166,12 +166,17 @@ set(subpop{2}.compositing,'container_weight',0);
 
 
 overlap=Overlap_Specification;
+overlap.AddOverlap({subpop{1}.objects.cytoplasm},0.3);
 overlap.AddOverlap({subpop{1}.objects.cytoplasm,subpop{2}.objects.cytoplasm},0.05);
+
 
 
 op=Out_Of_Focus_Cells();
 set(op,'fraction_blurred',0.05,'blur_radius',5);
 subpop{1}.add_cell_artifact(op);
+
+op=Out_Of_Focus_Cells();
+set(op,'fraction_blurred',0.05,'blur_radius',5);
 subpop{2}.add_cell_artifact(op);
 
 % op=Cell_Staining_Artifacts();
@@ -181,6 +186,8 @@ subpop{2}.add_cell_artifact(op);
 % set(op,'fraction_bleached',0.05,'bleaching_multiplier',50,'fraction_unstained',0.05);
 % subpop{2}.add_cell_artifact(op);
 % 
+
+
 
 simucell_data.image_artifacts=cell(0);
 op=Add_Basal_Brightness();
