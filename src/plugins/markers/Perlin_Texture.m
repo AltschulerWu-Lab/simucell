@@ -94,7 +94,8 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
             
             [alpha,~,exitflag]=fzero(@(a) norm_fn(a,p,full(z),full(m)),sum(p.*full(z))-m);
             if(exitflag~=1)
-                alpha= full(m)/sum(p.*full(z));
+                alpha=sum(p.*full(z))-m;
+                %alpha= full(m)/sum(p.*full(z));
                 if(isnan(m)||isinf(m))
                     alpha=1;
                 end

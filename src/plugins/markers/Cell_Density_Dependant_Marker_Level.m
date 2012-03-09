@@ -7,12 +7,14 @@ classdef Cell_Density_Dependant_Marker_Level <SimuCell_Marker_Operation
         falloff_type
         falloff_coefficient
         increasing_or_decreasing
+        amplitude
         description='Scale marker level wrt distance  other shape';
     end
     
     methods
         function obj=Cell_Density_Dependant_Marker_Level()
-             
+             obj.amplitude=Parameter('Amplitude',0.1,SimuCell_Class_Type.number,...
+                [0,Inf],'Max Level that Marker could reach');
              obj.falloff_coefficient=Parameter('Fall Off Radius',0.1,SimuCell_Class_Type.number,...
                 [0,Inf],'Parameter controlling how fast the marker level drops (0- flat, 1- characteristic falloff, Inf- Instantaneous falloff)');
              obj.falloff_type=Parameter('Functional Form Of Dependance','Gaussian',SimuCell_Class_Type.list,...
@@ -31,7 +33,7 @@ classdef Cell_Density_Dependant_Marker_Level <SimuCell_Marker_Operation
             z=bwdist(full(other_cells_mask));
             radius=sqrt(xres^2+yres^2);   
             if(strcmp(obj.increasing_or_decreasing.value,'Increasing'))
-                z=radius-z;
+                z=max(radius-z,0);
             end
                 
             mean_val=mean(z(current_shape_mask));          
@@ -40,9 +42,9 @@ classdef Cell_Density_Dependant_Marker_Level <SimuCell_Marker_Operation
                   val=max(1-obj.falloff_coefficient.value*mean_val/radius,0);  
               case 'Gaussian'    
                   
-                 val=exp(-obj.falloff_coefficient.value*mean_val.^2/((radius)^2));
+                 val=obj.amplitude.value*exp(-obj.falloff_coefficient.value*mean_val.^2/((radius)^2));
               case 'Exponential'
-                  val=exp(-obj.falloff_coefficient.value*mean_val/radius);
+                  val=obj.amplitude.value*exp(-obj.falloff_coefficient.value*mean_val/radius);
               
             end
             

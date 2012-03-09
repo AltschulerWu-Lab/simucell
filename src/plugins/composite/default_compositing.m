@@ -26,6 +26,9 @@ classdef default_compositing<SimuCell_compositing_model
                       object_compositing_matrix(obj1,obj2)=obj.container_weight.value;
                       object_compositing_matrix(obj2,obj1)=1-obj.container_weight.value;
                    end
+                   if(obj1==obj2)
+                       object_compositing_matrix(obj2,obj1)=1;
+                   end
                end
             end
             
