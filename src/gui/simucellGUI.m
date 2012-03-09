@@ -22,7 +22,7 @@ function varargout = simucellGUI(varargin)
 
 % Edit the above text to modify the response to help simucellGUI
 
-% Last Modified by GUIDE v2.5 06-Mar-2012 17:16:24
+% Last Modified by GUIDE v2.5 08-Mar-2012 15:06:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -950,6 +950,10 @@ else
   subpopSelected=1;
 end
 subpop=myhandles.simucell_data.subpopulations;
+if(~isfield(myhandles.simucell_data,'image_artifacts'))
+  myhandles.simucell_data.image_artifacts=cell(0);
+  setappdata(0,'myhandles',myhandles);
+end
 image_artifact_list=define_artifact(subpop,subpopSelected,myhandles.simucell_data.image_artifacts);
 myhandles.simucell_data.image_artifacts=image_artifact_list;
 setappdata(0,'myhandles',myhandles);
@@ -964,13 +968,14 @@ function placementButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 myhandles=getappdata(0,'myhandles');
-tableData = get(handles.uitable1,'data');
-selectedCellPosition = handles.selectedCells;
-if(~isempty(selectedCellPosition))
-  subpopSelected=tableData{selectedCellPosition(1,1),1};
-else
-  subpopSelected=1;
-end
+
+% tableData = get(handles.uitable1,'data');
+% selectedCellPosition = handles.selectedCells;
+% if(~isempty(selectedCellPosition))
+%   subpopSelected=tableData{selectedCellPosition(1,1),1};
+% else
+%   subpopSelected=1;
+% end
 %currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected);
 %[simucell_data] = define_placement(myhandles.simucell_data, subpopSelected);
 % [overlap_lists overlap_values placement] =...
@@ -978,6 +983,11 @@ end
 %   myhandles.simucell_data.overlap.overlap_values,...
 %   myhandles.simucell_data.subpopulations{subpopSelected}.placement,...
 %   subpopSelected, myhandles.simucell_data);
+
+if ~isfield(myhandles.simucell_data,'overlap')
+  myhandles.simucell_data.overlap=Overlap_Specification;
+end
+
 [overlap_lists overlap_values] =...
   define_placement(myhandles.simucell_data.overlap.overlap_lists,...
   myhandles.simucell_data.overlap.overlap_values, myhandles.simucell_data);
@@ -985,16 +995,27 @@ end
 if (~isempty(overlap_lists)|| ~isempty(overlap_values))
   myhandles.simucell_data.overlap.overlap_lists=overlap_lists;
   myhandles.simucell_data.overlap.overlap_values=overlap_values;  
-  myhandles.simucell_data.subpopulations{subpopSelected}.placement=placement;  
+%   myhandles.simucell_data.subpopulations{subpopSelected}.placement=placement;  
   setappdata(0,'myhandles',myhandles);
 end
 
-% --- Executes on button press in advancedButton.
-function advancedButton_Callback(hObject, eventdata, handles)
-% hObject    handle to advancedButton (see GCBO)
+% --- Executes on button press in compositingButton.
+function compositingButton_Callback(hObject, eventdata, handles)
+% hObject    handle to compositingButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+myhandles=getappdata(0,'myhandles');
+tableData = get(handles.uitable1,'data');
+selectedCellPosition = handles.selectedCells;
+if(~isempty(selectedCellPosition))
+  subpopSelected=tableData{selectedCellPosition(1,1),1};
+else
+  subpopSelected=1;
+end
+subpopulations =...
+  define_compositing(myhandles.simucell_data.subpopulations,...
+  subpopSelected);
+myhandles.simucell_data.subpopulations=subpopulations;
 
 
 % --- Executes on button press in cellPlacementButton.
@@ -1027,3 +1048,12 @@ function loadButton_Callback(hObject, eventdata, handles)
 % hObject    handle to loadButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+[filename,pathname]=uigetfile({'*.mat;','Simucell Parmameters'},'Load simucell parameters');
+load([pathname filename],'simucell_data');
+myhandles=getappdata(0,'myhandles');
+myhandles.simucell_data=simucell_data;
+setappdata(0,'myhandles',myhandles);
+populateTable(hObject,handles);
+myhandles=getappdata(0,'myhandles');
+myhandles.simucell_data=populateImageParameters(handles,myhandles.simucell_data);
+setappdata(0,'myhandles',myhandles);

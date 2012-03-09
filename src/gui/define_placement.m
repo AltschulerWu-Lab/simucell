@@ -22,7 +22,7 @@ function varargout = define_placement(varargin)
 
 % Edit the above text to modify the response to help define_placement
 
-% Last Modified by GUIDE v2.5 03-Feb-2012 16:30:58
+% Last Modified by GUIDE v2.5 08-Mar-2012 17:02:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,9 +78,13 @@ setappdata(0,'placementHandles',placementHandles);
 % populateCellPlacementType(subpop_nr,handles);
 %Populate the Overlap list
 overlapListSize=length(placementHandles.simucell_data.overlap.overlap_lists);
-set(handles.overlapList,'String',num2cell(1:overlapListSize),'Value',1);
+if(overlapListSize==0)
+  overlapListSize=1;
+end
+set(handles.overlapListCB,'String',num2cell(1:overlapListSize),'Value',1);
 %Populate the Overlap Rule Object list of choice (do it once only)
 index=1;
+objectPopList=[];
 for j=1:length(placementHandles.simucell_data.subpopulations)
   objectList=properties(placementHandles.simucell_data.subpopulations{j}.objects);
   for k=1:length(objectList)
@@ -88,9 +92,11 @@ for j=1:length(placementHandles.simucell_data.subpopulations)
     index=index+1;
   end
 end
-set(handles.objectListCB,'String',objectPopList);
-%Populate the Overlap rule list parameters
-populateCellOverlapParam(1,handles);
+if(~isempty(objectPopList))
+  set(handles.objectListCB,'String',objectPopList);
+  %Populate the Overlap rule list parameters
+  populateCellOverlapParam(1,handles);
+end
 guidata(hObject, handles);
 %Wait until GUI get close 
 uiwait(handles.figure1);
@@ -107,13 +113,15 @@ if(isfield(placementHandles,'overlap_lists'))
  %Set Cell Overlapping object list
  objectSelectedList=[];
  index=1;
- for i=1:length(placementHandles.overlap_lists{overlapRuleNr})
-   for j=1:length(placementHandles.simucell_data.subpopulations)
-    objectName=placementHandles.simucell_data.subpopulations{j}.find_shape_name(placementHandles.overlap_lists{overlapRuleNr}{i});
-    if(~isempty(objectName))
-      objectSelectedList{index}=['subpop#' num2str(j) ' - ' objectName];
-      index=index+1;
-    end
+ if length(placementHandles.overlap_lists)>0
+   for i=1:length(placementHandles.overlap_lists{overlapRuleNr})
+     for j=1:length(placementHandles.simucell_data.subpopulations)
+      objectName=placementHandles.simucell_data.subpopulations{j}.find_shape_name(placementHandles.overlap_lists{overlapRuleNr}{i});
+      if(~isempty(objectName))
+        objectSelectedList{index}=['subpop#' num2str(j) ' - ' objectName];
+        index=index+1;
+      end
+     end
    end
  end
  set(handles.objectListBox,'String',objectSelectedList,'Value',1);
@@ -146,7 +154,7 @@ function varargout = define_placement_OutputFcn(hObject, eventdata, handles)
 placementHandles=getappdata(0,'placementHandles');
 varargout{1}=placementHandles.overlap_lists;
 varargout{2}=placementHandles.overlap_values;
-varargout{3}=placementHandles.placement;
+%varargout{3}=placementHandles.placement;
 if(~isempty(handles))
   delete(handles.figure1);
 end
@@ -196,7 +204,7 @@ function addObjectButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %Get the overlap rule nr selected
 placementHandles=getappdata(0,'placementHandles');
-overlapRuleNr=get(handles.overlapList,'Value');
+overlapRuleNr=get(handles.overlapListCB,'Value');
 
 selectedObjectList=get(handles.objectListCB,'String');
 selectedObjectValue=get(handles.objectListCB,'Value');
@@ -214,11 +222,15 @@ objectName=tokenname.objectName;
 subpopNr=str2double(tokenname.subpopNr);
 %Get the selected object to add
 addedObject=placementHandles.simucell_data.subpopulations{subpopNr}.objects.(objectName);
-%Get the number of object present in the list
-nrObjectInList=length(placementHandles.overlap_lists{overlapRuleNr});
-%Add the object to the overlap list
-%placementHandles.simucell_data.overlap.overlap_lists{overlapRuleNr}{nrObjectInList+1}=addedObject;
-placementHandles.overlap_lists{overlapRuleNr}{nrObjectInList+1}=addedObject;
+if(~isempty(placementHandles.overlap_lists))
+  %Get the number of object present in the list
+  nrObjectInList=length(placementHandles.overlap_lists{overlapRuleNr});
+  %Add the object to the overlap list
+  %placementHandles.simucell_data.overlap.overlap_lists{overlapRuleNr}{nrObjectInList+1}=addedObject;
+  placementHandles.overlap_lists{overlapRuleNr}{nrObjectInList+1}=addedObject;
+else
+  placementHandles.overlap_lists{overlapRuleNr}{1}=addedObject;
+end
 setappdata(0,'placementHandles',placementHandles);
 %Re-populate the list of overlap rule for the selected rule list
 populateCellOverlapParam(overlapRuleNr,handles);
@@ -253,7 +265,7 @@ function removeObjectButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 placementHandles=getappdata(0,'placementHandles');
-overlapRuleNr=get(handles.overlapList,'Value');
+overlapRuleNr=get(handles.overlapListCB,'Value');
 selectedObjectValue=get(handles.objectListBox,'Value');
 placementHandles.overlap_lists{overlapRuleNr}=...
   removeFromCellArray(placementHandles.overlap_lists{overlapRuleNr},...
@@ -370,22 +382,22 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on selection change in overlapList.
-function overlapList_Callback(hObject, eventdata, handles)
+% --- Executes on selection change in overlapListCB.
+function overlapListCB_Callback(hObject, eventdata, handles)
 
-% hObject    handle to overlapList (see GCBO)
+% hObject    handle to overlapListCB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns overlapList contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from overlapList
-overlapRuleNr=get(handles.overlapList,'Value');
+% Hints: contents = cellstr(get(hObject,'String')) returns overlapListCB contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from overlapListCB
+overlapRuleNr=get(handles.overlapListCB,'Value');
 populateCellOverlapParam(overlapRuleNr,handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function overlapList_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to overlapList (see GCBO)
+function overlapListCB_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to overlapListCB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -394,3 +406,18 @@ function overlapList_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in savePlacement.
+function savePlacement_Callback(hObject, eventdata, handles)
+placementHandles=getappdata(0,'placementHandles');
+
+overlapRuleNr=get(handles.overlapListCB,'Value');
+
+
+
+placementType=get(handles.placementCB,'String');
+placementHandles.placement=eval(placementType{1});
+%Set the Cell placement type for the selected subpopulation
+populateCellPlacementType(subpop_nr,handles);
+setappdata(0,'placementHandles',placementHandles);
