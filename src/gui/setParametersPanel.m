@@ -4,7 +4,11 @@ function [parametersLabelList,parametersFieldList]=setParametersPanel(...
   operationTypePopupMenu,parametersLabelList,parametersFieldList,...
   parentPanel,subpopulation)
 
-set(objectDescriptionHandle,'String',operationObj.description);
+if(isempty(operationObj))
+  set(objectDescriptionHandle,'String','Not defined Yet');
+else
+  set(objectDescriptionHandle,'String',operationObj.description);
+end
 propertyList = properties(operationObj);
 myHandle=getappdata(0,handleName);
 %Clear the all parameters

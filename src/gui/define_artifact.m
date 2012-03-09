@@ -89,7 +89,11 @@ set(handles.cellArtifactOperationTypePopupMenu,'String',fileList);
 populateCellArtifactOperationListbox(hObject,handles);
 %Populate the cellArtifactOperation parameters corresponding to the selected
 %operation
-cellArtifactOperationObj=artifactHandles.temp_cell_artifact_list{subpop_nr}{1};
+if(isempty(artifactHandles.temp_cell_artifact_list{subpop_nr}))
+  cellArtifactOperationObj=[];
+else
+  cellArtifactOperationObj=artifactHandles.temp_cell_artifact_list{subpop_nr}{1};
+end
 %Set the setParameterPanel function parameters
 operationObj=cellArtifactOperationObj;
 setCellArtifactParam(hObject,handles,operationObj,artifactHandles)
@@ -104,7 +108,11 @@ set(handles.imageArtifactOperationTypePopupMenu,'String',fileList);
 populateImageArtifactOperationListbox(hObject,handles);
 %Populate the cellArtifactOperation parameters corresponding to the selected
 %operation
-imageArtifactOperationObj=artifactHandles.temp_image_artifact_list{1};
+if(isempty(artifactHandles.temp_cell_artifact_list{subpop_nr}))
+  imageArtifactOperationObj=[];
+else
+  imageArtifactOperationObj=artifactHandles.temp_image_artifact_list{1};
+end
 setappdata(0,'artifactHandles',artifactHandles);
 setImageArtifactParam(hObject,handles,imageArtifactOperationObj,...
   artifactHandles);
@@ -297,6 +305,7 @@ setappdata(0,'artifactHandles',artifactHandles);
 populateCellArtifactOperationListbox(hObject, handles);
 set(handles.cellArtifactOperationListbox,'Value',...
   max(get(handles.cellArtifactOperationListbox,'Value')-1,1));
+setCellArtifactParam(hObject,handles,[],artifactHandles);
 guidata(hObject, handles);
 cellArtifactOperationListbox_Callback(hObject, eventdata, handles);
 
@@ -452,6 +461,7 @@ artifactHandles=getappdata(0,'artifactHandles');
 selectedValue=get(handles.imageArtifactOperationListbox,'Value');
 if(isempty(artifactHandles.temp_image_artifact_list))
   hideImageArtifactOperationParameterPanel(handles,'off');
+  setImageArtifactParam(hObject,handles,[],artifactHandles);
   return;
 else  
   hideImageArtifactOperationParameterPanel(handles,'on');
@@ -463,7 +473,7 @@ guidata(hObject, handles);
 
 
 function hideImageArtifactOperationParameterPanel(handles,isVisible)
-set(handles.text5,'Visible',isVisible);
+set(handles.text8,'Visible',isVisible);
 set(handles.imageArtifactOperationTypePopupMenu,'Visible',isVisible);
 set(handles.imageArtifactSaveButton,'Visible',isVisible);
 set(handles.imageArtifactViewButton,'Visible',isVisible);
