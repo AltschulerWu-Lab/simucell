@@ -1,19 +1,26 @@
 classdef SimuCell_Object_Model <SimuCell_Model
-    %UNTITLED2 Summary of this class goes here
-    %   Detailed explanation goes here
-    
+    %SIMUCELL_object_model   The template class from which all plugins for
+    % defining object models (shapes of cells, nuclei) are defined.
+    % 
+    %SIMUCELL_OBJECT_MODEL methods:
+    %       make_shape     - A function that returns a binary mask(image_height,image_width) of the shape of the object being drawn.
+    %       prerendered_object_list - A function that returns a cell array
+    %       containing all the other objects (nuclei, cells etc) that are
+    %       required by the make_shape function. Each element is  of type
+    %       SimuCell_Object. This function is used internally by the engine to
+    %       determine the order in which objects should be drawn.
+    %
+    %   See also  SimuCell_Model,
+    %   Centered_nucleus_model, SLML_nucleus_model
+    %
+    %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab  
     properties (Abstract)
-%         number_of_parameters
-%         default_values
-%         description
-%         parameters
+
          
     end
     
     methods (Abstract)
-%         function obj= SimuCell_Object(parameters)
-%             obj.parameters=parameters;
-%         end
+
 
         make_shape(numeric);
         obj_list=prerendered_object_list(SimuCell_Object);

@@ -1,22 +1,22 @@
 classdef SimuCell_imageArtifact_Operation <SimuCell_Model
-    %UNTITLED2 Summary of this class goes here
-    %   Detailed explanation goes here
-    
+    %SIMUCELL_IMAGEARTIFACT_OPERATION   The template class from which all plugins for
+    % adding artifacts to an image are derived.
+    % 
+    %SIMUCELL_IMAGEARTIFACT_OPERATION methods:
+    %       Apply     - A function that returns a a cell array(#colors,1).
+    %       Each element of the cell is a matrix(image_height,image_width). 
+    %       The value of each element of this matrix is the pixel intensity of
+    %       all the cells(biological) for one color channel.
+    %
+    %   See also  SimuCell_Model,
+    %   Add_Basal_Brightness, Linear_Image_Gradient
+    %
+    %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab    
     properties
-%         number_of_parameters
-%         default_values
-%         description
-%         parameters
-         
     end
     
     methods (Abstract)
-%         function obj= SimuCell_Object(parameters)
-%             obj.parameters=parameters;
-%         end
-
         Apply(numeric);
-        
     end
     
 end

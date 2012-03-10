@@ -89,6 +89,7 @@ setappdata(0,'myhandles',myhandles);
 % uiwait(handles.figure1);
 
 
+
 % --- Outputs from this function are returned to the command line.
 function varargout = simucellGUI_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);

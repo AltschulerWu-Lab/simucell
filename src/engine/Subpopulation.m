@@ -1,7 +1,17 @@
 classdef Subpopulation <handle
-    %Basic subpopulation definition class
-    %Contains object as well as marker information
-    
+    %SUBPOPULATION   Different sub-populations (cell-types) are described
+    %by this class. It is the primary class that needs to be defined by the
+    %user.
+    %Subpopulation properties:
+    %
+    %Subpopulation methods:
+    %
+    %
+    %   See also  SimuCell_Model,
+    %   Constant_dependant_marker_level_operation,Perlin_texture
+    %   
+    %
+    %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab  
     properties
         objects
         markers

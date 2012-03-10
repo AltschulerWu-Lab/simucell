@@ -1,7 +1,23 @@
 classdef SimuCell_Model <hgsetget
-    % Template abstract class for all simucell objects, so everything can
-    % be be derived from this class
-    
+%SIMUCELL_MODEL   Template abstract class for all simucell models
+%   Template abstract class for all simucell models, so everything can
+%   be be derived from this class.
+%   property set and get interface.  hgsetget is a subclass of handle, so 
+%   any classes derived from hgsetget are handle classes.  
+%
+%   classdef MyClass < SimuCell_Model makes MyClass a subclass of SimuCell_Model.
+%
+%   Classes that are derived from hgsetget inherit property description and 
+%   do inherit methods SET that perform a check to see if the value is a
+%   PARAMETER .
+%
+%   SIMUCELL_MODEL methods:
+%       SET      - Set MATLAB object property values performing a check to 
+%       see if the value is a PARAMETER .
+%
+%   See also hgsetget
+ 
+%   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab    
     properties (Abstract)
         description
     end
