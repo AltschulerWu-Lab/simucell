@@ -7,7 +7,7 @@ classdef Centered_nucleus_model <SimuCell_Object_Model
         eccentricity;
         centered_around;
         randomness;
-        description='An Elliptical Model of Nucleus';
+        description='A Model That Places An Elliptical Nucleus at The Center OF Anoother Shape (usually Cytoplasm)';
         
     end
     
@@ -15,9 +15,9 @@ classdef Centered_nucleus_model <SimuCell_Object_Model
     
     methods
         function obj=Centered_nucleus_model()
-            obj.radius=Parameter('Cell Radius',30,SimuCell_Class_Type.number,...
-                [0,100],'Average Cell Radius');
-            obj.eccentricity=Parameter('Cell Eccentricity',1,SimuCell_Class_Type.number,...
+            obj.radius=Parameter('Nuclear Radius',30,SimuCell_Class_Type.number,...
+                [0,100],'Average Nuclear Radius');
+            obj.eccentricity=Parameter('Nuclear Eccentricity',0.5,SimuCell_Class_Type.number,...
                 [0,1],'Measure of Non-Uniformity: 0=spherical, 1=straight line');
             obj.randomness=Parameter('Extent of Variation',0.05,SimuCell_Class_Type.number,...
                 [0,1],'Measure of Non-Uniformity: 0=elliptical,1= random');

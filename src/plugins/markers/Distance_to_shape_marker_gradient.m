@@ -5,7 +5,7 @@ classdef Distance_to_shape_marker_gradient <SimuCell_Marker_Operation
     properties
         distance_to
         falloff_type
-        falloff_coefficient
+        falloff_radius
         increasing_or_decreasing
         description='Scale marker level wrt distance  other shape';
     end
@@ -14,8 +14,8 @@ classdef Distance_to_shape_marker_gradient <SimuCell_Marker_Operation
         function obj=Distance_to_shape_marker_gradient()
              obj.distance_to=Parameter('Distance To',0,SimuCell_Class_Type.simucell_shape_model,...
                 [],'Marker levels are scaled based on distance to this shape');
-             obj.falloff_coefficient=Parameter('Fall Off Radius',0.1,SimuCell_Class_Type.number,...
-                [0,Inf],'Parameter controlling how fast the marker level drops (0- flat, 1- characteristic falloff, Inf- Instantaneous falloff)');
+             obj.falloff_radius=Parameter('Fall Off Radius',10,SimuCell_Class_Type.number,...
+                [0,Inf],'Distance over which intensity falls off characteristically (e.g. 1/e)');
              obj.falloff_type=Parameter('Intensity FallOff Type','Gaussian',SimuCell_Class_Type.list,...
                 {'Linear','Gaussian','Exponential'},'Functional form to calculate level fall-off');
              obj.increasing_or_decreasing=Parameter('Increasing Or Decreasing','Increasing',SimuCell_Class_Type.list,...
@@ -30,31 +30,35 @@ classdef Distance_to_shape_marker_gradient <SimuCell_Marker_Operation
              
             distance_to_mask=needed_shapes{1};
             selected_region_mask=(current_shape_mask|distance_to_mask);
+             se=strel('disk',2,8);
+            [row,col]=find(imdilate(full(selected_region_mask),se));
             
-            [row,col]=find(selected_region_mask);
+            %[row,col]=find(selected_region_mask);
             selected_region=current_marker(min(row):max(row),min(col):max(col));
             selected_current_shape_mask=current_shape_mask(min(row):max(row),min(col):max(col));
             selected_distance_to_mask=distance_to_mask(min(row):max(row),min(col):max(col));
             
             
             z=bwdist(full(selected_distance_to_mask));
-            radius=max(abs(z(selected_current_shape_mask)));   
-            if(strcmp(obj.increasing_or_decreasing.value,'Increasing'))
-                z=radius-z;
-            end
+            
+            
                 
                       
             switch obj.falloff_type.value
                  case 'Linear'
-                  z=max(1-obj.falloff_coefficient.value*z/radius,0);  
+                      z=max(min(1-z/obj.falloff_radius.value,1),0);  
+                  %z=max(1-obj.falloff_coefficient.value*z/radius,0);  
               case 'Gaussian'    
-                  
-                  z=exp(-obj.falloff_coefficient.value*z.^2/((radius)^2));
+                  z=exp(-(z/obj.falloff_radius.value).^2); 
+                  %z=exp(-obj.falloff_coefficient.value*z.^2/((radius)^2));
               case 'Exponential'
-                  z=exp(-obj.falloff_coefficient.value*z/radius);
+                  z=exp(-(z/obj.falloff_radius.value));
+                  %z=exp(-obj.falloff_coefficient.value*z/radius);
               
             end
-            
+           if(strcmp(obj.increasing_or_decreasing.value,'Increasing'))
+                z=1-z;
+            end 
            
             selected_region=max(min(full(selected_region).*z,1),0);
             

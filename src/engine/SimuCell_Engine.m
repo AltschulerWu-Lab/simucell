@@ -1,6 +1,8 @@
 function [combined_channel_image,object_structure,full_result,marker_structure,combined_cell_images]=SimuCell_Engine(simucell_params)
 
-
+if(~isfield(simucell_params,'notifier'))
+    simucell_params.notifier=SimuCell_Engine_Notifier;
+end
 number_of_subpopulations=length(simucell_params.subpopulations);
 
 %Initial checks to see if necessary items have been defined
@@ -79,18 +81,35 @@ for cell_number=1:simucell_params.number_of_cells
         
         iteration_counter=iteration_counter+1;
         if(iteration_counter>100)
-            
-            error('cannot fit in any more cells');
+            simucell_params.notifier.message=['Cannot Fit Any More Cells: Rendering With ' num2str(cell_number-1) 'cells'];
+            disp(simucell_params.notifier.message);
+            notify(simucell_params.notifier,'warning');
+            refresh;
+            number_of_cells=cell_number-1;%What if zero?
+            subpopulation_number_of_cell=subpopulation_number_of_cell(1:number_of_cells);
+            cell_masks=cell_masks(1:number_of_cells);
+            object_structure=object_structure(1:number_of_cells);
+            break;
+            %error('cannot fit in any more cells');
+          
+            %disp('cannot fit in any more cells');
         end
+        
+        
     end
-    shapes=fieldnames(current_cell);
-    cell_masks{cell_number}=false(simucell_params.simucell_image_size);
-    for i=1:length(shapes)
-        current_image_mask=current_image_mask|current_cell.(shapes{i});
-        cell_masks{cell_number}=cell_masks{cell_number}|current_cell.(shapes{i});
-        object_structure(cell_number).(shapes{i})=sparse(current_cell.(shapes{i}));
-        obj_num=simucell_params.overlap.shape_to_number_map{subpopulation_number}(shapes{i});
-        full_result{obj_num}=[full_result{obj_num} {sparse(current_cell.(shapes{i}))}];
+    if(overlap_acceptable)
+        shapes=fieldnames(current_cell);
+        cell_masks{cell_number}=false(simucell_params.simucell_image_size);
+        for i=1:length(shapes)
+            current_image_mask=current_image_mask|current_cell.(shapes{i});
+            cell_masks{cell_number}=cell_masks{cell_number}|current_cell.(shapes{i});
+            object_structure(cell_number).(shapes{i})=sparse(current_cell.(shapes{i}));
+            obj_num=simucell_params.overlap.shape_to_number_map{subpopulation_number}(shapes{i});
+            full_result{obj_num}=[full_result{obj_num} {sparse(current_cell.(shapes{i}))}];
+        end
+        number_of_cells=cell_number;
+    else
+        break;
     end
     
     
@@ -98,7 +117,7 @@ end
 final_mask=current_image_mask;
 
 marker_structure=struct;
-for cell_number=1:simucell_params.number_of_cells
+for cell_number=1:number_of_cells
     
     subpopulation_number=subpopulation_number_of_cell(cell_number);
     
@@ -106,7 +125,7 @@ for cell_number=1:simucell_params.number_of_cells
     number_of_marker_shapes=length(simucell_params.subpopulations{subpopulation_number}.marker_draw_order_objects);
     %calculate mask from other cells
     other_cells_mask=false(simucell_params.simucell_image_size);
-    for i=1:simucell_params.number_of_cells
+    for i=1:number_of_cells
         if(i~=cell_number)
             other_cells_mask=other_cells_mask|cell_masks{i};
         end

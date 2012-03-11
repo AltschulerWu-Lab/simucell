@@ -894,11 +894,16 @@ function runSimucellButton_Callback(hObject, eventdata, handles)
 % setup_simucell_params(hObject, eventdata, handles)
 myhandles=getappdata(0,'myhandles');
 myhandles.simucell_data=setImagesParameterstoSimucellData(handles,myhandles.simucell_data);
+myhandles.simucell_data.notifier=SimuCell_Engine_Notifier;
+addlistener(myhandles.simucell_data.notifier,'warning',@RespondToEngineWarning);
 setappdata(0,'myhandles',myhandles);
 [a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
 figure;
 image(a);
 axis off;axis equal;
+
+function RespondToEngineWarning(notifier,eventdata)
+warndlg(notifier.message);
 
 % function setup_simucell_params(hObject, eventdata, handles)
 % myhandles=getappdata(0,'myhandles');

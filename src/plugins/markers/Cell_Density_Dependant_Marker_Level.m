@@ -3,25 +3,27 @@ classdef Cell_Density_Dependant_Marker_Level <SimuCell_Marker_Operation
     %   Detailed explanation goes here
     
     properties
-        
-        falloff_type
-        falloff_coefficient
         increasing_or_decreasing
-        amplitude
+        falloff_radius
+        falloff_type
+        min_level;
+        max_level;
         description='Scale marker level wrt distance  other shape';
     end
     
     methods
         function obj=Cell_Density_Dependant_Marker_Level()
-             obj.amplitude=Parameter('Amplitude',0.1,SimuCell_Class_Type.number,...
-                [0,Inf],'Max Level that Marker could reach');
-             obj.falloff_coefficient=Parameter('Fall Off Radius',0.1,SimuCell_Class_Type.number,...
-                [0,Inf],'Parameter controlling how fast the marker level drops (0- flat, 1- characteristic falloff, Inf- Instantaneous falloff)');
+            
+             obj.falloff_radius=Parameter('Fall Off Radius',200,SimuCell_Class_Type.number,...
+                [0,Inf],'Distance (in pixels) over which intensity falls of characteristically');
              obj.falloff_type=Parameter('Functional Form Of Dependance','Gaussian',SimuCell_Class_Type.list,...
                 {'Linear','Gaussian','Exponential'},'Functional form to calculate marker level based on distance to other cells');
              obj.increasing_or_decreasing=Parameter('Increasing Or Decreasing','Increasing',SimuCell_Class_Type.list,...
-                {'Increasing','Decreasing'},'Increasing or Decreasing function of distance to edge');
-           
+                {'Increasing','Decreasing'},'Increasing or Decreasing function of local cell density');
+            obj.max_level=Parameter('Max Theoretical Intensity ',1,SimuCell_Class_Type.number,...
+                [0,Inf],'Max Level (theoretically, without saturation etc) that Marker can reach'); 
+            obj.min_level=Parameter('Amplitude',0,SimuCell_Class_Type.number,...
+                [0,Inf],'Min Level (theoretically, without saturation etc) that Marker could reach');
         end
         
         
@@ -29,27 +31,28 @@ classdef Cell_Density_Dependant_Marker_Level <SimuCell_Marker_Operation
         function result=Apply(obj,current_marker,current_shape_mask,other_cells_mask,needed_shapes,needed_markers)
             
            
-            [xres,yres]=size(current_shape_mask);
+            
             z=bwdist(full(other_cells_mask));
-            radius=sqrt(xres^2+yres^2);   
-            if(strcmp(obj.increasing_or_decreasing.value,'Increasing'))
-                z=max(radius-z,0);
-            end
+           
+            
                 
             mean_val=mean(z(current_shape_mask));          
             switch obj.falloff_type.value
                  case 'Linear'
-                  val=max(1-obj.falloff_coefficient.value*mean_val/radius,0);  
+                  val=max(1-mean_val/obj.falloff_radius.value,0);  
               case 'Gaussian'    
                   
-                 val=obj.amplitude.value*exp(-obj.falloff_coefficient.value*mean_val.^2/((radius)^2));
+                 val=exp(-(mean_val/obj.falloff_radius.value)^2);
               case 'Exponential'
-                  val=obj.amplitude.value*exp(-obj.falloff_coefficient.value*mean_val/radius);
+                 val=exp(-(mean_val/obj.falloff_radius.value));
               
             end
-            
+            if(~strcmp(obj.increasing_or_decreasing.value,'Increasing'))
+                val=max(1-val,0);
+            end
            
             val=max(min(val,1),0);
+            val=(obj.max_level.value-obj.min_level.value)*val+obj.min_level.value;
             
             result=current_marker;
             result(current_shape_mask)=val;
