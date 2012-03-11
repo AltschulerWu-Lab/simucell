@@ -26,7 +26,9 @@ classdef Distance_to_edge_marker_gradient <SimuCell_Marker_Operation
         function result=Apply(obj,current_marker,current_shape_mask,other_cells_mask,needed_shapes,needed_markers)
             
           
-            [row,col]=find(current_shape_mask);
+            %[row,col]=find(current_shape_mask);
+            se=strel('disk',2,8);
+            [row,col]=find(imdilate(full(current_shape_mask),se));
             selected_region=current_marker(min(row):max(row),min(col):max(col));
             selected_mask=current_shape_mask(min(row):max(row),min(col):max(col));
             

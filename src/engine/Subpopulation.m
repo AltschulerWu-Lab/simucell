@@ -160,7 +160,11 @@ classdef Subpopulation <handle
             %shapexshape part of the matrix is the same as the
             %object_dependancy_matrix calculation
             for i=1:length(shape_names)
-                dependancies=obj.objects.(shape_names{i}).model.prerendered_object_list();
+                if(isempty(obj.objects.(shape_names{i}).model))
+                  dependancies=cell(0);
+                else
+                  dependancies=obj.objects.(shape_names{i}).model.prerendered_object_list();
+                end
                 obj.object_dependancy_struct.(shape_names{i})=cell(0);
                 for k=1:length(dependancies)
                     for j=1:length(shape_names)
