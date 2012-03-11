@@ -110,9 +110,21 @@ myhandles=getappdata(0,'myhandles');
 selectedCellPosition = handles.selectedCells;
 %get the data from the UITABLE
 tableData = get(handles.uitable1,'data');
+if(isempty(selectedCellPosition))  
+  warndlg('Select the Marker you want to edit!');
+  return;
+end
 subpopSelected=tableData{selectedCellPosition(1,1),1};
+if(size(tableData,1)<selectedCellPosition(1,1)||size(tableData,2)<2)
+  warndlg('You have to define an Object/Shape first!');
+  return;
+end
 objectSelected=tableData{selectedCellPosition(1,1),2};
 columnHeader=getColumnHeaders(handles);
+if(selectedCellPosition(1,2)<4 ) 
+  warndlg('Select the Marker you want to edit!');
+  return;
+end
 markerSelected=columnHeader{selectedCellPosition(1,2)};
 markerProperty=myhandles.simucell_data.subpopulations{subpopSelected}.markers.(markerSelected).(objectSelected);
 subpop=myhandles.simucell_data.subpopulations{subpopSelected};
@@ -147,6 +159,18 @@ answer = StructDlg(S,'Add a New Marker','',[50 40 50 10]);
 if isempty(answer) || isempty(answer.Name)
   return;
 end
+
+if any(strcmp(answer.Name, properties(myhandles.simucell_data.subpopulations{1}.markers)))
+  warndlg('An Marker has already been defined with this name, please choose an other name.','Marker Name can not be identical');
+  return;
+end
+if(~isvarname(answer.Name))
+  warndlg('Marker name should not contain space, accent or start with a number.','Wrong marker name synthax');
+  return; 
+end
+
+
+
 subpop=myhandles.simucell_data.subpopulations;
 for i=1:length(subpop)
   subpop{i}.markers.addprop(answer.Name);
@@ -216,6 +240,15 @@ myhandles=getappdata(0,'myhandles');
 selectedCellPosition = handles.selectedCells;
 %get the data from the UITABLE
 tableData = get(handles.uitable1,'data');
+if(isempty(selectedCellPosition))  
+  warndlg('Select the Object/Shape you want to Remove!');
+  return;
+end
+if(size(tableData,1)<selectedCellPosition(1,1)||size(tableData,2)<2)
+  warndlg('You have to define an Object/Shape first!');
+  return;
+end
+
 subpopSelected=tableData{selectedCellPosition(1,1),1};
 to_be_deleted_name=tableData{selectedCellPosition(1,1),2};
 to_be_deleted_class= myhandles.simucell_data.subpopulations{subpopSelected}.objects.(to_be_deleted_name);
@@ -295,10 +328,17 @@ if isempty(answer) || isempty(answer.Name)
   errordlg('You must set a name to the new Object (can not be empty)','Enter a Object Name');
   return;
 end
-objectList=myhandles.simucell_data.subpopulations{answer.Subpopulation}.objects;
+%objectList=myhandles.simucell_data.subpopulations{answer.Subpopulation}.objects;
 %objectList.addprop(answer.Name);
+if any(strcmp(answer.Name, properties(myhandles.simucell_data.subpopulations{answer.Subpopulation}.objects)))
+  warndlg('An Object/Shape already use this name for this Subpopulation, please choose an other one.','Object Name can not be identical');
+  return;
+end
+if(~isvarname(answer.Name))
+  warndlg('Object/Shape name should not contain space, accent or start with a number.','Wrong object name synthax');
+  return; 
+end
 myhandles.simucell_data.subpopulations{answer.Subpopulation}.add_object(answer.Name);
-%myhandles.simucell_data.subpopulations{subpopSelected}.add_object(answer{1});
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
 
@@ -312,6 +352,14 @@ myhandles=getappdata(0,'myhandles');
 selectedCellPosition = handles.selectedCells;
 %get the data from the UITABLE
 tableData = get(handles.uitable1,'data');
+if(isempty(selectedCellPosition))  
+  warndlg('Select the Object/Shape you want to edit!');
+  return;
+end
+if(size(tableData,1)<selectedCellPosition(1,1)||size(tableData,2)<2)
+  warndlg('You have to define an Object/Shape first!');
+  return;
+end
 subpopSelected=tableData{selectedCellPosition(1,1),1};
 objectSelected=tableData{selectedCellPosition(1,1),2};
 subpop=myhandles.simucell_data.subpopulations{subpopSelected};
@@ -897,7 +945,11 @@ myhandles.simucell_data=setImagesParameterstoSimucellData(handles,myhandles.simu
 myhandles.simucell_data.notifier=SimuCell_Engine_Notifier;
 addlistener(myhandles.simucell_data.notifier,'warning',@RespondToEngineWarning);
 setappdata(0,'myhandles',myhandles);
+position=get(handles.figure1,'Position');
+h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
 [a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
+waitbar(1,h,'Done');
+close(h);
 figure;
 image(a);
 axis off;axis equal;

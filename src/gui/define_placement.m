@@ -22,7 +22,7 @@ function varargout = define_placement(varargin)
 
 % Edit the above text to modify the response to help define_placement
 
-% Last Modified by GUIDE v2.5 08-Mar-2012 17:02:51
+% Last Modified by GUIDE v2.5 10-Mar-2012 12:18:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -408,8 +408,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in savePlacement.
-function savePlacement_Callback(hObject, eventdata, handles)
+% --- Executes on button press in saveRuleDefinition.
+function saveRuleDefinition_Callback(hObject, eventdata, handles)
 placementHandles=getappdata(0,'placementHandles');
 
 overlapRuleNr=get(handles.overlapListCB,'Value');
@@ -421,3 +421,32 @@ placementHandles.placement=eval(placementType{1});
 %Set the Cell placement type for the selected subpopulation
 populateCellPlacementType(subpop_nr,handles);
 setappdata(0,'placementHandles',placementHandles);
+
+
+% --- Executes on button press in addRuleButton.
+function addRuleButton_Callback(hObject, eventdata, handles)
+% hObject    handle to addRuleButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+placementHandles=getappdata(0,'placementHandles');
+placementHandles.overlap_lists{length(placementHandles.overlap_lists)+1}={};
+setappdata(0,'placementHandles',placementHandles);
+
+overlapListSize=length(placementHandles.overlap_lists);
+if(overlapListSize==0)
+  overlapListSize=1;
+end
+set(handles.overlapListCB,'String',num2cell(1:overlapListSize),'Value',1);
+
+
+% --- Executes on button press in removeRuleButton.
+function removeRuleButton_Callback(hObject, eventdata, handles)
+% hObject    handle to removeRuleButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+placementHandles=getappdata(0,'placementHandles');
+ruleNr=get(handles.overlapListCB,'Value');
+placementHandles.overlap_lists=removeFromCellArray(placementHandles.overlap_lists,ruleNr);
+setappdata(0,'placementHandles',placementHandles);
+overlapListSize=length(placementHandles.overlap_lists);
+set(handles.overlapListCB,'String',num2cell(1:overlapListSize),'Value',1);

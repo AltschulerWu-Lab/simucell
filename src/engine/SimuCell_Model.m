@@ -48,7 +48,7 @@ classdef SimuCell_Model <hgsetget
               %Following works only from Matlab version 2011a, not before
               %if(isprop(obj,chosen_fields{i}))
               %So replaced by:
-              if ~isempty(strcmp(chosen_fields{i}, properties(obj)))
+              if any(strcmp(chosen_fields{i}, properties(obj)))
                 if(isa(obj.(chosen_fields{i}),'Parameter'))
                   obj.(chosen_fields{i}).value=p.Unmatched.(chosen_fields{i});
                 else
