@@ -11,14 +11,37 @@ for subpop=1:number_of_subpopulations
         shapes=properties(simucell_params.subpopulations{subpop}.objects);
         for i=1:length(shapes)
             if(isempty(simucell_params.subpopulations{subpop}.objects.(shapes{i}).model))
-                error([shapes{i} ' In Subpopulation ' num2str(subpop) ' Has No Model Defined']);
+                simucell_params.notifier.message=[shapes{i} ' In Subpopulation ' num2str(subpop) ' Has No Model Defined'];
+                disp(simucell_params.notifier.message);
+                notify(simucell_params.notifier,'error_thrown');
+                refresh;
+                error(simucell_params.notifier.message);
+                
             elseif(~isa(simucell_params.subpopulations{subpop}.objects.(shapes{i}).model,'SimuCell_Object_Model'))
-                error([shapes{i} ' In Subpopulation ' num2str(subpop) ' Has Model Of Incorrect Class']);
+                simucell_params.notifier.message=[shapes{i} ' In Subpopulation ' num2str(subpop) ' Has Model Of Incorrect Class'];
+                disp(simucell_params.notifier.message);
+                notify(simucell_params.notifier,'error_thrown');
+                refresh;
+                error(simucell_params.notifier.message);
+                
             end
         end
         
     else
-        error(['Subpopulation ' num2str(subpop) ' Has No Objects Defined']);
+        simucell_params.notifier.message=['Subpopulation ' num2str(subpop) ' Has No Objects Defined'];
+        disp(simucell_params.notifier.message);
+        notify(simucell_params.notifier,'error_thrown');
+        refresh;
+        error(simucell_params.notifier.message);
+       
+    end
+    
+    if(isempty(properties(simucell_params.subpopulations{subpop}.markers)))
+            simucell_params.notifier.message=[' In Subpopulation ' num2str(subpop) ' No Marker Has Been Defined'];
+            disp(simucell_params.notifier.message);
+            notify(simucell_params.notifier,'error_thrown');
+            refresh;
+            error(simucell_params.notifier.message);
     end
     
     if(isempty(simucell_params.subpopulations{subpop}.placement))

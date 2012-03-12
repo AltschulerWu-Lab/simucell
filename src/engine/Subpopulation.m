@@ -336,6 +336,50 @@ classdef Subpopulation <handle
         end
         
         
+        function [state,message,bg]=check_shape_dependancies(obj)
+            shapes=properties(obj.objects);
+            dependancy_matrix=false(length(shapes));
+            state=true;
+            for i=1:length(shapes)
+                if(isempty(obj.objects.(shapes{i}).model))
+                    dependancies=cell(0);
+                else
+                    dependancies=obj.objects.(shapes{i}).model.prerendered_object_list();
+                end
+                for j=1:length(shapes)
+                    dependancy_matrix(i,j)=...
+                        any(cellfun(@(x) x==obj.objects.(shapes{j}),dependancies));
+                end
+            end
+            [S, ~] = graphconncomp(sparse(dependancy_matrix),'Weak',true);
+            
+            
+            if(S>1)
+                state=false;
+               
+                try
+                    bg=biograph(dependancy_matrix',shapes);
+                    message={['SimuCell requires all objects in a subpopulation be connected to each other (e.g. to place the nucleus inside the cytoplasm, one may pick cytoplasm is ''' 'centered around' ''' the nucleus).'], 'However there is at least one object that is not connected to the others. Please consider changing your object definitions to fix this'};
+                catch
+                    message={['SimuCell requires all objects in a subpopulation be connected to each other (e.g. to place the nucleus inside the cytoplasm, one may pick cytoplasm is ''' 'centered around' ''' the nucleus).']};
+                    message{2}='However objects ';
+                    for i=1:length(shapes)
+                        message{2}=[message{2} shapes{i}];
+                        if(i<length(shapes))
+                            message{2}=[message{2} ', '];
+                        end
+                    end
+                    message{2}=[message{2} ' are not connected'];
+                    message{3}= 'Please consider changing your models to fix this.';
+                    bg=0;
+                end
+            else
+                message='';
+                bg=0;
+            end
+            
+        end
+        
         function calculate_marker_draw_order(obj)
             
             shape_names=properties(obj.objects);

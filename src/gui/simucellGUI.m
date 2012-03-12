@@ -371,7 +371,30 @@ currentObject=myhandles.simucell_data.subpopulations{subpopSelected}.objects.(ob
 if (~isempty(shapeObj))
   myhandles.simucell_data.subpopulations{subpopSelected}.objects.(objectSelected).model=shapeObj.model;
   setappdata(0,'myhandles',myhandles);
+  [is_ok,message,bio_graph]=myhandles.simucell_data.subpopulations{subpopSelected}.check_shape_dependancies();
+  if(~is_ok)
+      if(isa(bio_graph,'biograph.biograph'))
+      choice = questdlg(message, ...
+          'Bad Model Choice', ...
+          'View Object Connections','Change Model', 'Proceed Anyway!','Change Model');
+      else
+         choice = questdlg(message, ...
+          'Bad Model Choice', ...
+          'Change Model','Proceed Anyway!','Change Model'); 
+      end
+          
+      % Handle response
+      switch choice
+          case 'Proceed Anyway!'
+             
+          case 'View Object Connections'
+             view(bio_graph);
+          case 'Change Model'
+              EditShape_Callback(hObject, eventdata,handles);
+      end
+  end
   populateTable(hObject,handles);
+  
 end
 
 
@@ -944,10 +967,16 @@ myhandles=getappdata(0,'myhandles');
 myhandles.simucell_data=setImagesParameterstoSimucellData(handles,myhandles.simucell_data);
 myhandles.simucell_data.notifier=SimuCell_Engine_Notifier;
 addlistener(myhandles.simucell_data.notifier,'warning',@RespondToEngineWarning);
+addlistener(myhandles.simucell_data.notifier,'error_thrown',@RespondToEngineError);
 setappdata(0,'myhandles',myhandles);
 position=get(handles.figure1,'Position');
 h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
+try
 [a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
+catch
+   close(h); 
+   return;
+end
 waitbar(1,h,'Done');
 close(h);
 figure;
@@ -956,6 +985,9 @@ axis off;axis equal;
 
 function RespondToEngineWarning(notifier,eventdata)
 warndlg(notifier.message);
+
+function RespondToEngineError(notifier,eventdata)
+errordlg(notifier.message);
 
 % function setup_simucell_params(hObject, eventdata, handles)
 % myhandles=getappdata(0,'myhandles');

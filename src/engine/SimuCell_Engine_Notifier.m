@@ -5,6 +5,7 @@ classdef SimuCell_Engine_Notifier <handle
     end
     
     events
-       warning 
+       warning ;
+       error_thrown;
     end
 end
