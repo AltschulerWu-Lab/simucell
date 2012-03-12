@@ -78,7 +78,7 @@ setappdata(0,'artifactHandles',artifactHandles);
 subpopNr=length(artifactHandles.subpopulations);
 set(handles.subpopNrCB,'String',num2cell(1:subpopNr),'Value',subpop_nr);
 %Populate the cellArtifactOperationTypePopupMenu
-fileList=dir('plugins/cell_artifacts/');
+fileList=dir('plugins/cell_artifacts/*.m');
 fileList = {fileList(find([fileList.isdir]==0)).name};
 for i=1:length(fileList)
     fileList{i}=fileList{i}(1:end-2);
@@ -98,7 +98,7 @@ end
 operationObj=cellArtifactOperationObj;
 setCellArtifactParam(hObject,handles,operationObj,artifactHandles)
 %Populate the imageArtifactOperationTypePopupMenu
-fileList=dir('plugins/image_artifacts/');
+fileList=dir('plugins/image_artifacts/*.m');
 fileList = {fileList(find([fileList.isdir]==0)).name};
 for i=1:length(fileList)
     fileList{i}=fileList{i}(1:end-2);
