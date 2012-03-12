@@ -59,6 +59,9 @@ if (length(varargin) < 3) %|| ~isa(varargin{1}, 'importantObjectType')
 end
 placementHandles.overlap_lists = varargin{1};
 placementHandles.overlap_values = varargin{2};
+if(isempty(placementHandles.overlap_values))
+    placementHandles.overlap_values=[];
+end
 % placementHandles.placement = varargin{3};
 % subpop_nr =  varargin{4};
 placementHandles.simucell_data =  varargin{3};
@@ -411,15 +414,9 @@ end
 % --- Executes on button press in saveRuleDefinition.
 function saveRuleDefinition_Callback(hObject, eventdata, handles)
 placementHandles=getappdata(0,'placementHandles');
-
 overlapRuleNr=get(handles.overlapListCB,'Value');
-
-
-
-placementType=get(handles.placementCB,'String');
-placementHandles.placement=eval(placementType{1});
-%Set the Cell placement type for the selected subpopulation
-populateCellPlacementType(subpop_nr,handles);
+overlappingValue=get(handles.maxOverlappingEdit,'String');
+placementHandles.overlap_values(overlapRuleNr)=str2double(overlappingValue)/100;
 setappdata(0,'placementHandles',placementHandles);
 
 
