@@ -148,7 +148,7 @@ function shapeTypeCb_Callback(hObject, eventdata, handles)
 %Populate the Model ComboBox on fly
 selectedString=get(handles.shapeTypeCb,'String');
 selectedValue=get(handles.shapeTypeCb,'Value');
-fileList=dir(['plugins/shape/' selectedString{selectedValue}]);
+fileList=dir(['plugins/shape/' selectedString{selectedValue} '/*.m']);
 fileList = {fileList(find([fileList.isdir]==0)).name};
 for i=1:length(fileList)
   fileList{i}=fileList{i}(1:end-2);

@@ -71,7 +71,7 @@ setappdata(0,'compositingHandles',compositingHandles);
 subpopNr=length(compositingHandles.subpopulations);
 set(handles.subpopNrCB,'String',num2cell(1:subpopNr),'Value',subpop_nr);
 %Populate the Composite ComboBox list (just once)
-fileList=dir('plugins/composite/');
+fileList=dir('plugins/composite/*.m');
 fileList = {fileList(find([fileList.isdir]==0)).name};
 for i=1:length(fileList)
   fileList{i}=fileList{i}(1:end-2);
