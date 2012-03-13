@@ -8,7 +8,7 @@ classdef Cell_Density_Dependant_Marker_Level <SimuCell_Marker_Operation
         falloff_type
         min_level;
         max_level;
-        description='Scale marker level wrt distance  other shape';
+        description='Scale marker levels based on local cell density';
     end
     
     methods

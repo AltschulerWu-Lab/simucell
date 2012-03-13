@@ -62,6 +62,14 @@ classdef Subpopulation <handle
         %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
             obj.objects.addprop(obj_name);
             obj.objects.(obj_name)=SimuCell_Object();
+            marker_names=properties(obj.markers);
+            for i=1:length(marker_names)
+                shapes_in_marker=properties(obj.markers.(marker_names{i}));
+                if(~any(strcmp(obj_name, shapes_in_marker)))
+                    obj.markers.(marker_names{i}).addprop(obj_name);
+                    obj.markers.(marker_names{i}).(obj_name)=Marker_Operation_Queue;
+                end
+            end
             %TODO
             %Get Marker list and add this new object if not exist to all
             %this marker

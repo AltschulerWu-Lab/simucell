@@ -970,15 +970,15 @@ addlistener(myhandles.simucell_data.notifier,'warning',@RespondToEngineWarning);
 addlistener(myhandles.simucell_data.notifier,'error_thrown',@RespondToEngineError);
 setappdata(0,'myhandles',myhandles);
 position=get(handles.figure1,'Position');
-h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
-try
+%h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
+%try
 [a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
-catch
-   close(h); 
-   return;
-end
-waitbar(1,h,'Done');
-close(h);
+%catch
+%   close(h); 
+%   return;
+%end
+%waitbar(1,h,'Done');
+%close(h);
 figure;
 image(a);
 axis off;axis equal;

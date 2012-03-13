@@ -7,7 +7,7 @@ classdef Distance_to_edge_marker_gradient <SimuCell_Marker_Operation
         falloff_type
         falloff_radius
         increasing_or_decreasing
-        description='Scale marker level wrt distance to edge of shape (this should give shape contours)';
+        description='Scale marker levels based on distance to edge of shape';
     end
     
     methods

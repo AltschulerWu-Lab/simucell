@@ -6,7 +6,7 @@ classdef Turbulent_Texture <SimuCell_Marker_Operation
         max_displacement
         length_scale
         frequency_falloff
-       
+        smooth_edges
         description='Turbulent Texture: This "shuffles" the pixels to give the appearance of turbulence. Is only useful if the existing levels are non-uniform.';
     end
     
@@ -18,6 +18,8 @@ classdef Turbulent_Texture <SimuCell_Marker_Operation
                 [2,6],'Scale of Noise [2 - long length scale, 5-short]]');
             obj.frequency_falloff=Parameter('Frequency Falloff',0.5,SimuCell_Class_Type.number,...
                 [0,1],'Scale of Noise [2 - long length scale, 5-short]]');
+             obj.smooth_edges=Parameter('Smooth Edges','No',SimuCell_Class_Type.list,...
+                {'Yes','No'},'Smooth the intensity at formerly FG pixels, now in BG?');
           
         end
         
@@ -34,6 +36,7 @@ classdef Turbulent_Texture <SimuCell_Marker_Operation
             xmax=min(max(row)+obj.max_displacement.value,size(current_marker,1));
             ymax=min(max(col)+obj.max_displacement.value,size(current_marker,2));
             selected_marker=current_marker(xmin:xmax,ymin:ymax);
+            
             bx=min(row)-xmin;
             by=min(col)-ymin;
             
@@ -85,6 +88,21 @@ classdef Turbulent_Texture <SimuCell_Marker_Operation
             noise=zeros(max(row)-min(row)+1,max(col)-min(col)+1);
             noise(:)=selected_marker(I);
             
+            switch(obj.smooth_edges.value)
+                case 'Yes'
+                    selected_mask_big=current_shape_mask(xmin:xmax,ymin:ymax);
+                    selected_mask_small=current_shape_mask(min(row):max(row),min(col):max(col));
+                    selected_marker_small=current_marker(min(row):max(row),min(col):max(col));
+                    mask1=false(max(row)-min(row)+1,max(col)-min(col)+1);
+                    mask1(:)=selected_mask_big(I);
+                    h=fspecial('gaussian',obj.max_displacement.value,obj.max_displacement.value);
+                    temp=imfilter(selected_marker,h);
+                    mask2=selected_mask_small&(~mask1);
+                    noise(mask2)=(temp(mask2)+selected_marker_small(mask2))/2;
+                case 'No'
+                    
+            end
+           
             
             tex(min(row):max(row),min(col):max(col))=noise;
             %             tex(object_mask)=tex(object_mask)./...

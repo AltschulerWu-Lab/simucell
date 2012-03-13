@@ -7,7 +7,7 @@ classdef Distance_to_shape_marker_gradient <SimuCell_Marker_Operation
         falloff_type
         falloff_radius
         increasing_or_decreasing
-        description='Scale marker level wrt distance  other shape';
+        description='Scale marker level based on distance to other objects';
     end
     
     methods
