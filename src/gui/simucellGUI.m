@@ -969,16 +969,16 @@ myhandles.simucell_data.notifier=SimuCell_Engine_Notifier;
 addlistener(myhandles.simucell_data.notifier,'warning',@RespondToEngineWarning);
 addlistener(myhandles.simucell_data.notifier,'error_thrown',@RespondToEngineError);
 setappdata(0,'myhandles',myhandles);
-position=get(handles.figure1,'Position');
-%h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
-%try
+%position=get(handles.figure1,'Position');
+h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
+try
 [a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
-%catch
-%   close(h); 
-%   return;
-%end
-%waitbar(1,h,'Done');
-%close(h);
+catch
+  close(h); 
+  return;
+end
+waitbar(1,h,'Done');
+close(h);
 figure;
 image(a);
 axis off;axis equal;
@@ -1138,7 +1138,12 @@ function loadButton_Callback(hObject, eventdata, handles)
 % hObject    handle to loadButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[filename,pathname]=uigetfile({'*.mat;','Simucell Parmameters'},'Load simucell parameters');
+[filename, pathname] = uigetfile( ...
+{'*.mat','Simucell Parmameters (*.mat)'; '*.*',  'All Files (*.*)'},...
+   'Load SimuCell parameters');
+if(isnumeric(pathname))%If user pressed cancel button
+  return;
+end
 load([pathname filename],'simucell_data');
 myhandles=getappdata(0,'myhandles');
 myhandles.simucell_data=simucell_data;

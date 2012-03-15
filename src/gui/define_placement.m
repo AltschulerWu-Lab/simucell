@@ -132,7 +132,7 @@ end
 
 function populateCellPlacementType(subpopNr,handles)
 %Next 2 lines need to be done only once
-dirList=dir('plugins/placement/');
+dirList=dir(['plugins' filesep 'placement' filesep '*.m']);
 dirList=dirList(3:end);
 placementHandles=getappdata(0,'placementHandles');
     %Set the Cell placement type for the selected subpopulation

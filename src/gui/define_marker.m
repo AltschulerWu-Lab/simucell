@@ -65,7 +65,7 @@ markerHandles.subpopNr=varargin{5};
 markerHandles.temp_operation_queue=markerHandles.markerProperty.operations;
 
 setappdata(0,'markerHandles',markerHandles);
-fileList=dir('plugins/markers/*.m');
+fileList=dir(['plugins' filesep 'markers' filesep '*.m']);
 fileList = {fileList(find([fileList.isdir]==0)).name};
 
 for i=1:length(fileList)

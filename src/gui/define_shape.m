@@ -70,12 +70,12 @@ shapeHandles.selectedType=[];
 shapeHandles.selectedModel=[];
 if(~isempty(shapeHandles.currentObject.model))
   currentClassName=class(shapeHandles.currentObject.model);
-  shapeListFile=getAllFiles('plugins/shape/');
-  shapeListFile = strrep(shapeListFile, 'plugins/shape/', '');
+  shapeListFile=getAllFiles(['plugins' filesep 'shape' filesep]);
+  shapeListFile = strrep(shapeListFile, ['plugins' filesep 'shape' filesep], '');
   result=cellfun(@(x)regexp(x,[currentClassName '.m']),shapeListFile,...
     'UniformOutput',false);
   shapeHandles.selectedType=shapeListFile{cellfun(@(y)~isempty(y),result)};
-  r=regexp(shapeHandles.selectedType,'/','split');
+  r=regexp(shapeHandles.selectedType,filesep,'split');
   shapeHandles.selectedType=r{1};
   shapeHandles.selectedModel=currentClassName;
 end
@@ -83,7 +83,7 @@ setappdata(0,'shapeHandles',shapeHandles);
 
 
 %Populate the Type ComboBox
-dirList=dir('plugins/shape/');
+dirList=dir(['plugins' filesep 'shape' filesep]);
 dirList = {dirList(find([dirList.isdir])).name};
 dirList=dirList(3:end);
 if(~isempty(shapeHandles.selectedType))
@@ -148,7 +148,7 @@ function shapeTypeCb_Callback(hObject, eventdata, handles)
 %Populate the Model ComboBox on fly
 selectedString=get(handles.shapeTypeCb,'String');
 selectedValue=get(handles.shapeTypeCb,'Value');
-fileList=dir(['plugins/shape/' selectedString{selectedValue} '/*.m']);
+fileList=dir([['plugins' filesep 'shape' filesep] selectedString{selectedValue} [filesep '*.m']]);
 fileList = {fileList(find([fileList.isdir]==0)).name};
 for i=1:length(fileList)
   fileList{i}=fileList{i}(1:end-2);

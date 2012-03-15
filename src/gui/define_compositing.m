@@ -53,7 +53,7 @@ function define_compositing_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to define_compositing (see VARARGIN)
 handles.output = hObject;
 if (length(varargin) < 2) %|| ~isa(varargin{1}, 'importantObjectType')
-     error ('you must pass your simucell_data and subpopulation nr');
+     error ('You must pass your simucell_data and subpopulation nr');
 end
 compositingHandles.subpopulations=varargin{1};
 subpop_nr =  varargin{2};
@@ -71,7 +71,7 @@ setappdata(0,'compositingHandles',compositingHandles);
 subpopNr=length(compositingHandles.subpopulations);
 set(handles.subpopNrCB,'String',num2cell(1:subpopNr),'Value',subpop_nr);
 %Populate the Composite ComboBox list (just once)
-fileList=dir('plugins/composite/*.m');
+fileList=dir(['plugins' filesep 'composite' filesep '*.m']);
 fileList = {fileList(find([fileList.isdir]==0)).name};
 for i=1:length(fileList)
   fileList{i}=fileList{i}(1:end-2);
@@ -89,7 +89,7 @@ uiwait(handles.figure1);
 
 function populatecompositingType(subpopNr,handles)
 %Next 2 lines need to be done only once
-fileList=dir('plugins/composite/');
+fileList=dir(['plugins' filesep 'composite' filesep '*.m']);
 fileList = {fileList(find([fileList.isdir]==0)).name};
 compositingHandles=getappdata(0,'compositingHandles');
 %Get the selected SubpopNr
