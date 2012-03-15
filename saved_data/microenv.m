@@ -68,9 +68,12 @@ set(op,'marker',subpop{1}.markers.menv.cytoplasm);
 set(op,'region',subpop{1}.objects.cytoplasm);
 set(op,'func','Mean');
 subpop{1}.markers.GFP.cytoplasm.AddOperation(op);
-op=Constant_marker_level_operation();
-set(op,'mean_level',0.5);
-set(op,'sd_level',0.2);
+% op=Distance_to_shape_marker_gradient();
+% set(op,'distance_to',subpop{1}.objects.nucleus);
+% set(op,'falloff_type','Exponential');
+% set(op,'falloff_radius',15);
+% set(op,'increasing_or_decreasing','Decreasing');
+% subpop{1}.markers.GFP.cytoplasm.AddOperation(op);
 op=Perlin_Texture();
 set(op,'add_or_multiply','Multiply');
 set(op,'amplitude',0.1);
@@ -78,6 +81,12 @@ set(op,'length_scale',5);
 set(op,'frequency_falloff',0.7);
 set(op,'noise_type','Turbulent');
 subpop{1}.markers.GFP.cytoplasm.AddOperation(op);
+% op=Turbulent_Texture();
+% set(op,'max_displacement',3);
+% set(op,'length_scale',4);
+% set(op,'frequency_falloff',0.9);
+% set(op,'smooth_edges','No');
+% subpop{1}.markers.GFP.cytoplasm.AddOperation(op);
 
 %%%%%% DAPI
 op=Constant_marker_level_operation();
@@ -109,13 +118,17 @@ overlap.AddOverlap({subpop{1}.objects.cytoplasm},0);
 
 
 %% Set Image Artifact
-simucell_data.image_artifacts=cell(0);
-op=Radial_Image_Gradient();
-set(op,'falloff_type','Gaussian');
-set(op,'falloff_radius',5);
-set(op,'max_multiplier',1.5);
-set(op,'min_multiplier',0.5);
-simucell_data.image_artifacts{1}=op;
+% simucell_data.image_artifacts=cell(0);
+% simucell_data.image_artifacts=cell(0);
+% op=Add_Basal_Brightness();
+% set(op,'basal_level',0.2);
+% simucell_data.image_artifacts{1}=op;
+% op=Radial_Image_Gradient();
+% set(op,'falloff_type','Gaussian');
+% set(op,'falloff_radius',500);
+% set(op,'max_multiplier',1.5);
+% set(op,'min_multiplier',0.5);
+% simucell_data.image_artifacts{2}=op;
 
 
 %% Set Image Parameters
