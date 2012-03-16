@@ -108,7 +108,7 @@ set(handles.imageArtifactOperationTypePopupMenu,'String',fileList);
 populateImageArtifactOperationListbox(hObject,handles);
 %Populate the cellArtifactOperation parameters corresponding to the selected
 %operation
-if(isempty(artifactHandles.temp_cell_artifact_list{subpop_nr}))
+if(isempty(artifactHandles.temp_cell_artifact_list) || isempty(artifactHandles.temp_cell_artifact_list{subpop_nr}))
   imageArtifactOperationObj=[];
 else
   imageArtifactOperationObj=artifactHandles.temp_image_artifact_list{1};
