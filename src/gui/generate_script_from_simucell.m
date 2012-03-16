@@ -180,7 +180,10 @@ fprintf(fid, '%s\r\n', '');
 fprintf(fid, '%s\r\n', '%% Set Image Parameters');
 %Set the main structure name and add the subpopulation field and overlap
 fprintf(fid, '%s\r\n', 'simucell_data.subpopulations=subpop;');
-fprintf(fid, '%s\r\n', 'simucell_data.overlap=overlap;');
+if(isfield(simucell_data,'overlap') &&...
+  ~isempty(simucell_data.overlap.overlap_lists))
+  fprintf(fid, '%s\r\n', 'simucell_data.overlap=overlap;');
+end
 %Set Image Parameters
 fprintf(fid, '%s\r\n', '%Set Number of cell per image');
 fprintf(fid, '%s\r\n', ['simucell_data.number_of_cells=' num2str(simucell_data.number_of_cells) ';']);
