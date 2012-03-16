@@ -506,5 +506,3 @@ simucell_data.simucell_image_size=[700,700];
 % assign the subpopulations to the data structure
 simucell_data.subpopulations=subpop;
 
-[a,b,c,d,e]=SimuCell_Engine(simucell_data);image(a);axis off; axis equal;
-
