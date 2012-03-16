@@ -92,7 +92,7 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
             [p,z]=hist(temp(:),100);
             p=p/sum(p);
             
-            [alpha,~,exitflag]=fzero(@(a) norm_fn(a,p,full(z),full(m)),sum(p.*full(z))-m);
+            [alpha,~,exitflag]=fzero(@(a) obj.normalization_function(a,p,full(z),full(m)),sum(p.*full(z))-m);
             if(exitflag~=1)
                 alpha=sum(p.*full(z))-m;
                 %alpha= full(m)/sum(p.*full(z));
@@ -125,6 +125,12 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
             pre_list=cell(0);
         end
         
+    end
+    
+    methods (Static)
+        function d=normalization_function(a,p,x,m)
+            d=sum(p.*max(min(x-a,1),0))-m;
+        end
     end
     
 end

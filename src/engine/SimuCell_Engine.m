@@ -1,4 +1,4 @@
-function [combined_channel_image,object_structure,full_result,marker_structure,combined_cell_images]=SimuCell_Engine(simucell_params)
+function [combined_channel_image,object_structure,simucell_result,marker_structure,combined_cell_images]=SimuCell_Engine(simucell_params)
 
 if(~isfield(simucell_params,'notifier'))
     simucell_params.notifier=SimuCell_Engine_Notifier;
@@ -346,4 +346,10 @@ for color_number=1:length(color_names)
         combined_cell_images.(color_names{color_number}),1);
 end
 
+simucell_result=struct;
+simucell_result(1).subpopulation_numbers_of_cells=subpopulation_number_of_cell;
+simucell_result(1).final_image=combined_channel_image;
+simucell_result(1).object_masks=object_structure;
+simucell_result(1).marker_on_object=marker_structure;
+simucell_result(1).markercolor_images=marker_structure;
 end
