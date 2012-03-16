@@ -972,7 +972,8 @@ setappdata(0,'myhandles',myhandles);
 %position=get(handles.figure1,'Position');
 h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
 try
-[a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
+number_of_images=round(str2double(get(handles.imageNrEdit,'String')));    
+simucell_result=SimuCell_Engine(myhandles.simucell_data,number_of_images);
 catch err
     
   close(h); 
@@ -983,7 +984,7 @@ end
 waitbar(1,h,'Done');
 close(h);
 figure;
-image(a);
+image(simucell_result(1).RGB_image);
 axis off;axis equal;
 
 function RespondToEngineWarning(notifier,eventdata)

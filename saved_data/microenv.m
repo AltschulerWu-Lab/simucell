@@ -321,5 +321,5 @@ simucell_data.simucell_image_size=[1000,1000];
 % subpopulations (however in this case there is only one subpopulation)
 simucell_data.population_fractions=[1];
 
-
-[a,b,c,d,e]=SimuCell_Engine(simucell_data);image(a);axis off; axis equal;
+% To invoke the engine
+%simucell_result=SimuCell_Engine(simucell_data);image(a);axis off; axis equal;

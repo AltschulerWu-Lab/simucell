@@ -260,7 +260,7 @@ simucell_data.subpopulations=subpop;
 % 2) The maximum allowed overlap between these objects, measured as a
 % fraction of their areas
 
-simucell_data.overlap=overlap;
+% simucell_data.overlap=overlap;
 % Not declaring the placement means the default behavior of not allowing 
 % cells to overlap is used
 
