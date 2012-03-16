@@ -16,8 +16,8 @@ classdef Marker<dynamicprops
                     obj.(props{i})=Marker_Operation_Queue;
                 end
                 if(nargin>1)
-                    [valid_colors,valid_color_names]=enumeration('Colors');
-                    if(ismember(varargin{2},valid_colors) | ismember(varargin{2},valid_color_names))
+                    [~,valid_color_names]=enumeration('Colors');
+                    if(isa(varargin{2},'Colors') || ismember(varargin{2},valid_color_names))
                         obj.color=varargin{2};
                     else
                         error([varargin{2} ' is not a valid color definition']);
