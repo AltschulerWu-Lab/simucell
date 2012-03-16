@@ -973,8 +973,11 @@ setappdata(0,'myhandles',myhandles);
 h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
 try
 [a,b,c,d,e]=SimuCell_Engine(myhandles.simucell_data);
-catch
+catch err
+    
   close(h); 
+  errordlg([err.message ' in ' err.stack(1).file ' line ' num2str(err.stack(1).line)]);
+  rethrow(err);
   return;
 end
 waitbar(1,h,'Done');
