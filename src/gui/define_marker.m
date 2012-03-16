@@ -82,7 +82,8 @@ nrColor = length(mc.EnumeratedValues);
 for i=1:nrColor
   colorList{1,i}=mc.EnumeratedValues{i}.Name;
 end
-markerColor=markerHandles.subpop.markers.(markerHandles.markerName).color.char;
+%markerColor=markerHandles.subpop.markers.(markerHandles.markerName).color.char;
+markerColor=char(markerHandles.subpop.markers.(markerHandles.markerName).color);
 idxCell=strfind(colorList,markerColor);
 isFound = ~cellfun('isempty', idxCell); % Returns "0" if idxCell is empty and a "1" otherwise
 foundIdx = find(isFound);
