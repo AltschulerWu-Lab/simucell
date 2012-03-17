@@ -13,9 +13,14 @@ if(nargin<=2)
 end
 
 if(nargin>0)
-    eval(filename);
+    if(exist(filename,'file'))
+        eval(filename);
+    else
+       error('Not a valid file');
+    end
     if(nargin==1)
         simucell_result=SimuCell_Engine(simucell_data,1);
+        figure;image(simucell_result(1).RGB_image);axis off; axis equal;
     else
         switch output_type
             case 'save_params'

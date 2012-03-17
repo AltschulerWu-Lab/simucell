@@ -971,6 +971,7 @@ addlistener(myhandles.simucell_data.notifier,'error_thrown',@RespondToEngineErro
 setappdata(0,'myhandles',myhandles);
 %position=get(handles.figure1,'Position');
 h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
+number_of_images=0;
 try
 number_of_images=round(str2double(get(handles.imageNrEdit,'String')));    
 simucell_result=SimuCell_Engine(myhandles.simucell_data,number_of_images);
@@ -984,8 +985,46 @@ end
 waitbar(1,h,'Done');
 close(h);
 figure;
-image(simucell_result(1).RGB_image);
-axis off;axis equal;
+image(simucell_result(1).RGB_image);axis off;axis equal;
+button = questdlg('Would you like to save your results?','Save?','Images & Data','Only Images','Neither','Neither');
+switch button
+    case 'Images & Data'
+        prompt = {'Enter image prefix:','Enter data filename (without .mat):'};
+        dlg_title = 'Naming';
+        num_lines = 1;
+        defaults = {'image_','simucell_result'};
+        answer = inputdlg(prompt,dlg_title,num_lines,defaults);
+        
+        folder_name = uigetdir('.','Save Folder');
+        if(~isnumeric(folder_name))
+            number_of_digits=floor(log10(number_of_images))+1;
+            save([folder_name filesep answer{2} '.mat'],'simucell_result');
+            for img_num=1:number_of_images
+                filename=[ folder_name filesep answer{1} sprintf(['%0' num2str(number_of_digits) 'd'],img_num) '.png'];
+                imwrite(simucell_result(img_num).RGB_image,filename);
+            end
+        end
+    case  'Only Images'
+        prompt = {'Enter image prefix:'};
+        dlg_title = 'Data Naming';
+        num_lines = 1;
+        defaults = {'image_'};
+        answer = inputdlg(prompt,dlg_title,num_lines,defaults);
+        
+        folder_name = uigetdir('.','Save Folder');
+        if(~isnumeric(folder_name))
+            number_of_digits=floor(log10(number_of_images))+1;
+          
+            for img_num=1:number_of_images
+                filename=[ folder_name filesep answer{1} sprintf(['%0' num2str(number_of_digits) 'd'],img_num) '.png'];
+                imwrite(simucell_result(img_num).RGB_image,filename);
+            end
+        end
+        
+    otherwise
+        
+end
+
 
 function RespondToEngineWarning(notifier,eventdata)
 warndlg(notifier.message);

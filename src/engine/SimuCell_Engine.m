@@ -110,7 +110,7 @@ for img_num=1:number_of_images
             
             iteration_counter=iteration_counter+1;
             if(iteration_counter>100)
-                simucell_params.notifier.message=['Cannot Fit Any More Cells: Rendering With ' num2str(cell_number-1) 'cells'];
+                simucell_params.notifier.message=['Cannot Fit Any More Cells: Rendering With ' num2str(cell_number-1) ' cells'];
                 disp(simucell_params.notifier.message);
                 notify(simucell_params.notifier,'warning');
                 refresh;
