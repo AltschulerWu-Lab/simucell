@@ -18,7 +18,7 @@ classdef SimuCell_Marker_Operation <SimuCell_Model
     %       determine the order in which markers should be rendered.
     %
     %   See also  SimuCell_Model,
-    %   Constant_dependant_marker_level_operation,Perlin_texture
+    %   Constant_Dependant_Marker_Level,Perlin_texture
     %   
     %
     %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab  

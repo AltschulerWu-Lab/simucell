@@ -80,7 +80,7 @@ set(subpop{1}.placement,'boundary',100);  % the boundary is the number of pixels
 % model determines, at run-time, which objects contain which others
 % (cytoplasm contains nucleus). The user can then specify the weight given
 % to the container (the contained object gets 1-container_weight)
-subpop{1}.compositing=default_compositing();
+subpop{1}.compositing=Default_Compositing();
 set(subpop{1}.compositing,'container_weight',0.3);
 % In this example the cytoplasm will get 0.3 weight and nucleus 0.7 in the
 % nuclear region. Note in the cytoplasmic region where there is no overlap,
@@ -98,9 +98,9 @@ add_object(subpop{1},'cytoplasm');
 % object. The available shape models are inside tye directory 'plugins/shape/'. For
 % organizational purposes, these plugins are placed in sub-directories
 % (cytoplasm, nucleus and other). 
-% We choose to have the standard Cytoplasm_model which creates an
+% We choose to have the standard Cytoplasm_Model which creates an
 % elliptical cell shape
-subpop{1}.objects.cytoplasm.model=Cytoplasm_model;
+subpop{1}.objects.cytoplasm.model=Cytoplasm_Model;
 set(subpop{1}.objects.cytoplasm.model,'radius',40); %cell radius in pixels
 set(subpop{1}.objects.cytoplasm.model,'eccentricity',0.01); % Gives a nearly circular cell
 set(subpop{1}.objects.cytoplasm.model,'randomness',0.05); %0 is no noise, and 1 is all noise, so this cell is fairly smooth
@@ -109,7 +109,7 @@ set(subpop{1}.objects.cytoplasm.model,'randomness',0.05); %0 is no noise, and 1 
 add_object(subpop{1},'nucleus');
 % We choose a nucleus model that creates an elliptical shaped nucleus at
 % the center of some other object (in our case the cytoplasm)
-subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+subpop{1}.objects.nucleus.model=Centered_Nucleus_Model;
 set(subpop{1}.objects.nucleus.model,'radius',15); %nuclear radius in pixels
 set(subpop{1}.objects.nucleus.model,'eccentricity',0.6); % nuclei are typically elliptical
 set(subpop{1}.objects.nucleus.model,'randomness',0.2); % make the nuclear shape a little noisy
@@ -122,7 +122,7 @@ set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplas
 % particular the different object models need to be connected in some way
 % (otherwise, the cytoplasm and nucleus of the same cell will be in
 % completely different locations). Thus you need to be careful to choose
-% one independant model (here the Cytoplasm_model) that anchors the
+% one independant model (here the Cytoplasm_Model) that anchors the
 % position of the cell, while all other models need to be connected to this
 % object (either directy or indirectly).
 
@@ -159,7 +159,7 @@ add_marker(subpop{1},'Actin','Green');
 % completely dark)
 
 % Set a constant marker level (uniform across entire object, but varying from cell to cell)
-op=Constant_marker_level_operation();
+op=Constant_Marker_Level();
 set(op,'mean_level',0.7); % The marker level for a cell is sampled from a normal distribution with this mean
 set(op,'sd_level',0.1); % and this standard deviation
 subpop{1}.markers.Actin.cytoplasm.AddOperation(op); % Once the operation is defined, we add it to the queue
@@ -168,7 +168,7 @@ subpop{1}.markers.Actin.cytoplasm.AddOperation(op); % Once the operation is defi
 % cell, and die out before the edge of the cell. Since the cells in this subpopulation are spherical, this can be
 % parametrized in terms of the distance to the nucleus.
 %Add Radial Gradient (scaling of intensity at a pixel decreases with distance of that pixel to the nucleus)
-op=Distance_to_shape_marker_gradient();
+op=Distance_To_Shape_Marker_Gradient();
 set(op,'falloff_radius',10); % The number of pixels over which intensity falls by 1/e
 set(op,'falloff_type','Gaussian'); % the intensity fall off functional form
 set(op,'increasing_or_decreasing','Decreasing'); % whether intensity increases or decreases based on the distance
@@ -199,14 +199,14 @@ subpop{1}.markers.Actin.cytoplasm.AddOperation(op);
 add_marker(subpop{1},'Myosin','Red');
 % Initial intensity set to a constant (over all pixels) for a specific cell, but
 % sampled from a random distribution across cells
-op=Constant_marker_level_operation();
+op=Constant_Marker_Level();
 set(op,'mean_level',0.9);
 set(op,'sd_level',0.1);
 subpop{1}.markers.Myosin.cytoplasm.AddOperation(op);
 
 %Add Radial Gradient
 % Have the intensity fall off rapidly with the distance to the edge
-op=Distance_to_edge_marker_gradient();
+op=Distance_To_Edge_Marker_Gradient();
 set(op,'falloff_radius',10); %pixels over which intensity falls off by 1/e 
 set(op,'falloff_type','Gaussian'); %the intensity fall off functional form
 set(op,'increasing_or_decreasing','Decreasing'); %Intensity decreases with distance to the edge
@@ -257,7 +257,7 @@ subpop{1}.markers.Density_Marker.nucleus.AddOperation(op);
 
 % Set the marker level in the cytoplasm to a constant, with this constant
 % varying inversely with the mean level of the marker in the nucleus
-op=Constant_dependant_marker_level_operation(); % If x_(m,r) is the mean level in of marker m in region r, then 
+op=Constant_Dependant_Marker_Level(); % If x_(m,r) is the mean level in of marker m in region r, then 
 % this plugin sets the intensity of chosen marker in chosen region to be:
 % slope*x_(m,r) + intercept
 set(op,'slope',-1.2); % slope in the equation above, negative sign means inverse relation
@@ -305,20 +305,20 @@ subpop{2}.placement=Random_Placement();
 set(subpop{2}.placement,'boundary',100);
 
 %Set the Composite Type
-subpop{2}.compositing=default_compositing();
+subpop{2}.compositing=Default_Compositing();
 set(subpop{2}.compositing,'container_weight',0.3);
 
 %% SP2 Shape
 %Set the Object Shape
 %Object 1
 add_object(subpop{2},'cytoplasm');
-subpop{2}.objects.cytoplasm.model=Cytoplasm_model;
+subpop{2}.objects.cytoplasm.model=Cytoplasm_Model;
 set(subpop{2}.objects.cytoplasm.model,'radius',60);
 set(subpop{2}.objects.cytoplasm.model,'eccentricity',0.6); % Note this subpopulation is far more eccentric than the first
 set(subpop{2}.objects.cytoplasm.model,'randomness',0.2);
 
 add_object(subpop{2},'nucleus');
-subpop{2}.objects.nucleus.model=Centered_nucleus_model;
+subpop{2}.objects.nucleus.model=Centered_Nucleus_Model;
 set(subpop{2}.objects.nucleus.model,'radius',10);
 set(subpop{2}.objects.nucleus.model,'eccentricity',0.6);
 set(subpop{2}.objects.nucleus.model,'randomness',0.2);
@@ -331,12 +331,12 @@ set(subpop{2}.objects.nucleus.model,'centered_around',subpop{2}.objects.cytoplas
 % of the cell and appears polarized,
 %Marker 1
 add_marker(subpop{2},'Myosin','Red');
-op=Constant_marker_level_operation();
+op=Constant_Marker_Level();
 set(op,'mean_level',0.8);
 set(op,'sd_level',0.1);
 subpop{2}.markers.Myosin.cytoplasm.AddOperation(op);
 %Add Angular gradient 
-op=Angular_marker_gradient();
+op=Angular_Marker_Gradient();
 % the angle made by every pixel (measured with respect to a point
 % determined by the 'center' parameter) with a randomly chosen direction is
 % calculated. The intensity at the pixels falls off with this angle, with
@@ -348,7 +348,7 @@ set(op,'falloff_type','Exponential');
 set(op,'min_multiplier',0);
 subpop{2}.markers.Myosin.cytoplasm.AddOperation(op);
 %Add Radial Gradient
-op=Distance_to_edge_marker_gradient();
+op=Distance_To_Edge_Marker_Gradient();
 set(op,'falloff_radius',15);
 set(op,'falloff_type','Gaussian');
 set(op,'increasing_or_decreasing','Decreasing');
@@ -376,13 +376,13 @@ add_marker(subpop{2},'Actin','Green');
 % marker at a pixel then the intensity of the green marker is:
 % slope*I+intercept (where slope and intercept are specified below). A
 % negative value of the slope implies supression. 
-op=Locally_dependant_marker_level_operation();
+op=Locally_Dependant_Marker_Level();
 set(op,'slope',-100); % The red marker strongly supresses the green one. 
 set(op,'intercept',0.8);
 set(op,'marker',subpop{2}.markers.Myosin.cytoplasm);
 subpop{2}.markers.Actin.cytoplasm.AddOperation(op);
 %Add Radial Gradient
-op=Distance_to_edge_marker_gradient();
+op=Distance_To_Edge_Marker_Gradient();
 set(op,'falloff_radius',40);
 set(op,'falloff_type','Gaussian');
 set(op,'increasing_or_decreasing','Increasing');
@@ -419,7 +419,7 @@ set(op,'frequency_falloff',0.8);
 subpop{2}.markers.Density_Marker.nucleus.AddOperation(op);
 
 
-op=Constant_dependant_marker_level_operation();
+op=Constant_Dependant_Marker_Level();
 set(op,'slope',-1.2);
 set(op,'intercept',0.6);
 set(op,'marker',subpop{2}.markers.Density_Marker.nucleus);

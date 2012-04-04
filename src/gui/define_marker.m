@@ -156,7 +156,7 @@ function addOperationButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 markerHandles=getappdata(0,'markerHandles');
-markerHandles.temp_operation_queue{end+1}=Constant_marker_level_operation();
+markerHandles.temp_operation_queue{end+1}=Constant_Marker_Level();
 setappdata(0,'markerHandles',markerHandles);
 updateOperationList(hObject, eventdata, handles);
 set(handles.operationListbox,'Value',length(markerHandles.temp_operation_queue));

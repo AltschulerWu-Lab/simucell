@@ -20,7 +20,7 @@ classdef Subpopulation <handle
     %   add_cell_artifact       - Add a new  cell level artifact operation to
     %   the subpopulation
     %   See also  SimuCell_Model,
-    %   Constant_dependant_marker_level_operation,Perlin_texture
+    %   Constant_Dependant_Marker_Level,Perlin_texture
     %
     %
     %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
@@ -56,7 +56,7 @@ classdef Subpopulation <handle
         %   Examples:
         %   subpop=Subpopulation();
         %   add_object(subpop,'cytoplasm');
-        %   subpop.objects.cytoplasm.model=Elliptical_nucleus_model;
+        %   subpop.objects.cytoplasm.model=Nucleus_Model;
         %   set(subpop.objects.cytoplasm.model,'radius',40);
         %
         %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
@@ -90,9 +90,9 @@ classdef Subpopulation <handle
         %   Examples: 
         %   subpop=Subpopulation();
         %   add_object(subpop,'cytoplasm');
-        %   subpop.objects.cytoplasm.model=Elliptical_nucleus_model;
+        %   subpop.objects.cytoplasm.model=Nucleus_Model;
         %   add_marker(subpop,'DAPI','Blue');
-        %   op=Constant_marker_level_operation();
+        %   op=Constant_Marker_Level();
         %   set(op,'mean_level',0.1);
         %   set(op,'sd_level',0.1);
         %   subpop.markers.DAPI.cytoplasm.AddOperation(op);
@@ -120,7 +120,7 @@ classdef Subpopulation <handle
         %   subpop=Subpopulation();
         %   add_object(subpop,'cytoplasm');
         %   add_marker(subpop,'DAPI','Blue');
-        %   op=Constant_marker_level_operation();
+        %   op=Constant_Marker_Level();
         %   set(op,'mean_level',0.1);
         %   set(op,'sd_level',0.1);
         %   subpop.markers.DAPI.cytoplasm.AddOperation(op);

@@ -11,7 +11,7 @@ classdef SimuCell_Object_Model <SimuCell_Model
     %       determine the order in which objects should be drawn.
     %
     %   See also  SimuCell_Model,
-    %   Centered_nucleus_model, SLML_nucleus_model
+    %   Centered_Nucleus_Model, SLML_Nucleus_Model
     %
     %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab  
     properties (Abstract)

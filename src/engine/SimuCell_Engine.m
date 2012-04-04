@@ -206,7 +206,7 @@ for img_num=1:number_of_images
             end
         end
         if(isempty(simucell_params.subpopulations{subpop}.compositing))
-            simucell_params.subpopulations{subpop}.compositing=default_compositing();
+            simucell_params.subpopulations{subpop}.compositing=Default_Compositing();
             disp(['Compositing Not Defined For Subpopulation ' num2str(subpop) '. Using Defaults.']);
         end
         compositing_matrices{subpop}=simucell_params.subpopulations{subpop}.compositing.calculate_compositing_matrix(object_masks);

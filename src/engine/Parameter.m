@@ -18,7 +18,7 @@ classdef Parameter <hgsetget
     %
     %
     %   See also hgsetget, SimuCell_Class_Type, isMatFile,
-    %   SimuCell_Model,SLML_nucleus_model,Clustered_Placement
+    %   SimuCell_Model,SLML_Nucleus_Model,Clustered_Placement
     
     %   Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
     
@@ -54,7 +54,7 @@ classdef Parameter <hgsetget
     events
         % PARAMETER_SET      This is triggered by the script when value of a parameter is set.
         %     It can be used to do pre-processing before the
-        %     engine is executed. See SLML_nucleus_model and
+        %     engine is executed. See SLML_Nucleus_Model and
         %     Clustered_Placement for examples.
         %     Usage: addlistener(obj.filename,'Parameter_Set',@obj.update_model);
         Parameter_Set

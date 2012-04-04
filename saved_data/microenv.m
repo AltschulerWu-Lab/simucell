@@ -91,11 +91,11 @@ add_object(subpop{1},'cytoplasm');
 % object. The available shape models are inside tye directory 'plugins/shape/'. For
 % organizational purposes, these plugins are placed in sub-directories
 % (cytoplasm, nucleus and other). 
-% We choose to use 'Fluid_shape' which creates 
+% We choose to use 'Fluid_Shape' which creates 
 % elliptically shaped cells normally, but if a cell overlaps with an
 % existing cell, it morphs its shape like a fluid around the other cell.
 % This produces a tissue like effect.
-subpop{1}.objects.cytoplasm.model=Fluid_shape;
+subpop{1}.objects.cytoplasm.model=Fluid_Shape;
 set(subpop{1}.objects.cytoplasm.model,'radius',40);%cell radius in pixels
 set(subpop{1}.objects.cytoplasm.model,'eccentricity',0.7);% Gives a fairly elliptical shape
 set(subpop{1}.objects.cytoplasm.model,'randomness',0.3);
@@ -104,7 +104,7 @@ set(subpop{1}.objects.cytoplasm.model,'randomness',0.3);
 add_object(subpop{1},'nucleus');
 % We choose a nucleus model that creates an elliptical shaped nucleus at
 % the center of some other object (in our case the cytoplasm)
-subpop{1}.objects.nucleus.model=Centered_nucleus_model;
+subpop{1}.objects.nucleus.model=Centered_Nucleus_Model;
 set(subpop{1}.objects.nucleus.model,'radius',15);%nuclear radius in pixels
 set(subpop{1}.objects.nucleus.model,'eccentricity',0.7);% nuclei are typically elliptical
 set(subpop{1}.objects.nucleus.model,'centered_around',subpop{1}.objects.cytoplasm); % the nucleus is dran at the center of the cytoplasm
@@ -117,7 +117,7 @@ set(subpop{1}.objects.nucleus.model,'randomness',0.2);% make the nuclear shape a
 % particular the different object models need to be connected in some way
 % (otherwise, the cytoplasm and nucleus of the same cell will be in
 % completely different locations). Thus you need to be careful to choose
-% one independant model (here the Cytoplasm_model) that anchors the
+% one independant model (here the Cytoplasm_Model) that anchors the
 % position of the cell, while all other models need to be connected to this
 % object (either directy or indirectly).
 %% Define Markers
@@ -171,7 +171,7 @@ set(op,'noise_type','Turbulent'); % The type of variation in micro-environment. 
 subpop{1}.markers.menv.cytoplasm.AddOperation(op); % Once the operation is defined, we add it to the queue
 
 % Have the intensity fall off with the distance to the edge
-op=Distance_to_edge_marker_gradient();
+op=Distance_To_Edge_Marker_Gradient();
 set(op,'falloff_type','Exponential');%the intensity fall off functional form
 set(op,'falloff_radius',10);%pixels over which intensity falls off by 1/e 
 set(op,'increasing_or_decreasing','Decreasing');  %Intensity decreases with distance to the edge
@@ -192,10 +192,10 @@ subpop{1}.markers.menv.cytoplasm.AddOperation(op);
 %%%%%% GFP
 % The level of this marker in a cell is inversely correlated with the
 % presence of the Red 'menv' marker. This is achieved using the
-% 'Constant_dependant_marker_level_operation' plugin.
+% 'Constant_Dependant_Marker_Level' plugin.
 % It sets the marker level in to a constant, with the value of this
 % constant being varying with the mean level of another marker.
-op=Constant_dependant_marker_level_operation();
+op=Constant_Dependant_Marker_Level();
 % If x_(m,r) is the mean level in of marker m in region r, then 
 % this plugin sets the intensity of chosen marker in chosen region to be:
 % slope*x_(m,r) + intercept
@@ -222,7 +222,7 @@ subpop{1}.markers.GFP.cytoplasm.AddOperation(op);
 %%%%%% DAPI
 % DAPI is only present in the nucleus. It shows a slight variation from
 % cell to cell and some non-uniform texture
-op=Constant_marker_level_operation();
+op=Constant_Marker_Level();
 % Set a constant marker level (uniform across entire object, but varying from cell to cell)
 set(op,'mean_level',0.5); % The marker level for a cell is sampled from a normal distribution with this mean
 set(op,'sd_level',0.2); % and this standard deviation
@@ -238,7 +238,7 @@ subpop{1}.markers.DAPI.nucleus.AddOperation(op);
 
 
 %% Set the Composite Type
-subpop{1}.compositing=default_compositing();
+subpop{1}.compositing=Default_Compositing();
 % Compositing governs the rendering of markers when multiple objects, with
 % some expression of the same marker, overlap. For example, suppose a
 % marker is present in the nucleus and the cytoplasm. The nucleus is
