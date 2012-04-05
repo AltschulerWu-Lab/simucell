@@ -1,0 +1,313 @@
+<html> <head>    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">    <link rel="stylesheet" href="css/documentation.css">    <title>SimuCell Plugins Help</title> </head> <body><div id="sidebar" class="interface"></ul><a class="toc_title" href="#"></a><ul class="toc_section"><li>– <a href="#-Colors">Colors</a></li><li>– <a href="#-Marker">Marker</a></li><li>– <a href="#-Marker_Operation_Queue">Marker_Operation_Queue</a></li><li>– <a href="#-Overlap_Specification">Overlap_Specification</a></li><li>– <a href="#-Parameter">Parameter</a></li><li>– <a href="#-SimuCell_CellArtifact_Operation">SimuCell_CellArtifact_Operation</a></li><li>– <a href="#-SimuCell_Class_Type">SimuCell_Class_Type</a></li><li>– <a href="#-SimuCell_Compositing_Model">SimuCell_Compositing_Model</a></li><li>– <a href="#-SimuCell_Engine_Notifier">SimuCell_Engine_Notifier</a></li><li>– <a href="#-SimuCell_Marker_Operation">SimuCell_Marker_Operation</a></li><li>– <a href="#-SimuCell_Model">SimuCell_Model</a></li><li>– <a href="#-SimuCell_Object">SimuCell_Object</a></li><li>– <a href="#-SimuCell_Object_Model">SimuCell_Object_Model</a></li><li>– <a href="#-SimuCell_Placement_Model">SimuCell_Placement_Model</a></li><li>– <a href="#-SimuCell_imageArtifact_Operation">SimuCell_imageArtifact_Operation</a></li><li>– <a href="#-Subpopulation">Subpopulation</a></li><li>– <a href="#-calculate_color_groups">calculate_color_groups</a></li><li>– <a href="#-dependancy_resolution">dependancy_resolution</a></li><li>– <a href="#-merge_cell_intensities">merge_cell_intensities</a></li><li>– <a href="#-overlap_check">overlap_check</a></li><li>– <a href="#-simucell_engine">simucell_engine</a></li></div><div class="container"><div id="-Colors"><div class="secTitle" id=""></div><div class="title">Colors</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">Colors</span> generic used to stored default color enumeration
+ 
+ <span class="helptopic">Colors</span> Properties:
+    <span class=property>R</span> - red value in RGB 
+      Range value   : 0 to 1
+    <span class=property>G</span> - green value in RGB 
+      Range value   : 0 to 1
+    <span class=property>B</span> - blue value in RGB 
+      Range value   : 0 to 1
+ 
+ Usage:<pre>
+ %Enum the list of color: 
+ enumeration <span class="helptopic">Colors</span>
+ 
+ %get the number of <span class="helptopic">Colors</span>:
+ mc = ?<span class="helptopic">Colors</span>;
+ length(mc.EnumeratedValues);
+ 
+ %Get first color:
+ mc.EnumeratedValues{1}.Name
+ 
+ %Get the rgb color value:
+ redColor=Colors.Red;
+ color=[redColor.R redColor.B redColor.G];</pre></div></div><div id="-Marker"><div class="title">Marker</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">Marker</span> class used to define a <span class="helptopic">Marker</span>
+ 
+ <span class="helptopic">Marker</span> Properties:
+    <span class=property>color</span> - the color used to display the marker
+      value   : a Color value (e.g., 'Red'), see available value in class
+      Colors.
+ 
+ Usage:<pre>
+ %<span class="helptopic">Marker</span> 1
+ add_marker(subpop{1},'Actin','Green');</pre></div></div><div id="-Marker_Operation_Queue"><div class="title">Marker_Operation_Queue</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">Marker_Operation_Queue</span> class used to store operations affecting Marker.
+ This class is used internally.
+ 
+ <span class="helptopic">Marker_Operation_Queue</span> Properties:
+    <span class=property>operations</span> - the color used to display the marker
+      value   : a Color value (e.g., 'Red'), see available value in class
+      Colors.
+ 
+  Overlap_Specification Methods:
+    <span class=property>AddOperation</span> - Add a marker operation
+      -operation: the operation which will be add to the object marker
+      queue of operations
+    <span class=property>DeleteOperation</span> - remove a marker operation
+      -operation: the operation which will be add to the object marker
+      queue of operations
+    <span class=property>CloneOperationQueue</span> - clone the object marker operation queue
+ 
+ Usage:<pre>
+ %Define a new Marker operation
+ op=Constant_Marker_Level();
+ set(op,'mean_level',0.7);
+ set(op,'sd_level',0.1);
+ 
+ %Add this operation to your marker for the predefined shape cytoplasm
+ subpop{1}.markers.Actin.cytoplasm.AddOperation(op);
+ 
+ %Delete an operation
+ subpop{1}.markers.Actin.cytoplasm.DeleteOperation(op);
+ 
+ %Clone an operation
+ operation_queue=subpop{1}.markers.Actin.cytoplasm.CloneOperationQueue();
+ </pre></div></div><div id="-Overlap_Specification"><div class="title">Overlap_Specification</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">Overlap_Specification</span> class used to define how shape will overlap
+ 
+ <span class="helptopic">Overlap_Specification</span> Properties: (Private)
+ 
+ <span class="helptopic">Overlap_Specification</span> Methods:
+   <span class=property>AddOverlap</span> - Set the overlapp values between a list of objects
+     -object_list:   the list of object
+     -overlap_value: the overlap value 0- no overlapp, 1 full overlap
+     allowed (1 shape can 100% overlap the other one).
+        Range Value: 0 to 1
+ 
+   <span class=property>construct_overlap_matrix</span> - build the overlap matrix
+     -subpopulations: subpopulations strcuture containing the full
+     subpopulations information. Used internally by the engine.
+ 
+ Usage:<pre>
+ overlap=<span class="helptopic">Overlap_Specification</span>;
+ overlap.AddOverlap({subpop{1}.objects.cytoplasm,...
+   subpop{2}.objects.cytoplasm},0.05);
+ simucell_data.overlap=overlap;</pre></div></div><div id="-Parameter"><div class="title">Parameter</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">Parameter</span> class used to define parameters passed from user to SimuCell
+ plugins.
+ The <span class="helptopic">Parameter</span> class is used by SimuCell as an interface to accept all
+ information input from users.  The <span class="helptopic">Parameter</span> class defines the name,
+ type,allowed values, and a description of the input variable.
+ 
+ <span class="helptopic">Parameter</span> properties:
+   <span class=property>name</span>           - a string defining the name of the variable 
+     (this is the name seen in the GUI)
+   <span class=property>value</span>          - default value of the variable (this is used if
+     the value is not specified by the user). The type must match 
+     the variable 'type'.
+   <span class=property>type</span>           - the class/type of the input variable. Allowed 
+     types are defined in SimuCell_Class_Type.
+   <span class=property>allowed_values</span> - allowed values for this input variable. The 
+     format depends on the variable 'type'
+   <span class=property>description</span>    - a short string description of the variable. 
+     This will show up as a tooltip in the GUI
+ 
+ Usage:<pre>
+ overlap=Overlap_Specification;
+ overlap.AddOverlap({subpop{1}.objects.cytoplasm,...
+   subpop{2}.objects.cytoplasm},0.05);
+ simucell_data.overlap=overlap;
+ 
+ <span class="helptopic">Parameter</span> events:
+   Parameter_Set      - This is triggered by the script when value 
+     of a parameter is set.
+ 
+    </pre></div></div><div id="-SimuCell_CellArtifact_Operation"><div class="title">SimuCell_CellArtifact_Operation</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_CellArtifact_Operation</span>   The template class from which all
+ plugins for adding artifacts to individual cells are derived.
+ 
+ <span class="helptopic">SimuCell_CellArtifact_Operation</span> methods:
+   <span class=property>Apply</span> - A function that returns a a cell array(# cells(biological) ,#
+     markers). Each element of the cell is a matrix
+     (image_height,image_width).
+     The value of each element of this matrix is the pixel intensity of
+     one marker on one cell.
+ 
+ </pre></div></div><div id="-SimuCell_Class_Type"><div class="title">SimuCell_Class_Type</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Class_Type</span>   The template class from which all
+ plugins for adding artifacts to individual cells are derived.
+ 
+ <span class="helptopic">SimuCell_Class_Type</span> enumeration:
+   SimuCell type allowed for plugin's arguments.
+     -number: A integer or double
+     -simucell_shape_model: any SimuCell_Object_Model object that you can
+       find in plugins/shape/
+     -simucell_marker_model: any Marker_Operation_Queue containing
+       objects from plugins/marker. Defne a marker on a shape done by a
+       series of operations.
+     -list: any kind of list, usually string list.
+     -file_name: a file path (used to load SLML MATLAB files).
+ 
+ </pre></div></div><div id="-SimuCell_Compositing_Model"><div class="title">SimuCell_Compositing_Model</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Compositing_Model</span>   The template class from which all plugins
+ for defining object models (shapes of cells, nuclei) are defined.
+ 
+ <span class="helptopic">SimuCell_Compositing_Model</span> methods:
+   <span class=property>calculate_compositing_matrix</span> - A function that returns a matrix
+     containing describing how object the marker level overlap between
+     the different objects.
+ 
+ USED BY THE ENGINE EXCLUSIVELY, DEFINED BY THE COMPOSITING PLUGINS
+ 
+ </pre></div></div><div id="-SimuCell_Engine_Notifier"><div class="title">SimuCell_Engine_Notifier</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Engine_Notifier</span> class used to notify when warning or error
+ happend
+ 
+ <span class="helptopic">SimuCell_Engine_Notifier</span> Properties:
+    <span class=property>message</span> - the message that would be display when the warning/error
+    occur.
+ 
+ USED IN THE ENGINE EXCLUSIVELY, RIGHT NOW TO CATH EVENT ON THE GUI
+ </pre></div></div><div id="-SimuCell_Marker_Operation"><div class="title">SimuCell_Marker_Operation</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Marker_Operation</span>   The template class from which all plugins
+ for markers are derived. Each plugin defines a single operation,
+ and a series of operation is performed sequentially to set the final
+ marker distribution.
+ 
+ <span class="helptopic">SimuCell_Marker_Operation</span> methods:
+   <span class=property>Apply</span> - A function that returns the intensity of the marker at
+     every pixel in the image after application of the marker operation.
+   <span class=property>needed_shape_list</span> - A function that returns a cell array containing
+     all the other objects (nuclei, cells etc) that are required by
+     the make_shape function. Each element is  of type SimuCell_Object.
+     This function is used internally by the engine to determine the
+     order in which objects should be drawn.
+   <span class=property>prerendered_marker_list</span> - A function that returns a cell array
+     containing all the other markers (defined on a specific shape) that
+     are required by the Apply function. Each element of the cell is  of
+     type Marker_Operation_Queue. This function is used internally by
+     the engine to determine the order in which markers should be
+     rendered.
+ 
+ 
+ </pre></div></div><div id="-SimuCell_Model"><div class="title">SimuCell_Model</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Model</span> Template abstract class for all simucell models
+   Template abstract class for all simucell models, so everything can
+   be be derived from this class.
+   property set and get interface.  hgsetget is a subclass of handle, so
+   any classes derived from hgsetget are handle classes.
+   classdef MyClass &lt; <span class="helptopic">SimuCell_Model</span> makes MyClass a subclass of
+   SimuCell_Model.
+   Classes that are derived from hgsetget inherit property description 
+   and do inherit methods SET that perform a check to see if the value is a
+   PARAMETER .
+ 
+ <span class="helptopic">SimuCell_Model</span> methods:
+   <span class=property>set</span> - Set MATLAB object property values performing a check to see
+     if the value is a PARAMETER .
+ 
+   </pre></div></div><div id="-SimuCell_Object"><div class="title">SimuCell_Object</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Object</span>   Template abstract class for all simucell models
+   Template abstract class for all simucell object (like a nucleus,
+   cytoplasm, nuclear body etc... ), so everything can
+   be be derived from this class.
+   property set and get interface.  hgsetget is a subclass of handle, so
+   any classes derived from hgsetget are handle classes.
+ 
+   classdef MyClass &lt; <span class="helptopic">SimuCell_Object</span> makes MyClass a subclass of 
+   SimuCell_Object.
+ 
+   Classes that are derived from hgsetget inherit property description
+   and do inherit methods SET that perform a check to see if the value is
+   a PARAMETER.
+ 
+   SIMUCELL_MODEL methods:
+     SET - Set MATLAB object property values performing a check to
+     see if the value is a PARAMETER .
+ 
+   </pre></div></div><div id="-SimuCell_Object_Model"><div class="title">SimuCell_Object_Model</div>
+      <div class="helptext"><!--helptext --> SIMUCELL_object_model   The template class from which all plugins for
+  defining object models (shapes of cells, nuclei) are defined.
+ 
+ <span class="helptopic">SimuCell_Object_Model</span> methods:
+   <span class=property>make_shape</span>     - A function that returns a binary
+     mask(image_height,image_width) of the shape of the object
+     being drawn.
+   <span class=property>prerendered_object_list</span> - A function that returns a cell array
+     containing all the other objects (nuclei, cells etc) that are
+     required by the make_shape function. Each element is  of type
+     SimuCell_Object. This function is used internally by the engine to
+     determine the order in which objects should be drawn.
+ 
+    
+ 
+</pre></div></div><div id="-SimuCell_Placement_Model"><div class="title">SimuCell_Placement_Model</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_Placement_Model</span>   The template class from which all plugins for
+  object (cells, nucleus etc) placement are derived.
+ 
+ <span class="helptopic">SimuCell_Placement_Model</span> methods:
+        <span class=property>pick_positions</span>      - A function that returns the position
+        where an object will be placed
+ 
+    
+ 
+</pre></div></div><div id="-SimuCell_imageArtifact_Operation"><div class="title">SimuCell_imageArtifact_Operation</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">SimuCell_imageArtifact_Operation</span> template class from which all
+ plugins for adding artifacts to an image are derived.
+ 
+ <span class="helptopic">SimuCell_imageArtifact_Operation</span> methods:
+   <span class=property>Apply</span> - function that returns a a cell array(#colors,1).
+     Each element of the cell is a matrix(image_height,image_width).
+     The value of each element of this matrix is the pixel intensity of
+     all the cells(biological) for one color channel.
+ 
+    
+ 
+</pre></div></div><div id="-Subpopulation"><div class="title">Subpopulation</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">Subpopulation</span>   Properties of cells in a  specific sub-population
+ (cell-types) are described by this class. It is the primary class that
+ needs to be defined by the user.
+ 
+ <span class="helptopic">Subpopulation</span> properties:
+   <span class=property>objects</span>     - a class of type dynamicprops that defines the
+     different objects (nucleus, cytoplams).
+   <span class=property>markers</span>     - a class of type dynamicprops that defines thes the
+     different markers.
+   <span class=property>placement</span>   - the chosen placement model (plugin) to place the
+     various objects.
+   <span class=property>compositing</span> - the chosen scheme to combine marker levels on 
+     overlapping objects.
+   <span class=property>cell_artifacts</span> - a cell containing a list of operations (plugins
+     classes derived from SimuCell_CellArtifact_Operation), used to
+     apply artifacts on a cell by cell basis e.g. Focal Plane Effects
+ 
+ <span class="helptopic">Subpopulation</span> methods:
+   <span class=property>Subpopulation</span>     - Create a new <span class="helptopic">Subpopulation</span>
+   <span class=property>add_object</span>        - Add a new object (nucleus, cytoplasm) to the 
+     subpopulation
+   <span class=property>add_marker</span>        - Add a new marker to the subpopulation
+   <span class=property>add_cell_artifact</span> - Add a new  cell level artifact operation to
+     the subpopulation
+ 
+ </pre></div></div><div id="-calculate_color_groups"></div><div id="-dependancy_resolution"><div class="title">dependancy_resolution</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">dependancy_resolution</span>  Based on a dependancy matrix return the optimal
+ order to run.
+   [OPTIMAL_ORDER] = <span class="helptopic">dependancy_resolution</span>(DEPENDANCY_MATRIX)
+    displays a dialog box for the user to fill in and returns the
+    filename and path strings and the index of the selected filter.
+    A successful return occurs if a valid filename is specified. If an
+    existing filename is specified or selected, a warning message is
+    displayed. The user may select Yes to use the filename or No to
+    return to the dialog to select another filename.
+ 
+    The DEPENDANCY_MATRIX parameter .</pre></div></div><div id="-merge_cell_intensities"><div class="title">merge_cell_intensities</div>
+      <div class="helptext"><!--helptext --> MERGED_CELL_INTENSITIES  function
+   [MERGED_IMAGE] = MERGED_CELL_INTENSITIES(CELL_INTENSITY_LIST,NEW_WEIGHT)
+ 
+    The CELL_INTENSITY_LIST parameter .
+    The NEW_WEIGHT parameter .</pre></div></div><div id="-overlap_check"><div class="title">overlap_check</div>
+      <div class="helptext"><!--helptext --> <span class="helptopic">overlap_check</span>  function
+   [OVERLAP_ACCEPTABLE] = <span class="helptopic">overlap_check</span>(EXISTING_OBJECT_MASKS, 
+   CURRENT_MASK, OVERLAP_MATRIX, OBJ_NUM)
+ 
+    The EXISTING_OBJECT_MASKS parameter .
+    The CURRENT_MASK parameter .
+    The OVERLAP_MATRIX parameter .
+    The OBJ_NUM parameter .</pre></div></div><div id="-simucell_engine"><div class="title">simucell_engine</div>
+      <div class="helptext"><!--helptext --> simucell_engine  function
+   [simucell_result] = simucell_engine(simucell_params, number_of_images)
+ 
+    The simucell_params parameter .
+    The number_of_images parameter .</pre></div></div></div>   <body><html>

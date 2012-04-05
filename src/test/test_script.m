@@ -214,6 +214,6 @@ simucell_data.overlap=overlap;
 % [obv_del,all_del]=simucell_data.subpopulations{1}.calculate_all_dependancies(...
 %     simucell_data.subpopulations{1}.markers.DAPI);
 % 
-[a,b,c,d,e]=SimuCell_Engine(simucell_data);
+[a,b,c,d,e]=simucell_engine(simucell_data);
 
 end

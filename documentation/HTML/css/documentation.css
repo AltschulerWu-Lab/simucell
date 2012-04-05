@@ -36,6 +36,12 @@ td {
     font-size: 12px;
 }
 
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
 
 .secTitle {
     color:#000000;
@@ -246,7 +252,7 @@ body {
       div.run:active {
         background-position: -51px 0;
       }
-    p, div.container ul {
+    p, div.container ul,ul {
       margin: 25px 0;
       width: 550px;
     }

@@ -1,4 +1,4 @@
-classdef Default_Compositing<SimuCell_compositing_model
+classdef Default_Compositing<SimuCell_Compositing_Model
   %Default_Compositing compositing plugin used to manage the marker
   %level overlap between the different objects (e.g. nucleus, mitochondria,
   %etc...) within a cell.

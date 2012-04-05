@@ -974,7 +974,7 @@ h=waitbar(0,'Please wait..','Position',[400 400 300 60]);
 number_of_images=0;
 try
 number_of_images=round(str2double(get(handles.imageNrEdit,'String')));    
-simucell_result=SimuCell_Engine(myhandles.simucell_data,number_of_images);
+simucell_result=simucell_engine(myhandles.simucell_data,number_of_images);
 catch err
     
   close(h); 

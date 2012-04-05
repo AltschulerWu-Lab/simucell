@@ -1,6 +1,7 @@
-function generate_doc(fullDirName)
+function generate_doc(dirName)
 
   %fileList=getAllFiles(['plugins' filesep]);
+  fullDirName=[pwd filesep dirName];
   fileList=getAllFiles(fullDirName);
   mFileListIndex=cellfun(@(x)regexp(x,'\S*.m$'),fileList,...
     'UniformOutput',false);
@@ -19,10 +20,6 @@ function generate_doc(fullDirName)
   
   
   %FIRST PATH: Build TOC
-  
-    
-  
-  
   previousPluginType='';
   previousPluginSubType='';
   for i=1:length(mFileList)
@@ -37,8 +34,7 @@ function generate_doc(fullDirName)
     else      
       pluginType=fileName(1:lastDirPos-1);
       pluginSubType=[];
-    end
-    
+    end    
     if(~strcmp(previousPluginType,pluginType))
       if(~strcmp('',pluginType))
         finalHTMLDoc=[finalHTMLDoc char(13) '</ul>'];
@@ -50,12 +46,10 @@ function generate_doc(fullDirName)
       previousPluginType=pluginType;
     end
     finalHTMLDoc=[finalHTMLDoc char(13) '<li>– <a href="#' pluginType '-' pluginName(1:end-2) '">' pluginName(1:end-2) '</a></li>'];
-    
   end  
   finalHTMLDoc=[finalHTMLDoc char(13) '</div>'];
   finalHTMLDoc=[finalHTMLDoc char(13) '<div class="container">'];
-  
-  
+    
   previousPluginType='';
   previousPluginSubType='';
   for i=1:length(mFileList)
@@ -105,7 +99,7 @@ function generate_doc(fullDirName)
     '   <body>' char(13)...
     '<html>'];  
   %fid = fopen(['/tmp/' pluginName(1:end-2) '2.html'],'w');
-  fid = fopen(['../documentation/HTML/plugins_API.html'],'w');
+  fid = fopen(['..' filesep 'documentation' filesep 'HTML' filesep dirName '_API.html'],'w');
   fprintf(fid,'%s',finalHTMLDoc);
   fclose(fid);
 

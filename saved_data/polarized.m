@@ -1,6 +1,6 @@
 %% Polarized Cell Example
 % In this example we will construct synthetic images of polarizing cells
-% consisting of two subpopulations )cell types): one about to polarize 
+% consisting of two subpopulations (cell types): one about to polarize 
 % and the other polarized. The cells are "stained" for 3 markers: 
 % The red and green marker represent the front and back during polarization, 
 % while a third blue marker is dependant on local cell density.

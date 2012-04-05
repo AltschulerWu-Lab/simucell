@@ -2,7 +2,7 @@ function simucell_result=simucell(filename,output_type,number_of_images)
 
 addpath(genpath('gui'));
 addpath(genpath('test'));
-addpath(genpath('engine'));
+addpath(genpath('core'));
 addpath(genpath('utils'));
 addpath(genpath('plugins'));
 addpath(genpath(['..' filesep 'saved_data']));
@@ -19,7 +19,7 @@ if(nargin>0)
        error('Not a valid file');
     end
     if(nargin==1)
-        simucell_result=SimuCell_Engine(simucell_data,1);
+        simucell_result=simucell_engine(simucell_data,1);
         figure;image(simucell_result(1).RGB_image);axis off; axis equal;
     else
         switch output_type
@@ -31,7 +31,7 @@ if(nargin>0)
                 end
             case 'image'
                 
-                simucell_result=SimuCell_Engine(simucell_data,number_of_images);
+                simucell_result=simucell_engine(simucell_data,number_of_images);
                 figure;image(simucell_result(1).RGB_image);axis off; axis equal;
                 if(number_of_images>1)
                     folder_name = uigetdir('.','Only first image shown. Pick a folder to save other images');
@@ -46,7 +46,7 @@ if(nargin>0)
                 end
             case 'save_results'
                 
-                simucell_result=SimuCell_Engine(simucell_data,number_of_images);
+                simucell_result=simucell_engine(simucell_data,number_of_images);
                 [file,path,filterindex] =uiputfile(['results_' filename '.mat'],'Save simucell_results (*.mat)');
                 if(filterindex ~= 0)
                     save([path file],'simucell_result');
