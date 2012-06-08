@@ -63,6 +63,10 @@ img=imread('header.png');
 image(img,'parent',handles.Header);
 axis off;
 
+%Add the version on top of the Main Window
+version=fileread('version.txt');
+set(handles.figure1,'name', ['SimuCell v' version]);
+
 %store the row headers into a cell array
 rowHeaders = {'Subpop'};
 %set the row labels

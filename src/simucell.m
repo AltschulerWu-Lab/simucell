@@ -8,6 +8,9 @@ addpath(genpath('plugins'));
 addpath(genpath(['..' filesep 'saved_data']));
 simucell_result=[];
 
+version=fileread('version.txt');
+disp(['SimuCell version ' version]);
+
 if(nargin<=2)
    number_of_images=1; 
 end
