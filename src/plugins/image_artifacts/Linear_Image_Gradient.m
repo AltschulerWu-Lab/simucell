@@ -1,4 +1,4 @@
-classdef Linear_Image_Gradient <SimuCell_CellArtifact_Operation
+classdef Linear_Image_Gradient <SimuCell_ImageArtifact_Operation
   %Linear_Image_Gradient image artifact plugin used to scale intensities
   %by a linear gradient on image in random direction. The falloff in this
   %direction can be linear,exponential or sigmoidal. The max and min value

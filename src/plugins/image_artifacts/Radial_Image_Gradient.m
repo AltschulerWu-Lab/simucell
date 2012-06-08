@@ -1,5 +1,5 @@
-classdef Radial_Image_Gradient <SimuCell_CellArtifact_Operation
-  %Radial_Image_Gradient image artifact plugin used to sccale intensities
+classdef Radial_Image_Gradient <SimuCell_ImageArtifact_Operation
+  %Radial_Image_Gradient image artifact plugin used to scale intensities
   %by a radial gradient on image in random location. The falloff in this
   %direction can be linear,exponential or sigmoidal. The max and min value
   %of the intensity scaling can be specified.

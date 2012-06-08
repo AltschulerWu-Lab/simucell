@@ -1,8 +1,3 @@
-body {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
-}
-
 a {
     color:#000099;
 }
@@ -179,10 +174,7 @@ a.topiclink {
 
 
 body {
-      font-size: 14px;
-      line-height: 22px;
-      font-family: Helvetica Neue, Helvetica, Arial;
-      background: #f4f4f4 url(docs/images/background.png);
+      background: #f4f4f4;
     }
     .interface {
       /*font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif !important;*/
@@ -191,7 +183,7 @@ body {
     div#sidebar {
       background: #fff;
       position: fixed;
-      top: 0; left: 0; bottom: 0;
+      top: 60px; left: 0; bottom: 0;
       width: 240px;
       overflow-y: auto;
       overflow-x: hidden;
@@ -239,135 +231,10 @@ body {
               color:#990000;
             }
     div.container {
+      
+      line-height: 22px;
       position: relative;
       width: 560px;
       margin: 40px 0 50px 300px;
+      z-index:-1;
     }
-    div.run {
-      position: absolute;
-      right: 15px;
-      width: 26px; height: 18px;
-      background: url('docs/images/arrows.png') no-repeat -26px 0;
-    }
-      div.run:active {
-        background-position: -51px 0;
-      }
-    p, div.container ul,ul {
-      margin: 25px 0;
-      width: 550px;
-    }
-      p.warning {
-        font-size: 12px;
-        line-height: 18px;
-        font-style: italic;
-      }
-      div.container ul {
-        list-style: circle;
-        padding-left: 15px;
-        font-size: 13px;
-        line-height: 18px;
-      }
-        div.container ul li {
-          margin-bottom: 10px;
-        }
-        div.container ul.small {
-          font-size: 12px;
-        }
-    a, a:visited {
-      color: #444;
-    }
-    a:active, a:hover {
-      color: #000;
-    }
-    a.punch {
-      display: inline-block;
-      background: #4162a8;
-      border-top: 1px solid #38538c;
-      border-right: 1px solid #1f2d4d;
-      border-bottom: 1px solid #151e33;
-      border-left: 1px solid #1f2d4d;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      -ms-border-radius: 4px;
-      -o-border-radius: 4px;
-      border-radius: 4px;
-      -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      -moz-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      -ms-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      -o-box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      box-shadow: inset 0 1px 10px 1px #5c8bee, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-      color: #fff;
-      font: bold 14px "helvetica neue", helvetica, arial, sans-serif;
-      line-height: 1;
-      margin-bottom: 15px;
-      padding: 8px 0 10px 0;
-      text-align: center;
-      text-shadow: 0px -1px 1px #1e2d4d;
-      text-decoration: none;
-      width: 225px;
-      -webkit-background-clip: padding-box; }
-      a.punch:hover {
-        -webkit-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        -moz-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        -ms-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        -o-box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        box-shadow: inset 0 0px 20px 1px #87adff, 0px 1px 0 #1d2c4d, 0 6px 0px #1f3053, 0 8px 4px 1px #111111;
-        cursor: pointer; }
-      a.punch:active {
-        -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        -moz-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        -ms-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        -o-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-        margin-top: 5px; margin-bottom: 10px }
-    a img {
-      border: 0;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      padding-top: 20px;
-    }
-      h2 {
-        font-size: 22px;
-      }
-    b.header {
-      font-size: 18px;
-      line-height: 35px;
-    }
-    span.alias {
-      font-size: 14px;
-      font-style: italic;
-      margin-left: 20px;
-    }
-    table {
-      margin: 15px 0 0; padding: 0;
-    }
-      tr, td {
-        margin: 0; padding: 0;
-      }
-        td {
-          padding: 0px 15px 5px 0;
-        }
-    code, pre, tt {
-      font-family: Monaco, Consolas, "Lucida Console", monospace;
-      font-size: 12px;
-      line-height: 18px;
-      font-style: normal;
-    }
-      tt {
-        padding: 0px 3px;
-        background: #fff;
-        border: 1px solid #ddd;
-        zoom: 1;
-      }
-      code {
-        margin-left: 20px;
-      }
-      pre {
-        font-size: 12px;
-        padding: 2px 0 2px 15px;
-        border: 4px solid #bbb; border-top: 0; border-bottom: 0;
-        margin: 0px 0 0px;
-      }
-      img.example_image {
-        margin: 0px auto;
-      }

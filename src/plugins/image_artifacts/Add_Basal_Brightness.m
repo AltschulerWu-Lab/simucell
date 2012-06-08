@@ -1,4 +1,4 @@
-classdef Add_Basal_Brightness <SimuCell_CellArtifact_Operation
+classdef Add_Basal_Brightness <SimuCell_ImageArtifact_Operation
   %Add_Basal_Brightness image artifact plugin used to add a basal level of
   %intensity to all pixels. Intensity saturates at 1.
   %

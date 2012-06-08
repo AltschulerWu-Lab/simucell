@@ -1,890 +1,0 @@
-<html> <head>    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">    <link rel="stylesheet" href="css/documentation.css">    <title>SimuCell Plugins Help</title> </head> <body><div id="sidebar" class="interface"></ul><a class="toc_title" href="#cell_artifacts">cell artifacts</a><ul class="toc_section"><li>– <a href="#cell_artifacts-Cell_Staining_Artifacts">Cell_Staining_Artifacts</a></li><li>– <a href="#cell_artifacts-Out_Of_Focus_Cells">Out_Of_Focus_Cells</a></li></ul><a class="toc_title" href="#composite">composite</a><ul class="toc_section"><li>– <a href="#composite-Default_Compositing">Default_Compositing</a></li></ul><a class="toc_title" href="#image_artifacts">image artifacts</a><ul class="toc_section"><li>– <a href="#image_artifacts-Add_Basal_Brightness">Add_Basal_Brightness</a></li><li>– <a href="#image_artifacts-Linear_Image_Gradient">Linear_Image_Gradient</a></li><li>– <a href="#image_artifacts-Radial_Image_Gradient">Radial_Image_Gradient</a></li></ul><a class="toc_title" href="#markers">markers</a><ul class="toc_section"><li>– <a href="#markers-Angular_Marker_Gradient">Angular_Marker_Gradient</a></li><li>– <a href="#markers-Cell_Density_Dependant_Marker_Level">Cell_Density_Dependant_Marker_Level</a></li><li>– <a href="#markers-Constant_Dependant_Marker_Level">Constant_Dependant_Marker_Level</a></li><li>– <a href="#markers-Constant_Marker_Level">Constant_Marker_Level</a></li><li>– <a href="#markers-Distance_To_Edge_Marker_Gradient">Distance_To_Edge_Marker_Gradient</a></li><li>– <a href="#markers-Distance_To_Shape_Marker_Gradient">Distance_To_Shape_Marker_Gradient</a></li><li>– <a href="#markers-Linear_Marker_Gradient">Linear_Marker_Gradient</a></li><li>– <a href="#markers-Locally_Dependant_Marker_Level">Locally_Dependant_Marker_Level</a></li><li>– <a href="#markers-Microenvironmental_Marker_Level">Microenvironmental_Marker_Level</a></li><li>– <a href="#markers-Perlin_Texture">Perlin_Texture</a></li><li>– <a href="#markers-Rescale_Marker_Levels">Rescale_Marker_Levels</a></li><li>– <a href="#markers-Turbulent_Texture">Turbulent_Texture</a></li></ul><a class="toc_title" href="#placement">placement</a><ul class="toc_section"><li>– <a href="#placement-Clustered_Placement">Clustered_Placement</a></li><li>– <a href="#placement-Nearby_Placement">Nearby_Placement</a></li><li>– <a href="#placement-Random_Placement">Random_Placement</a></li></ul><a class="toc_title" href="#shape">shape</a><ul class="toc_section"><li>– <a href="#shape-Centered_Cytoplasm_Model">Centered_Cytoplasm_Model</a></li><li>– <a href="#shape-Cytoplasm_Model">Cytoplasm_Model</a></li><li>– <a href="#shape-Fluid_Shape">Fluid_Shape</a></li><li>– <a href="#shape-Centered_Nucleus_Model">Centered_Nucleus_Model</a></li><li>– <a href="#shape-Nucleus_Model">Nucleus_Model</a></li><li>– <a href="#shape-SLML_Nucleus_Model">SLML_Nucleus_Model</a></li><li>– <a href="#shape-Lipid_Droplet_Model">Lipid_Droplet_Model</a></li><li>– <a href="#shape-Microtubule_Fibre_Model">Microtubule_Fibre_Model</a></li></div><div class="container"><div id="cell_artifacts-Cell_Staining_Artifacts"><div class="secTitle" id="cell_artifacts">cell artifacts</div><div class="title">Cell_Staining_Artifacts</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Cell_Staining_Artifacts</span> cell artifact plugin used to make a specified
- subpopulation's fraction of cells blurred, to mimic an out of focal
- plane effect.
- 
- <span class="helptopic">Cell_Staining_Artifacts</span> Properties:
-    <span class=property>fraction_bleached</span>    - Proportion of cell which will bleached for the
-    specific subpopulation.
-      Default value : 0.1
-      Range value   : 0 to 1
-    <span class=property>fraction_unstained</span>   - Proportion of cell which will unstained for 
-    the specific subpopulation.
-      Default value : 0.1
-      Range value   : 0 to 1
-    <span class=property>bleaching_multiplier</span> - Intensities of bleached cells are scaled by 
-    this factor.
-      Default value : 5
-      Range value   : 0 to Inf
-    <span class=property>unstained_multiplier</span> - Intensities of unstained cells are scaled by
-    this factor.
-      Default value : 0.1
-      Range value   : 0 to 1
- 
- Usage:<pre>
- op=<span class="helptopic">Cell_Staining_Artifacts</span>();
- set(op,'fraction_bleached',1);
- set(op,'fraction_unstained',2);
- subpop{1}.add_cell_artifact(op);</pre></div></div><div id="cell_artifacts-Out_Of_Focus_Cells"><div class="title">Out_Of_Focus_Cells</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Out_Of_Focus_Cells</span> cell artifact plugin used to make a specified
- subpopulation's fraction of cells blurred, to mimic an out of focal
- plane effect.
- 
- <span class="helptopic">Out_Of_Focus_Cells</span> Properties:
-    <span class=property>fraction_blurred</span> - Proportion of cell which will blured for the 
-    specific subpopulation.
-      Default value : 0.1
-      Range value   : 0 to 1
-    <span class=property>blur_radius</span>      - Blur radius in pixels. 1 is pretty small,
-    chosen to produce a very slight smoothing effect on all cells.
-      Default value : 10
-      Range value   : 0 to Inf
- 
- Usage:<pre>
- op=<span class="helptopic">Out_Of_Focus_Cells</span>();
- set(op,'fraction_blurred',1);
- set(op,'blur_radius',2);
- subpop{1}.add_cell_artifact(op);</pre></div></div><div id="composite-Default_Compositing"><div class="secTitle" id="composite">composite</div><div class="title">Default_Compositing</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Default_Compositing</span> compositing plugin used to manage the marker
- level overlap between the different objects (e.g. nucleus, mitochondria,
- etc...) within a cell.
- 
- <span class="helptopic">Default_Compositing</span> Properties:
-    <span class=property>container_weight</span>    - weight of the container (e.g. a cell) while the
-    contained (e.g. <span class=property>nucleus</span>, nuclear body) is given (1 - weight).
-      Default value : 0
-      Range value   : 0 to 1
- 
- Usage:<pre>
- subpop{2}.compositing=<span class="helptopic">Default_Compositing</span>();
- set(subpop{2}.compositing,'container_weight',0.3);</pre></div></div><div id="image_artifacts-Add_Basal_Brightness"><div class="secTitle" id="image_artifacts">image artifacts</div><div class="title">Add_Basal_Brightness</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Add_Basal_Brightness</span> image artifact plugin used to add a basal level of
- intensity to all pixels. Intensity saturates at 1.
- 
- <span class="helptopic">Add_Basal_Brightness</span> Properties:
-    <span class=property>basal_level</span>   - Intensity added to to all pixels [0 -none, 1- full].
-      Default value : 0.1
-      Range value   : 0 to 1
- 
- Usage:<pre>
- op=<span class="helptopic">Add_Basal_Brightness</span>();
- set(op,'basal_level',0.1);</pre></div></div><div id="image_artifacts-Linear_Image_Gradient"><div class="title">Linear_Image_Gradient</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Linear_Image_Gradient</span> image artifact plugin used to scale intensities
- by a linear gradient on image in random direction. The falloff in this
- direction can be linear,exponential or sigmoidal. The max and min value
- of the intensity scaling can be specified.
- 
- <span class="helptopic">Linear_Image_Gradient</span> Properties:
-    <span class=property>falloff_coefficient</span> - Measures how quickly intensity falls off
-    [0 - slow, 1 - immediately].
-      Default value : 0.1
-      Range value   : 0 to 1
-    <span class=property>max_multiplier</span>     - Max value multiplying the input intensities
-      Default value : 1
-      Range value   : 0 to Inf
-    <span class=property>min_multiplier</span>     - Min value multiplying the input intensities
-      Default value : 0
-      Range value   : 0 to Inf
-    <span class=property>falloff_type</span>       - Functional form to calculate intensity fall-off
-      Default value : 'Linear'
-      Available Values: 'Linear','Exponential','Sigmoidal'
- 
- Usage:<pre>
- op=<span class="helptopic">Linear_Image_Gradient</span>();
- set(op,'falloff_coefficient',0.1);
- set(op,'max_multiplier',1);
- set(op,'min_multiplier',0);
- set(op,'falloff_type','Linear');</pre></div></div><div id="image_artifacts-Radial_Image_Gradient"><div class="title">Radial_Image_Gradient</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Radial_Image_Gradient</span> image artifact plugin used to sccale intensities
- by a radial gradient on image in random location. The falloff in this
- direction can be linear,exponential or sigmoidal. The max and min value
- of the intensity scaling can be specified.
- 
- <span class="helptopic">Radial_Image_Gradient</span> Properties:
-    <span class=property>falloff_radius</span> - Distance (in pixels) over which radius falls off
-      Default value : 100
-      Range value   : 1 to Inf
-    <span class=property>max_multiplier</span>     - Max value multiplying the input intensities
-      Default value : 1
-      Range value   : 0 to Inf
-    <span class=property>min_multiplier</span>     - Min value multiplying the input intensities
-      Default value : 0
-      Range value   : 0 to Inf
-    <span class=property>falloff_type</span>       - Functional form to calculate intensity fall-off
-      Default value : 'Linear'
-      Available Values: 'Linear','Gaussian','Exponential','Sigmoidal'
- 
- Usage:<pre>
- op=<span class="helptopic">Radial_Image_Gradient</span>();
- set(op,'falloff_radius',100);
- set(op,'max_multiplier',1);
- set(op,'min_multiplier',0);
- set(op,'falloff_type','Linear');</pre></div></div><div id="markers-Angular_Marker_Gradient"><div class="secTitle" id="markers">markers</div><div class="title">Angular_Marker_Gradient</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Angular_Marker_Gradient</span> marker plugin used to scale intensities by an
- angular gradient on image in random direction.
- 
- <span class="helptopic">Angular_Marker_Gradient</span> Properties:
-    <span class=property>center</span> - Point with respect to which angles are measured
-      Default value : 'Centroid'
-      Available Values : 'Centroid','Furthest From Edge','Random'
-    <span class=property>angular_width</span> - Angular Width Of High Intesity Region
-      Default value : 30
-      Range value   : 0 to 360
-    <span class=property>falloff_type</span> - Functional form to calculate intensity fall-off
-      Default value : 'Linear'
-      Available Values: 'Linear','Exponential','Sigmoidal'
-    <span class=property>min_multiplier</span> - Min value multiplying the input intensities
-      Default value : 0
-      Range value   : 0 to Inf
-    <span class=property>max_multiplier</span> - Max value multiplying the input intensities
-      Default value : 1
-      Range value   : 0 to Inf
- 
- Usage:<pre>
-  add_marker(subpop{2},'Myosin','Green');
- 
- op=<span class="helptopic">Angular_Marker_Gradient</span>();
- set(op,'center','Furthest From Edge');
- set(op,'angular_width',30);
- set(op,'falloff_type','Exponential');
- set(op,'min_multiplier',0);
- 
- subpop{2}.markers.Myosin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Cell_Density_Dependant_Marker_Level"><div class="title">Cell_Density_Dependant_Marker_Level</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Cell_Density_Dependant_Marker_Level</span> marker plugin used to scale marker
- levels based on local cell density.
- 
- <span class="helptopic">Cell_Density_Dependant_Marker_Level</span> Properties:
-    <span class=property>increasing_or_decreasing</span> - Increasing or Decreasing function of local
-    cell density
-      Default value : Increasing
-      Available values   : 'Increasing','Decreasing'
-    <span class=property>falloff_radius</span> - Distance (in pixels) over which intensity falls of
-    characteristically
-      Default value : 200
-      Range value   : 0 to Inf
-    <span class=property>falloff_type</span> - Functional form to calculate marker level based on
-    distance to other cells
-      Default value : 'Gaussian'
-      Available Values: 'Linear','Exponential','Gaussian'
-    <span class=property>min_level</span> - Min Level (theoretically, without saturation etc) that
-    Marker could reach
-      Default value : 0
-      Range value   : 0 to Inf
-    <span class=property>max_level</span> - Max Level (theoretically, without saturation etc) that
-    Marker can reach
-      Default value : 1
-      Range value   : 0 to Inf
- 
- Usage:<pre>
-  add_marker(subpop{2},'Density_Marker','Blue');
- 
-  op=<span class="helptopic">Cell_Density_Dependant_Marker_Level</span>();
-  set(op,'max_level',2);
-  set(op,'falloff_radius',200);
-  set(op,'falloff_type','Gaussian');
-  set(op,'increasing_or_decreasing','Decreasing');
- 
-  subpop{2}.markers.Density_Marker.nucleus.AddOperation(op);</pre></div></div><div id="markers-Constant_Dependant_Marker_Level"><div class="title">Constant_Dependant_Marker_Level</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Constant_Dependant_Marker_Level</span> marker plugin used constant
- marker level dependant (linearly) on level of chosen marker on a
- specified region.
- Output level is slope*F(marker_shape|region)+intercept.
- F is the function (mean,median etc) calculated on marker restricted to
- region
- If x_(m,r) is the mean level in of marker m in region r, then
- this plugin sets the intensity of chosen marker in chosen region to be:
- slope*x_(m,r) + intercept
- 
- <span class="helptopic">Constant_Dependant_Marker_Level</span> Properties:
-    <span class=property>slope</span> - Slope of linear transform. Slope in the equation above,
-    negative sign means inverse relation
-      Default value : 1
-      Range value   : -Inf,Inf
-    <span class=property>intercept</span> - Intercept of linear transform. Intercept in equation
-    above. This is the level the marker will have if the other 
-    marker x_(m,r) is zero
-      Default value : 0
-      Range value   : -Inf,Inf
-    <span class=property>marker</span> - Chosen Marker (on shape)&gt; The other marker i.e. m on which
-    this marker depends
-      Default value : -
-    <span class=property>region</span> - Region on which marker is calculated
-      Default value : -
-    <span class=property>func</span> - Function calculated on specified marker over specified region.
-    Returns a single number
-      Default value : 'Mean'
-      Available values   : 'Mean','Median','Max','Min'
- 
- Usage:<pre>
-  %The level of this marker in a cell is inversely correlated with the
-  %presence of the Red 'menv' marker. This is achieved using the
-  %'<span class="helptopic">Constant_Dependant_Marker_Level</span>' plugin.
-  %It sets the marker level in to a constant, with the value of this
-  %constant being varying with the mean level of another marker.
- 
-  op=<span class="helptopic">Constant_Dependant_Marker_Level</span>();
- 
-  %If x_(m,r) is the mean level in of marker m in region r, then
-  %this plugin sets the intensity of chosen marker in chosen region to
-  %be: slope*x_(m,r) + intercept
-  %slope in the equation above, negative sign means inverse relation
-  set(op,'slope',-2.5);
- 
-  %Intercept in equation above. This is the level the marker will have
-  %if the other marker x_(m,r) is zero
-  set(op,'intercept',0.9);
- 
-  %The other marker i.e. m on which this marker depends
-  set(op,'marker',subpop{1}.markers.menv.cytoplasm);
- 
-  %The region on which m is calculated i.e. r
-  set(op,'region',subpop{1}.objects.cytoplasm);
-  set(op,'func','Mean');
- 
-  %The last three lines specify that the mean level of the menv marker
-  %measured on the cytoplasmic region will be used to determine the
-  %level of GFP.
- 
-  subpop{1}.markers.GFP.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Constant_Marker_Level"><div class="title">Constant_Marker_Level</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Constant_Marker_Level</span> marker plugin used to set a constant
- marker level intensity for all pixels in a cell. This level is sampled
- from a normal distribution of specifiable mean and variation
- 
- <span class="helptopic">Constant_Marker_Level</span> Properties:
-    <span class=property>mean_level</span> - Mean Marker Level[0-low, 1-High]
-      Default value : 0.5
-      Range value   : 0 to 1
-    <span class=property>sd_level</span> - Standard Deviation
-    [0- all cells have same level, Inf- uniform sampling]
-      Default value : 0.2
-      Range value   : 0 to Inf
- 
- Usage:<pre>
- %Set a constant marker level (uniform across entire object, but varying
- %from cell to cell)
- op=<span class="helptopic">Constant_Marker_Level</span>();
- 
- %The marker level for a cell is sampled from a normal distribution with
- %this mean
- set(op,'mean_level',0.7);
- %This standard deviation
- set(op,'sd_level',0.1);
- 
- %Once the operation is defined, we add it to the queue
- subpop{1}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Distance_To_Edge_Marker_Gradient"><div class="title">Distance_To_Edge_Marker_Gradient</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Distance_To_Edge_Marker_Gradient</span> marker plugin used to scale marker levels
- based on distance to edge of shape
- 
- <span class="helptopic">Distance_To_Edge_Marker_Gradient</span> Properties:
-    <span class=property>falloff_radius</span> - Characteristic distance from edge (in pixels) for
-    intensity change
-      Default value : 10
-      Range value   : 0 to Inf
-    <span class=property>falloff_type</span> - Functional form to calculate level fall-off
-      Default value : 'Gaussian'
-      Available values : 'Linear','Gaussian','Exponential'
-    <span class=property>increasing_or_decreasing</span> - Increasing or Decreasing function of
-    distance to edge
-      Default value : 'Increasing'
-      Available values : 'Increasing','Decreasing'
- 
- Usage:<pre>
- %Add Radial Gradient
- %Have the intensity fall off rapidly with the distance to the edge
- op=<span class="helptopic">Distance_To_Edge_Marker_Gradient</span>();
- 
- %pixels over which intensity falls off by 1/e
- set(op,'falloff_radius',10);
- 
- %the intensity fall off functional form
- set(op,'falloff_type','Gaussian');
- 
- %Intensity decreases with distance to the edge
- set(op,'increasing_or_decreasing','Decreasing');
- 
- subpop{1}.markers.Myosin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Distance_To_Shape_Marker_Gradient"><div class="title">Distance_To_Shape_Marker_Gradient</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Distance_To_Shape_Marker_Gradient</span> marker plugin used to scale marker
- level based on distance to other objects
- 
- <span class="helptopic">Distance_To_Shape_Marker_Gradient</span> Properties:
-    <span class=property>distance_to</span> - Marker levels are scaled based on distance to this shape
-      Default value : -
-    <span class=property>falloff_radius</span> - Distance over which intensity falls off
-    characteristically (e.g. 1/e)
-      Default value : 10
-      Range value : 0 to Inf
-    <span class=property>falloff_type</span> - Functional form to calculate level fall-off
-      Default value : 'Gaussian'
-      Available values : 'Linear','Gaussian','Exponential'
-    <span class=property>increasing_or_decreasing</span> - Increasing or Decreasing function of
-    distance to edge
-      Default value : 'Increasing'
-      Available values : 'Increasing','Decreasing'
- 
- Usage:<pre>
- %We want the first marker to essentially cluster near the center of the
- %cell, and die out before the edge of the cell. Since the cells in this
- %subpopulation are spherical, this can be
- %parametrized in terms of the distance to the nucleus.
- %Add Radial Gradient (scaling of intensity at a pixel decreases with
- %distance of that pixel to the nucleus)
- op=<span class="helptopic">Distance_To_Shape_Marker_Gradient</span>();
- 
- %The number of pixels over which intensity falls by 1/e
- set(op,'falloff_radius',10);
- 
- %The intensity fall off functional form
- set(op,'falloff_type','Gaussian');
- %Whether intensity increases or decreases based on the distance
- set(op,'increasing_or_decreasing','Decreasing');
- 
- %Distance is measure wrt the nucleus
- set(op,'distance_to',subpop{1}.objects.nucleus);
- subpop{1}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Linear_Marker_Gradient"><div class="title">Linear_Marker_Gradient</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Linear_Marker_Gradient</span> marker plugin used to scale intensities by a linear
- gradient on image in random direction. The falloff in this direction can
- be linear,exponential or sigmoidal. The max and min value of the intensity
- scaling can be specified
- 
- <span class="helptopic">Linear_Marker_Gradient</span> Properties:
-    <span class=property>falloff_coefficient</span> - Measures how quickly intensity falls off
-    [0 -slow, 1- immediately]
-      Default value : 0.1
-      Range value : 0 to 1
-    <span class=property>max_multiplier</span> - Max value multiplying the input intensities
-      Default value : 1
-      Range value : 0 to Inf
-    <span class=property>min_multiplier</span> - Min value multiplying the input intensities
-      Default value : 0
-      Default value : 0 to Inf
-    <span class=property>falloff_type</span> - Functional form to calculate intensity fall-off
-      Default value : 'Linear'
-      Available values : 'Linear','Exponential','Sigmoidal'
- 
- Usage:<pre>
- %Add Linear Gradient
- op=<span class="helptopic">Linear_Marker_Gradient</span>();
- 
- %Set how quickly intensity falls off (0 slow, 1 immediately)
- set(op,'falloff_coefficient',0.1);
- 
- %Max value multiplying the input intensities
- set(op,'max_multiplier','1');
- 
- %Distance is measure wrt the nucleus
- set(op,falloff_type,'Linear');
- 
- %Add the operation to the object marker
- subpop{1}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Locally_Dependant_Marker_Level"><div class="title">Locally_Dependant_Marker_Level</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Locally_Dependant_Marker_Level</span> constant marker level dependant
- (linearly) on level of chosen marker on a specified region.
- Output level is slope*F(marker_shape|region)+intercept.
- F is the function (mean,median etc) calculated on marker restricted
- to region.
- 
- <span class="helptopic">Locally_Dependant_Marker_Level</span> Properties:
-    <span class=property>slope</span> - Slope of linear transform
-    [0 -slow, 1- immediately]
-      Default value : 1
-      Range value : -Inf to Inf
-    <span class=property>intercept</span> - Intercept of linear transform
-      Default value : 0
-      Range value : -Inf to Inf
-    <span class=property>marker</span> - Chosen Marker (on shape)
-      Default value : -
- 
- Usage:<pre>
- %Marker 1
- add_marker(subpop{2},'Myosin','Red');
- (...)
- %Marker 2
- add_marker(subpop{2},'Actin','Green');
- 
- %In this case we have the green marker depend on the the red one, and
- %avoid it. This is done at a pixel level. If I is the intensity of the
- %red marker at a pixel then the intensity of the green marker is:
- %slope*I+intercept (where slope and intercept are specified below). A
- %negative value of the slope implies supression.
- 
- op=<span class="helptopic">Locally_Dependant_Marker_Level</span>();
- 
- %The red marker strongly supresses the green one.
- set(op,'slope',-100);
- set(op,'intercept',0.8);
- set(op,'marker',subpop{2}.markers.Myosin.cytoplasm);
- subpop{2}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Microenvironmental_Marker_Level"><div class="title">Microenvironmental_Marker_Level</div>
-      <div class="helptext"><!--helptext --> Constant marker level determined by position of cell
- 
- <span class="helptopic">Microenvironmental_Marker_Level</span> Properties:
-    <span class=property>length_scale</span> - Scale of Noise [2- long length scale, 6- short]].
-    The length scale over which spatial correlation exists for the
-    microenvironment.
-      Default value : 2
-      Range value : 2 to 6
-    <span class=property>frequency_falloff</span> - Frequency Falloff [0 (Only lowest frequency) -
-    1 (All frequencies)]]. Each higher frequency component amplitude is
-    smaller by this scaling factor.
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>noise_type</span> - The type of variation in micro-environment. Turbulent
-    causes sharper transitions.
-      Default value : 'Standard 1/f'
-      Available values : 'Standard 1/f','Turbulent'
- 
- Usage:<pre>
- op=<span class="helptopic">Microenvironmental_Marker_Level</span>();
- 
- %This plugin first generates a semi-random (with some spatial 
- %correlations) 'micro-environment' intensity over the image. 
- %Then, the level of the the marker is proportional to the intensity
- %of the micro-environment at the location of the cell.
- 
- %The length scale over which spatial correlation exists for the
- %microenvironment. (2 means variations at the length of image, 6 is high
- %frequency variation)
- set(op,'length_scale',3);
- 
- %Each higher frequency component amplitude is smaller by this scaling 
- %factor
- set(op,'frequency_falloff',0.8);
- 
- %The type of variation in micro-environment. Turbulent causes sharper 
- %transitions
- set(op,'noise_type','Turbulent');
- 
- %Once the operation is defined, we add it to the queue
- subpop{1}.markers.menv.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Perlin_Texture"><div class="title">Perlin_Texture</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Perlin_Texture</span> marker plugin used to scales the intensity by a randomly
- generated texture function.
- 
- <span class="helptopic">Perlin_Texture</span> Properties:
-    <span class=property>add_or_multiply</span> - Should the noise be additive OR multiplicative
-      Default value : 'Multiply'
-      Available values : 'Add','Multiply'
-    <span class=property>amplitude</span> - Amplitude of Noise [0-low, 1-High]
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>length_scale</span> - Scale of Noise [2 - long length scale, 5-short]]
-      Default value : 2
-      Range value : 2 to 6
-    <span class=property>frequency_falloff</span> - Frequency Falloff [0 (Only lowest frequency) - 1 
-    (All frequencies)]]
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>noise_type</span> - The type of variation in perlin.
-      Default value : 'Standard 1/f'
-      Available values : 'Standard 1/f','Turbulent'
- 
- Usage:<pre>
- %Perlin Texture (scale the intensity from the last step by a noisy 
- %texture, to make it look more realistic)
- op=<span class="helptopic">Perlin_Texture</span>();
- 
- %The amplitude of the noise (0 is not noise, and you probably don't
- %want to go much beyond 1, since intensities are in the [0-1] range)
- set(op,'amplitude',0.3);
- 
- %This describes the length scale over which intensity varies. 2 is low
- %wave-length (coarse variation) and 6 is very fine high frequency
- %(fine variation)
- set(op,'length_scale',5);
- 
- %Each higher frequency component amplitude is smaller by this scaling
- %factor
- set(op,'frequency_falloff',0.5);
- 
- %The type of noise. Turbulent causes sharper transitions
- set(op,'noise_type','Turbulent');
- 
- subpop{1}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Rescale_Marker_Levels"><div class="title">Rescale_Marker_Levels</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Rescale_Marker_Levels</span> marker plugin used to rescale marker
- linearly levels to lie within a specified range.
- 
- <span class="helptopic">Rescale_Marker_Levels</span> Properties:
-    <span class=property>min_intensity</span> - Minimum Intensity After Rescaling
-      Default value : 1
-      Range value : 0 to 1
-    <span class=property>max_intensity</span> - Maximum Intensity After Rescaling
-      Default value : 1
-      Range value : 0 to 1
- 
- Usage:<pre>
- %Rescale Marker Level
- op=<span class="helptopic">Rescale_Marker_Levels</span>();
- 
- %Minimum Intensity After Rescaling
- set(op,'min_intensity',0.5);
- 
- %Maximum Intensity After Rescaling
- set(op,'max_intensity',0.9);
- 
- subpop{1}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="markers-Turbulent_Texture"><div class="title">Turbulent_Texture</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Turbulent_Texture</span> marker plugin used to add a turbulent texture effect
- which "shuffles" the pixels to give the appearance of turbulence.
- Is only useful if the existing levels are non-uniform.
- 
- <span class="helptopic">Turbulent_Texture</span> Properties:
-    <span class=property>max_displacement</span> - Turbulent noise is essentially a rearrangment of
-    pixels. This parameter specifies the max distance a pixel can be
-    moved.
-      Default value : 10
-      Range value : 0 to 50
-    <span class=property>length_scale</span> - Scale of Noise [2 - long length scale, 5-short]]
-      Default value : 3
-      Range value : 2 to 6
-    <span class=property>frequency_falloff</span> - Scale of Noise [2 - long length scale, 5-short]]
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>smooth_edges</span> - Smooth the intensity at formerly FG pixels, now in BG?
-      Default value : 'No'
-      Available values : 'Yes','No'
- 
- Usage:<pre>
- %Create the impression of turbulence using the turbulent
- %texture which semi-randomly moves pixels around locally, as might 
- %happen in a turbulent fluid.
- op=<span class="helptopic">Turbulent_Texture</span>();
- 
- %This is the max distance in pixels that a pixel can be moved
- set(op,'max_displacement',7);
- 
- %This describes the length scale over which intensity varies. 2 is low
- %wave-length (coarse variation) and 6 is very fine high frequency
- %(fine variation)
- set(op,'length_scale',5);
- 
- %Each higher frequency component amplitude is smaller by this scaling
- %factor
- set(op,'frequency_falloff',0.8);
- 
- subpop{1}.markers.Actin.cytoplasm.AddOperation(op);</pre></div></div><div id="placement-Clustered_Placement"><div class="secTitle" id="placement">placement</div><div class="title">Clustered_Placement</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Clustered_Placement</span> placement plugin used to for cell clusters
- 
- <span class="helptopic">Clustered_Placement</span> Properties:
-    <span class=property>number_of_clusters</span> - Number Of Clusters Of Cells in Image
-      Default value : 2
-      Range value : 0 to 500
-    <span class=property>clustering_probability</span> - Probability that a cell will be placed close
-    to a cluster (otherwise position is random)
-      Default value : 0.9
-      Range value : 0 to 1
-    <span class=property>cluster_width</span> - Positions are selected with gaussian probability
-    distributions of this width (in pixels) centered at the clusters
-      Default value : 200
-      Range value : 1 to Inf
-    <span class=property>boundary</span> - Boundary Of Image Inside Which No Cells Will be Centered in
-    pixels
-      Default value : 100
-      Range value : 0 to Inf
- 
- Usage:<pre>
- %Set the Model Placement
- %Placement refers to the position of cell in an image.
- %Cells in different subpopulations can display different patterns of
- %placement (e.g, one type of cells may be clustered or placed randomly)
- %Placement for cells in a subpopulation are specified through the
- %placement property in subpopulation, which you need to set the the
- %appropriate placement model.
- %Models for placments are classes of type SimuCell_Placement_Model, and
- %are implemented via plugins (usually placed in the 'plugins/placement/'
- %directory).
- %Here we choose to have cells placed close to form cluster, and so choose
- %the '<span class="helptopic">Clustered_Placement</span>' model.
- subpop{1}.placement=<span class="helptopic">Clustered_Placement</span>();
- 
- %Number of clusters of cells in image
- set(subpop{1}.placement,'number_of_clusters',10);
- 
- %Positions are selected with gaussian probability
- %distributions of this width (in pixels) centered at the clusters.
- set(subpop{1}.placement,'cluster_width',200);
- 
- %The boundary is the number of pixels around the edge of the image where
- %no cells are placed.
- set(subpop{1}.placement,'boundary',100);
- 
- %Probability that the cell is part of the cluster, non-clustered cells are
- %placed randomly.
- set(subpop{1}.placement,'clustering_probability',0.8);</pre></div></div><div id="placement-Nearby_Placement"><div class="title">Nearby_Placement</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Nearby_Placement</span> placement plugin used so cells are placed to be close to
- existing cells.
- 
- <span class="helptopic">Nearby_Placement</span> Properties:
-    <span class=property>clustering_probability</span> - Probability that a cell will be placed close
-    to a cluster (otherwise position is random).
-      Default value : 0.9
-      Range value : 0 to 1
-    <span class=property>distance_to_existing</span> - Positions are selected with Poisson probability
-    distributions with this mean distance.
-      Default value : 200
-      Range value : 1 to Inf
-    <span class=property>boundary</span> - Boundary Of Image Inside Which No Cells Will be Centered in
-    pixels.
-      Default value : 100
-      Range value : 0 to Inf
- 
- Usage:<pre>
- %Set the Model Placement
- %Placement refers to the position of cell in an image.
- %Cells in different subpopulations can display different patterns of
- %placement (e.g, one type of cells may be clustered or placed randomly)
- %Placement for cells in a subpopulation are specified through the
- %placement property in subpopulation, which you need to set the the
- %appropriate placement model.
- %Models for placements are classes of type SimuCell_Placement_Model,
- %and are implemented via plugins (usually placed in the 
- %'plugins/placement/' directory).
- %Here we choose to have cells placed close to existing cells, and so
- %choose the '<span class="helptopic">Nearby_Placement</span>' model.
- subpop{1}.placement=<span class="helptopic">Nearby_Placement</span>();
- 
- %The placement models follow the typical model specification
- %(see SimuCell_Model, Parameter), and the user settable parameters
- %can be found in the plugin file. These parameters follow the standard
- %set framework.
- %For this model, probability of a pixel being picked is dependent on 
- %its distance to the nearest existing cell. The functional form of this
- %dependence is the probability density function of a poisson 
- %distribution with mean specified by the 'distance_to_existing' below
- set(subpop{1}.placement,'distance_to_existing',15);
- 
- %The boundary is the number of pixels around the edge of the image
- %where no cells are placed.
- set(subpop{1}.placement,'boundary',100);
- 
- %Probability that the cell is part of the cluster, non-clustered 
- %cells are placed randomly.
- set(subpop{1}.placement,'clustering_probability',0.8);</pre></div></div><div id="placement-Random_Placement"><div class="title">Random_Placement</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Random_Placement</span> placement plugin used so position cells randomly in image
- but avoiding a boundary region.
- 
- <span class="helptopic">Random_Placement</span> Properties:
-    <span class=property>boundary</span> - Boundary Of Image Inside Which No Cells Will be Centered in
-    pixels.
-      Default value : 100
-      Range value : 0 to Inf
- 
- Usage:<pre>
- %Set the Model Placement
- %Placement refers to the position of cell in an image.
- %Cells in different subpopulations can display different patterns of
- %placement (e.g, one type of cells may be clustered or placed randomly)
- %Placement for cells in a subpopulation are specified through the
- %placement property in subpopulation, which you need to set the the
- %appropriate placement model.
- %Models for placements are classes of type SimuCell_Placement_Model, and
- %are implemented via plugins (usually placed in the 'plugins/placement/'
- %directory).
- %Here we choose to have cells placed close to existing cells, and so
- %choose the '<span class="helptopic">Random_Placement</span>' model.
- subpop{1}.placement=<span class="helptopic">Random_Placement</span>();
- 
- %The boundary is the number of pixels around the edge of the image where
- %no cells are placed.
- set(subpop{1}.placement,'boundary',100);</pre></div></div><div id="shape-Centered_Cytoplasm_Model"><div class="secTitle" id="shape">shape</div><div class="title">Centered_Cytoplasm_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Centered_Cytoplasm_Model</span> cytoplasm model plugin creating an elliptical
- cell centered around an other object (typically a nucleus).
- shape.
- 
- <span class="helptopic">Centered_Cytoplasm_Model</span> Properties:
-    <span class=property>radius</span> - Average Cell Radius
-      Default value : 15
-      Range value : 0 to Inf
-    <span class=property>eccentricity</span> - Measure of Non-Uniformity: 0=spherical, 1=straight line
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>randomness</span> - Measure of Non-Uniformity: 0=elliptical, 1=random
-      Default value : 0.1
-      Range value : 0 to 1
-    <span class=property>centered_around</span> - The cytoplasm is centered around this 
-    (usually a nucleus)
-      Default value : -
- 
- Usage:<pre>
- %Create a new Object 'cytoplasm'
- add_object(subpop{2},'cytoplasm');
- 
- %Set the <span class="helptopic">Centered_Cytoplasm_Model</span> model
- subpop{2}.objects.cytoplasm.model=<span class="helptopic">Centered_Cytoplasm_Model</span>;
- 
- Set the parameters
- set(subpop{2}.objects.cytoplasm.model,'radius',60);
- set(subpop{2}.objects.cytoplasm.model,'eccentricity',0.6);
- set(subpop{2}.objects.cytoplasm.model,'randomness',0.2);
- 
- %The cytoplasm is drawn around the nucleus
- set(subpop{2}.objects.cytoplasm.model,'centered_around',...
- subpop{2}.objects.nucleus);</pre></div></div><div id="shape-Cytoplasm_Model"><div class="title">Cytoplasm_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Cytoplasm_Model</span> cytoplasm model plugin creating an elliptical cell
- shape.
- 
- <span class="helptopic">Cytoplasm_Model</span> Properties:
-    <span class=property>radius</span> - Average Cell Radius
-      Default value : 15
-      Range value : 0 to Inf
-    <span class=property>eccentricity</span> - Measure of Non-Uniformity: 0=spherical, 1=straight line
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>randomness</span> - Measure of Non-Uniformity: 0=elliptical, 1=random
-      Default value : 0.1
-      Range value : 0 to 1
- 
- Usage:<pre>
- %Create a new Object 'cytoplasm'
- add_object(subpop{2},'cytoplasm');
- 
- %Set the <span class="helptopic">Cytoplasm_Model</span> model
- subpop{2}.objects.cytoplasm.model=<span class="helptopic">Cytoplasm_Model</span>;
- 
- Set the parameters
- set(subpop{2}.objects.cytoplasm.model,'radius',60);
- set(subpop{2}.objects.cytoplasm.model,'eccentricity',0.6);
- set(subpop{2}.objects.cytoplasm.model,'randomness',0.2);</pre></div></div><div id="shape-Fluid_Shape"><div class="title">Fluid_Shape</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Fluid_Shape</span> cytoplasm model plugin creating an elliptical
- cell, which turns fluid to avoid overlap.
- 
- <span class="helptopic">Fluid_Shape</span> Properties:
-    <span class=property>radius</span> - Average Cell Radius
-      Default value : 30
-      Range value : 0 to Inf
-    <span class=property>eccentricity</span> - Measure of Non-Uniformity: 0=spherical, 1=straight line
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>randomness</span> - Measure of Non-Uniformity: 0=elliptical, 1=random
-      Default value : 0.1
-      Range value : 0 to 1
- 
- Usage:<pre>
- %Create a new Object 'cytoplasm'
- add_object(subpop{2},'cytoplasm');
- 
- %Set the <span class="helptopic">Fluid_Shape</span> model
- subpop{2}.objects.cytoplasm.model=<span class="helptopic">Fluid_Shape</span>;
- 
- Set the parameters
- set(subpop{2}.objects.cytoplasm.model,'radius',60);
- set(subpop{2}.objects.cytoplasm.model,'eccentricity',0.6);
- set(subpop{2}.objects.cytoplasm.model,'randomness',0.2);</pre></div></div><div id="shape-Centered_Nucleus_Model"><div class="title">Centered_Nucleus_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Centered_Nucleus_Model</span> nucleus model plugin creating an elliptical
- nucleus at the center of another shape (usually cytoplasm).
- 
- <span class="helptopic">Centered_Nucleus_Model</span> Properties:
-    <span class=property>radius</span> - Average Cell Radius.
-      Default value : 30
-      Range value : 0 to 100
-    <span class=property>eccentricity</span> - Measure of Non-Uniformity: 0=spherical, 1=straight
-    line.
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>randomness</span> - Measure of Non-Uniformity: 0=elliptical, 1=random.
-      Default value : 0.05
-      Range value : 0 to 1
-    <span class=property>centered_around</span> - The nucleus is drawn at the center of this object
-    (usually a cytoplasm).
-      Default value : -
- 
- Usage:<pre>
- %Create a new Object 'nucleus'
- add_object(subpop{2},'nucleus');
- 
- %Set the <span class="helptopic">Centered_Nucleus_Model</span> model
- subpop{2}.objects.nucleus.model=<span class="helptopic">Centered_Nucleus_Model</span>;
- 
- Set the parameters
- set(subpop{2}.objects.nucleus.model,'radius',60);
- set(subpop{2}.objects.nucleus.model,'eccentricity',0.6);
- set(subpop{2}.objects.nucleus.model,'randomness',0.2);
- 
- %The nucleus is drawn at the center of the cytoplasm
- set(subpop{2}.objects.nucleus.model,'centered_around',...
- subpop{2}.objects.cytoplasm);</pre></div></div><div id="shape-Nucleus_Model"><div class="title">Nucleus_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Nucleus_Model</span> nucleus model plugin creating an elliptical nucleus shape.
- 
- <span class="helptopic">Nucleus_Model</span> Properties:
-    <span class=property>radius</span> - Average Nuclear Radius
-      Default value : 15
-      Range value : 1 to Inf
-    <span class=property>eccentricity</span> - Measure of Non-Uniformity: 0=spherical, 1=straight line
-      Default value : 0.5
-      Range value : 0 to 1
-    <span class=property>randomness</span> - Measure of Non-Uniformity: 0=elliptical, 1=random
-      Default value : 0.1
-      Range value : 0 to 1
- 
- Usage:<pre>
- %Create a new Object 'nucleus'
- add_object(subpop{2},'nucleus');
- 
- %Set the <span class="helptopic">Nucleus_Model</span> model
- subpop{2}.objects.nucleus.model=<span class="helptopic">Nucleus_Model</span>;
- 
- Set the parameters
- set(subpop{2}.objects.nucleus.model,'radius',60);
- set(subpop{2}.objects.nucleus.model,'eccentricity',0.6);
- set(subpop{2}.objects.nucleus.model,'randomness',0.2);</pre></div></div><div id="shape-SLML_Nucleus_Model"><div class="title">SLML_Nucleus_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">SLML_Nucleus_Model</span> nuclear shape model built using a model described via
- an SLML file.
- 
- <span class="helptopic">SLML_Nucleus_Model</span> Properties:
-    <span class=property>radius</span> - Average Nuclear Radius
-      Default value : 15
-      Range value : 1 to Inf
-    <span class=property>filename</span> - path to an SLML file
-      Default value : -
- 
- Usage:<pre>
- %Create a new Object 'nucleus'
- add_object(subpop{2},'nucleus');
- 
- %Set the Nucleus_Model model
- subpop{2}.objects.nucleus.model=<span class="helptopic">SLML_Nucleus_Model</span>;
- 
- Set the parameters
- set(subpop{2}.objects.nucleus.model,'radius',60);
- set(subpop{2}.objects.nucleus.model,'filename','data/slml/nucleolus.mat');</pre></div></div><div id="shape-Lipid_Droplet_Model"><div class="title">Lipid_Droplet_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Lipid_Droplet_Model</span> shape model plugin modeling lipid droplets
- (radius, number and arrangement (i.e. clustered or not) can be
- specified).
- 
- <span class="helptopic">Lipid_Droplet_Model</span> Properties:
-    <span class=property>droplet_radius</span> - Radius (in pixels) of lipid droplets
-      Default value : 3
-      Range value : 0 to Inf
-    <span class=property>number_of_droplets</span> - Average number of droplets
-      Default value : 5
-      Range value : 0 to Inf
-    <span class=property>number_of_clusters</span> - 0- random placement, otherwise number of droplet
-    clusters
-      Default value : 0
-      Range value : 0 to Inf
-    <span class=property>cytoplasm</span> - Droplets will be placed inside this shape
-      Default value : -
-    <span class=property>cytoplasm</span> - Droplets will avoid this shape
-      Default value : -
- 
- Usage:<pre></pre></div></div><div id="shape-Microtubule_Fibre_Model"><div class="title">Microtubule_Fibre_Model</div>
-      <div class="helptext"><!--helptext --> <span class="helptopic">Microtubule_Fibre_Model</span> shape model plugin modeling microtubule fibre
- 
- <span class="helptopic">Microtubule_Fibre_Model</span> Properties:
-    <span class=property>number_of_threads</span> - Number of threads
-      Default value : 100
-      Range value : 1 to Inf
-    <span class=property>persistance_length</span> - Distance (in pixels) between splits
-      Default value : 3
-      Range value : 1 to Inf
-    <span class=property>dist_outside</span> - Distance outside
-      Default value : 0
-      Range value : 0 to Inf
-    <span class=property>fraction_allowed_outside</span> - Fraction allowed outside
-      Default value : 0
-      Range value : 0 to 1
-    <span class=property>cytoplasm</span> - Microtubule Fibre will be placed inside this shape
-      Default value : -
-    <span class=property>cytoplasm</span> - Microtubule Fibre will avoid this shape
-      Default value : -
- 
- Usage:<pre>
- add_object(subpop{1},'fiber');
- subpop{1}.objects.fiber.model=<span class="helptopic">Microtubule_Fibre_Model</span>;
- set(subpop{1}.objects.fiber.model,'nucleus',subpop{1}.objects.nucleus,...
-     'cytoplasm',subpop{1}.objects.cytoplasm</pre></div></div></div>   <body><html>

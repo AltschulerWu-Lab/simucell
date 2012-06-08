@@ -31,8 +31,8 @@ classdef Random_Placement <SimuCell_Placement_Model
   
   
   properties
-    description='Positions are picked randomly in image avoiding a boundary region';
     boundary;
+    description='Positions are picked randomly in image avoiding a boundary region';
   end
   
   

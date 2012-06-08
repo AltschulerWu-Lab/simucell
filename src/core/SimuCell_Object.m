@@ -1,6 +1,6 @@
 classdef SimuCell_Object <hgsetget
-  %SIMUCELL_OBJECT   Template abstract class for all simucell models
-  %  Template abstract class for all simucell object (like a nucleus,
+  %SIMUCELL_OBJECT   class representing any simucell object
+  %  class reprensenting all simucell object/shape (like a nucleus,
   %  cytoplasm, nuclear body etc... ), so everything can
   %  be be derived from this class.
   %  property set and get interface.  hgsetget is a subclass of handle, so
