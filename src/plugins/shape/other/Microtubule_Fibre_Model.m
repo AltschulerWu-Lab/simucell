@@ -24,8 +24,28 @@ classdef Microtubule_Fibre_Model <SimuCell_Object_Model
   %subpop{1}.objects.fiber.model=Microtubule_Fibre_Model;
   %set(subpop{1}.objects.fiber.model,'nucleus',subpop{1}.objects.nucleus,...
   %    'cytoplasm',subpop{1}.objects.cytoplasm);
-  %Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
+  %
+  % ------------------------------------------------------------------------------
+  % Copyright ©2012, The University of Texas Southwestern Medical Center 
+  % Authors:
+  % Satwik Rajaram and Benjamin Pavie for the Altschuler and Wu Lab
+  % For latest updates, check: < http://www.SimuCell.org >.
+  %
+  % All rights reserved.
+  % This program is free software: you can redistribute it and/or modify
+  % it under the terms of the GNU General Public License as published by
+  % the Free Software Foundation, version 3 of the License.
+  %
+  % This program is distributed in the hope that it will be useful,
+  % but WITHOUT ANY WARRANTY; without even the implied warranty of
+  % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  % GNU General Public License for more details:
+  % < http://www.gnu.org/licenses/ >.
+  %
+  % ------------------------------------------------------------------------------
+  %%
   
+    
   
   properties    
     number_of_threads
