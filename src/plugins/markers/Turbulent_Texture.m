@@ -2,6 +2,9 @@ classdef Turbulent_Texture <SimuCell_Marker_Operation
   %Turbulent_Texture marker plugin used to add a turbulent texture effect
   %which "shuffles" the pixels to give the appearance of turbulence.
   %Is only useful if the existing levels are non-uniform.
+  % The parametrization of the texture is a variation on the one used by 
+  % Lehmussola et al in Proceedings of the IEEE, Vol. 96, No. 8. 
+  % (16 July 2008), pp. 1348-1360, doi:10.1109/JPROC.2008.925490
   %
   %Turbulent_Texture Properties:
   %   max_displacement - Turbulent noise is essentially a rearrangment of

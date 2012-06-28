@@ -1,7 +1,9 @@
 classdef Centered_Cytoplasm_Model <SimuCell_Object_Model
   %Centered_Cytoplasm_Model cytoplasm model plugin creating an elliptical
-  %cell centered around an other object (typically a nucleus).
-  %shape.
+  %cell centered around an other object (typically a nucleus). 
+  %The model for the shape itself is a variation on the one used by 
+  % Lehmussola et al in Proceedings of the IEEE, Vol. 96, No. 8. 
+  % (16 July 2008), pp. 1348-1360, doi:10.1109/JPROC.2008.925490
   %
   %Centered_Cytoplasm_Model Properties:
   %   radius - Average Cell Radius

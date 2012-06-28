@@ -1,6 +1,9 @@
 classdef Perlin_Texture <SimuCell_Marker_Operation
   %Perlin_Texture marker plugin used to scales the intensity by a randomly
   %generated texture function.
+  % The parametrization of the texture is a variation on the one used by 
+  % Lehmussola et al in Proceedings of the IEEE, Vol. 96, No. 8. 
+  % (16 July 2008), pp. 1348-1360, doi:10.1109/JPROC.2008.925490
   %
   %Perlin_Texture Properties:
   %   add_or_multiply - Should the noise be additive OR multiplicative

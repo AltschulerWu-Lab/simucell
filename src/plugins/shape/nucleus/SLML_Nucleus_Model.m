@@ -1,6 +1,8 @@
 classdef SLML_Nucleus_Model <SimuCell_Object_Model
   %SLML_Nucleus_Model nuclear shape model built using a model described via
-  %an SLML file.
+  %an SLML file. For a description see Automated Learning of Generative Models for Subcellular 
+  % Location: Building Blocks for Systems Biology. Cytometry 71A:978-990 by
+  % T. Zhao and R.F. Murphy (2007)
   %
   %SLML_Nucleus_Model Properties:
   %   radius - Average Nuclear Radius
