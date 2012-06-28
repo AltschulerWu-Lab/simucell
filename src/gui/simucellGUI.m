@@ -886,7 +886,10 @@ if(sum(myhandles.simucell_data.population_fractions)~=1)
   warndlg('Error: make sure sum of subpopulation fraction is equal to 100%.');
   return;
 end
-[FileName,PathName]=uiputfile('*.m','Export SimuCell Script');
+[FileName,PathName,FilterIndex]=uiputfile('*.m','Export SimuCell Script');
+if(FilterIndex==0)
+  return;
+end
 simucell_data = populateSimucell_data(handles,myhandles.simucell_data);
 if(isnumeric(simucell_data))
   return;
@@ -897,8 +900,11 @@ try
 catch
 end
 FileName2=[FileName(1:end-2) '.mat'];
+version=get(handles.figure1,'Name');
+version=version(11:end-1);
+simucell_data.version=version;
 save([PathName FileName2], 'simucell_data');
-msgbox(['Script and data structure have been saved in ' PathName FileName ' and ' PathName FileName2 '.']);
+msgbox(['Script (.m) and data structure (.mat) have been saved in ' PathName FileName ' and ' PathName FileName2 '.']);
 myhandles.simucell_data=simucell_data;
 setappdata(0,'myhandles',myhandles);
 
@@ -1186,14 +1192,41 @@ function loadButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 [filename, pathname] = uigetfile( ...
-{'*.mat','Simucell Parmameters (*.mat)'; '*.*',  'All Files (*.*)'},...
+{'*.m','SimuCell Script (*.m)'; '*.mat','SimuCell Parmameters (*.mat)';  '*.*',  'All Files (*.*)'},...
    'Load SimuCell parameters');
 if(isnumeric(pathname))%If user pressed cancel button
   return;
 end
-load([pathname filename],'simucell_data');
+if(strcmp(filename(end-1:end),'.m'))
+  currentDir= pwd;
+  cd(pathname);
+  eval(filename(1:end-2));
+  
+  cd(currentDir);
+else
+  load([pathname filename],'simucell_data');
+end
 myhandles=getappdata(0,'myhandles');
 myhandles.simucell_data=simucell_data;
+
+version=get(handles.figure1,'Name'); 
+version=version(11:end-1);
+if(strcmp(filename(end-3:end),'.mat') )
+  if ~isfield(simucell_data,'version') || ~strcmp(simucell_data.version,version)
+    if isfield(simucell_data,'version')
+      warndlg({['SimuCell version (' version ') and the mat file one (' simucell_data.version ') are not identical.'];...
+      'It may load incorrectly the information contain in the mat file.'})
+    else    
+      warndlg({['SimuCell version (' version ') and the mat file one are not identical.'];...
+      'It may load incorrectly the information contain in the mat file.'})
+    end
+  end
+else
+  disp('.m file do not contain any version information, so it may be incompatible with your current SimuCell version');
+end
+
+
+
 setappdata(0,'myhandles',myhandles);
 populateTable(hObject,handles);
 myhandles=getappdata(0,'myhandles');

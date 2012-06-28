@@ -1,11 +1,11 @@
 function simucell_result=simucell(filename,output_type,number_of_images)
-
-addpath(genpath('gui'));
-addpath(genpath('test'));
-addpath(genpath('core'));
-addpath(genpath('utils'));
-addpath(genpath('plugins'));
-addpath(genpath(['..' filesep 'saved_data']));
+currentPath=pwd;
+addpath(genpath([currentPath filesep 'gui']));
+addpath(genpath([currentPath filesep 'test']));
+addpath(genpath([currentPath filesep 'core']));
+addpath(genpath([currentPath filesep 'utils']));
+addpath(genpath([currentPath filesep 'plugins']));
+addpath(genpath([currentPath filesep '..' filesep 'saved_data']));
 simucell_result=[];
 
 version=fileread('version.txt');
@@ -30,6 +30,7 @@ if(nargin>0)
                 
                 [file,path,filterindex] =uiputfile([ filename '.mat'],'Save simucell_data (*.mat)');
                 if(filterindex ~= 0)
+                    simucell_data.version=version;
                     save([path file],'simucell_data');
                 end
             case 'image'
