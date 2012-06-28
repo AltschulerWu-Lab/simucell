@@ -1,4 +1,4 @@
-0/Start Matalb:
+0/Start Matlab:
 
 1/Set the path:
 cd src/
