@@ -177,7 +177,10 @@ for img_num=1:number_of_images
     
   end
   final_mask=current_image_mask;
-  
+  overlap_counter=zeros(simucell_params.simucell_image_size);
+  for cell_number=1:number_of_cells
+    overlap_counter=overlap_counter+cell_masks{cell_number};
+  end      
   marker_structure=struct;
   for cell_number=1:number_of_cells
     
@@ -187,12 +190,13 @@ for img_num=1:number_of_images
     number_of_marker_shapes=length(simucell_params.subpopulations{...
       subpopulation_number}.marker_draw_order_objects);
     %calculate mask from other cells
-    other_cells_mask=false(simucell_params.simucell_image_size);
-    for i=1:number_of_cells
-      if(i~=cell_number)
-        other_cells_mask=other_cells_mask|cell_masks{i};
-      end
-    end
+    other_cells_mask=(overlap_counter-cell_masks{cell_number})>0;
+    %other_cells_mask=false(simucell_params.simucell_image_size);
+    %for i=1:number_of_cells
+    %  if(i~=cell_number)
+    %    other_cells_mask=other_cells_mask|cell_masks{i};
+    %  end
+    %end
     
     for marker_shape_counter=1:number_of_marker_shapes
       
@@ -229,7 +233,7 @@ for img_num=1:number_of_images
           other_cells_mask,shapes_passed,markers_passed);
       end
       marker_structure(cell_number).(shape_name).(marker_name)=...
-        current_marker;
+        sparse(current_marker);
     end
   end
   

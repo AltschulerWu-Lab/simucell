@@ -85,10 +85,14 @@ classdef Nearby_Placement <SimuCell_Placement_Model
       prob=rand();
       
       if(prob<obj.clustering_probability.value)
+
         if(nnz(full_image_mask)~=0)
+          scale_factor=10;
+          dists_small=poisspdf(scale_factor*bwdist(imresize(full_image_mask,1.0/scale_factor)),obj.distance_to_existing.value);
+          dists=imresize(dists_small,[max_x,max_y]);
           %Possible speed up using meshgrid and explicit calculation?
-          dists=bwdist(full_image_mask);
-          dists=poisspdf(dists,obj.distance_to_existing.value);
+          %dists=bwdist(full_image_mask);
+          %dists=poisspdf(dists,obj.distance_to_existing.value);
           dists(full_image_mask)=0;
         else
           dists=ones([max_x,max_y]) ;

@@ -64,18 +64,26 @@ classdef Fluid_Shape <SimuCell_Object_Model
       max_attempts=50;
       attempt_num=1;
       temp_area=nnz(temp_shape&(~current_image_mask));
+      current_image_maskI=~current_image_mask;
+      allowed_shape=temp_shape&(current_image_maskI);
       while(temp_area<target_area && attempt_num<max_attempts)
-        allowed_shape=temp_shape&(~current_image_mask);
+        
         [rows,cols]=find(allowed_shape);
         x1=max(min(rows)-2,1);
         x2=min(max(rows)+2,max_x);
         y1=max(min(cols)-2,1);
         y2=min(max(cols)+2,max_y);
+
         temp=allowed_shape(x1:x2,y1:y2);
         temp=imdilate(temp,se);
-        temp_shape=false(max_x,max_y);
-        temp_shape(x1:x2,y1:y2)=temp;
-        temp_area=nnz(temp_shape &(~current_image_mask));
+        %temp_shape=false(max_x,max_y);
+        allowed_shape=false(max_x,max_y);
+        allowed_shape(x1:x2,y1:y2)=temp&(current_image_maskI(x1:x2,y1:y2));
+        %temp_shape(x1:x2,y1:y2)=temp;
+        
+        %allowed_shape=temp_shape&(current_image_maskI);
+        temp_area=nnz(allowed_shape(x1:x2,y1:y2));
+        
         attempt_num=attempt_num+1;
       end
       output_shape=temp_shape&(~current_image_mask);

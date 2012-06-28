@@ -123,12 +123,18 @@ classdef Perlin_Texture <SimuCell_Marker_Operation
           alpha=1;
         end
       end
-      tex(min(row):max(row),min(col):max(col))=noise;
+      %tex(min(row):max(row),min(col):max(col))=noise;
+      result=zeros(size(current_marker));
       switch(obj.add_or_multiply.value)
-        case 'Add'
-          result=max(min(current_marker+sparse(tex)-alpha,1),0);
-        case 'Multiply'
-          result=max(min(current_marker.*sparse(tex+1)-alpha,1),0);
+                case 'Add'
+                    result(min(row):max(row),min(col):max(col))=...
+                        max(min(current_marker(min(row):max(row),min(col):max(col))...
+                        +noise-alpha,1),0);
+                case 'Multiply'
+                    result(min(row):max(row),min(col):max(col))=...
+                        max(min(current_marker(min(row):max(row),min(col):max(col))...
+                        .*(noise+1)-alpha,1),0);
+
       end
     end
     

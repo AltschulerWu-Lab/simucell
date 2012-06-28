@@ -24,7 +24,7 @@ object = [t2';t1'];
 object=rotmat*object;
 
 pp_nuc = cscvn(object);
-object = ppval(pp_nuc, linspace(0,max(pp_nuc.breaks),1000));
+object = ppval(pp_nuc, linspace(0,max(pp_nuc.breaks),500));
 	
 object = radius*object;
 
