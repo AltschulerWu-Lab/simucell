@@ -1,37 +1,56 @@
 classdef Parameter <hgsetget
-  %PARAMETER class used to define parameters passed from user to SimuCell
-  %plugins.
-  %The Parameter class is used by SimuCell as an interface to accept all
-  %information input from users.  The Parameter class defines the name,
-  %type,allowed values, and a description of the input variable.
-  %
-  %Parameter properties:
-  %  name           - a string defining the name of the variable 
-  %    (this is the name seen in the GUI)
-  %  value          - default value of the variable (this is used if
-  %    the value is not specified by the user). The type must match 
-  %    the variable 'type'.
-  %  type           - the class/type of the input variable. Allowed 
-  %    types are defined in SimuCell_Class_Type.
-  %  allowed_values - allowed values for this input variable. The 
-  %    format depends on the variable 'type'
-  %  description    - a short string description of the variable. 
-  %    This will show up as a tooltip in the GUI
-  %
-  %Usage:
-  %overlap=Overlap_Specification;
-  %overlap.AddOverlap({subpop{1}.objects.cytoplasm,...
-  %  subpop{2}.objects.cytoplasm},0.05);
-  %simucell_data.overlap=overlap;
-  %
-  %Parameter events:
-  %  Parameter_Set      - This is triggered by the script when value 
-  %    of a parameter is set.
-  %
-  %   See also hgsetget, SimuCell_Class_Type, isMatFile,
-  %   SimuCell_Model,SLML_Nucleus_Model,Clustered_Placement
-  %
-  %Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
+%PARAMETER class used to define parameters passed from user to SimuCell
+%plugins.
+%The Parameter class is used by SimuCell as an interface to accept all
+%information input from users.  The Parameter class defines the name,
+%type,allowed values, and a description of the input variable.
+%
+%Parameter properties:
+%  name           - a string defining the name of the variable 
+%    (this is the name seen in the GUI)
+%  value          - default value of the variable (this is used if
+%    the value is not specified by the user). The type must match 
+%    the variable 'type'.
+%  type           - the class/type of the input variable. Allowed 
+%    types are defined in SimuCell_Class_Type.
+%  allowed_values - allowed values for this input variable. The 
+%    format depends on the variable 'type'
+%  description    - a short string description of the variable. 
+%    This will show up as a tooltip in the GUI
+%
+%Usage:
+%overlap=Overlap_Specification;
+%overlap.AddOverlap({subpop{1}.objects.cytoplasm,...
+%  subpop{2}.objects.cytoplasm},0.05);
+%simucell_data.overlap=overlap;
+%
+%Parameter events:
+%  Parameter_Set      - This is triggered by the script when value 
+%    of a parameter is set.
+%
+%   See also hgsetget, SimuCell_Class_Type, isMatFile,
+%   SimuCell_Model,SLML_Nucleus_Model,Clustered_Placement
+%
+%
+% ------------------------------------------------------------------------------
+% Copyright ©2012, The University of Texas Southwestern Medical Center 
+% Authors:
+% Satwik Rajaram and Benjamin Pavie for the Altschuler and Wu Lab
+% For latest updates, check: < http://www.SimuCell.org >.
+%
+% All rights reserved.
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, version 3 of the License.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details:
+% < http://www.gnu.org/licenses/ >.
+%
+% ------------------------------------------------------------------------------
+%%
   
   
   properties

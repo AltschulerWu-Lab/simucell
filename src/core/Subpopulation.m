@@ -1,32 +1,51 @@
 classdef Subpopulation <handle
-  %SUBPOPULATION   Properties of cells in a  specific sub-population
-  %(cell-types) are described by this class. It is the primary class that
-  %needs to be defined by the user.
-  %
-  %Subpopulation properties:
-  %  objects     - a class of type dynamicprops that defines the
-  %    different objects (nucleus, cytoplams).
-  %  markers     - a class of type dynamicprops that defines thes the
-  %    different markers.
-  %  placement   - the chosen placement model (plugin) to place the
-  %    various objects.
-  %  compositing - the chosen scheme to combine marker levels on 
-  %    overlapping objects.
-  %  cell_artifacts - a cell containing a list of operations (plugins
-  %    classes derived from SimuCell_CellArtifact_Operation), used to
-  %    apply artifacts on a cell by cell basis e.g. Focal Plane Effects
-  %
-  %Subpopulation methods:
-  %  Subpopulation     - Create a new Subpopulation
-  %  add_object        - Add a new object (nucleus, cytoplasm) to the 
-  %    subpopulation
-  %  add_marker        - Add a new marker to the subpopulation
-  %  add_cell_artifact - Add a new  cell level artifact operation to
-  %    the subpopulation
-  %
-  %See also  SimuCell_Model, Constant_Dependant_Marker_Level,Perlin_texture
-  %
-  %Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
+%SUBPOPULATION   Properties of cells in a  specific sub-population
+%(cell-types) are described by this class. It is the primary class that
+%needs to be defined by the user.
+%
+%Subpopulation properties:
+%  objects     - a class of type dynamicprops that defines the
+%    different objects (nucleus, cytoplams).
+%  markers     - a class of type dynamicprops that defines thes the
+%    different markers.
+%  placement   - the chosen placement model (plugin) to place the
+%    various objects.
+%  compositing - the chosen scheme to combine marker levels on 
+%    overlapping objects.
+%  cell_artifacts - a cell containing a list of operations (plugins
+%    classes derived from SimuCell_CellArtifact_Operation), used to
+%    apply artifacts on a cell by cell basis e.g. Focal Plane Effects
+%
+%Subpopulation methods:
+%  Subpopulation     - Create a new Subpopulation
+%  add_object        - Add a new object (nucleus, cytoplasm) to the 
+%    subpopulation
+%  add_marker        - Add a new marker to the subpopulation
+%  add_cell_artifact - Add a new  cell level artifact operation to
+%    the subpopulation
+%
+%See also  SimuCell_Model, Constant_Dependant_Marker_Level,Perlin_texture
+%
+%
+% ------------------------------------------------------------------------------
+% Copyright ©2012, The University of Texas Southwestern Medical Center 
+% Authors:
+% Satwik Rajaram and Benjamin Pavie for the Altschuler and Wu Lab
+% For latest updates, check: < http://www.SimuCell.org >.
+%
+% All rights reserved.
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, version 3 of the License.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details:
+% < http://www.gnu.org/licenses/ >.
+%
+% ------------------------------------------------------------------------------
+%%
   
   
   properties

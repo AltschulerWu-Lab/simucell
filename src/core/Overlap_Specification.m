@@ -1,26 +1,45 @@
 classdef Overlap_Specification <handle
-  %Overlap_Specification class used to define how shape will overlap
-  %
-  %Overlap_Specification Properties: (Private)
-  %
-  %Overlap_Specification Methods:
-  %  AddOverlap - Set the overlapp values between a list of objects
-  %    -object_list:   the list of object
-  %    -overlap_value: the overlap value 0- no overlapp, 1 full overlap
-  %    allowed (1 shape can 100% overlap the other one).
-  %       Range Value: 0 to 1
-  %
-  %  construct_overlap_matrix - build the overlap matrix
-  %    -subpopulations: subpopulations strcuture containing the full
-  %    subpopulations information. Used internally by the engine.
-  %
-  %Usage:
-  %overlap=Overlap_Specification;
-  %overlap.AddOverlap({subpop{1}.objects.cytoplasm,...
-  %  subpop{2}.objects.cytoplasm},0.05);
-  %simucell_data.overlap=overlap;
-  %
-  %Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
+%Overlap_Specification class used to define how shape will overlap
+%
+%Overlap_Specification Properties: (Private)
+%
+%Overlap_Specification Methods:
+%  AddOverlap - Set the overlapp values between a list of objects
+%    -object_list:   the list of object
+%    -overlap_value: the overlap value 0- no overlapp, 1 full overlap
+%    allowed (1 shape can 100% overlap the other one).
+%       Range Value: 0 to 1
+%
+%  construct_overlap_matrix - build the overlap matrix
+%    -subpopulations: subpopulations strcuture containing the full
+%    subpopulations information. Used internally by the engine.
+%
+%Usage:
+%overlap=Overlap_Specification;
+%overlap.AddOverlap({subpop{1}.objects.cytoplasm,...
+%  subpop{2}.objects.cytoplasm},0.05);
+%simucell_data.overlap=overlap;
+%
+%
+% ------------------------------------------------------------------------------
+% Copyright ©2012, The University of Texas Southwestern Medical Center 
+% Authors:
+% Satwik Rajaram and Benjamin Pavie for the Altschuler and Wu Lab
+% For latest updates, check: < http://www.SimuCell.org >.
+%
+% All rights reserved.
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, version 3 of the License.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details:
+% < http://www.gnu.org/licenses/ >.
+%
+% ------------------------------------------------------------------------------
+%%
   
   
   properties (SetAccess=private)

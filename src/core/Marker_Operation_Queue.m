@@ -1,38 +1,57 @@
 classdef Marker_Operation_Queue <handle
-  %Marker_Operation_Queue class used to store operations affecting Marker.
-  %This class is used internally.
-  %
-  %Marker_Operation_Queue Properties:
-  %   operations - the color used to display the marker
-  %     value   : a Color value (e.g., 'Red'), see available value in class
-  %     Colors.
-  %
-  % Overlap_Specification Methods:
-  %   AddOperation - Add a marker operation
-  %     -operation: the operation which will be add to the object marker
-  %     queue of operations
-  %   DeleteOperation - remove a marker operation
-  %     -operation: the operation which will be add to the object marker
-  %     queue of operations
-  %   CloneOperationQueue - clone the object marker operation queue
-  %
-  %Usage:
-  %%Define a new Marker operation
-  %op=Constant_Marker_Level();
-  %set(op,'mean_level',0.7);
-  %set(op,'sd_level',0.1);
-  %
-  %%Add this operation to your marker for the predefined shape cytoplasm
-  %subpop{1}.markers.Actin.cytoplasm.AddOperation(op);
-  %
-  %%Delete an operation
-  %subpop{1}.markers.Actin.cytoplasm.DeleteOperation(op);
-  %
-  %%Clone an operation
-  %operation_queue=subpop{1}.markers.Actin.cytoplasm.CloneOperationQueue();
-  %
-  %
-  %Copyright 2012 - S. Rajaram and B. Pavie for Altschuler and Wu Lab
+%Marker_Operation_Queue class used to store operations affecting Marker.
+%This class is used internally.
+%
+%Marker_Operation_Queue Properties:
+%   operations - the color used to display the marker
+%     value   : a Color value (e.g., 'Red'), see available value in class
+%     Colors.
+%
+% Overlap_Specification Methods:
+%   AddOperation - Add a marker operation
+%     -operation: the operation which will be add to the object marker
+%     queue of operations
+%   DeleteOperation - remove a marker operation
+%     -operation: the operation which will be add to the object marker
+%     queue of operations
+%   CloneOperationQueue - clone the object marker operation queue
+%
+%Usage:
+%%Define a new Marker operation
+%op=Constant_Marker_Level();
+%set(op,'mean_level',0.7);
+%set(op,'sd_level',0.1);
+%
+%%Add this operation to your marker for the predefined shape cytoplasm
+%subpop{1}.markers.Actin.cytoplasm.AddOperation(op);
+%
+%%Delete an operation
+%subpop{1}.markers.Actin.cytoplasm.DeleteOperation(op);
+%
+%%Clone an operation
+%operation_queue=subpop{1}.markers.Actin.cytoplasm.CloneOperationQueue();
+%
+%
+%
+% ------------------------------------------------------------------------------
+% Copyright ©2012, The University of Texas Southwestern Medical Center 
+% Authors:
+% Satwik Rajaram and Benjamin Pavie for the Altschuler and Wu Lab
+% For latest updates, check: < http://www.SimuCell.org >.
+%
+% All rights reserved.
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, version 3 of the License.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details:
+% < http://www.gnu.org/licenses/ >.
+%
+% ------------------------------------------------------------------------------
+%%
   
   
   properties (SetAccess=private)
