@@ -54,7 +54,7 @@ classdef Marker_Operation_Queue <handle
 %%
   
   
-  properties (SetAccess=private)
+  properties %(SetAccess=private)
     operations
   end
   

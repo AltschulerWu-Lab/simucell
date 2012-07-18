@@ -32,7 +32,7 @@ classdef Marker<dynamicprops
 %%
   
   
-  properties (SetAccess=private)
+  properties % (SetAccess=private)
     color
   end
   

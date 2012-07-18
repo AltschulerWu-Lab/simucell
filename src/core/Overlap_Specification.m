@@ -42,7 +42,7 @@ classdef Overlap_Specification <handle
 %%
   
   
-  properties (SetAccess=private)
+  properties %(SetAccess=private)
     overlap_lists
     overlap_matrix
     overlap_values
