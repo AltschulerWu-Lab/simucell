@@ -4,9 +4,9 @@ classdef Subpopulation <handle
 %needs to be defined by the user.
 %
 %Subpopulation properties:
-%  objects     - a class of type dynamicprops that defines the
+%  objects     - a class of type SimuCell_DynamicProps that defines the
 %    different objects (nucleus, cytoplams).
-%  markers     - a class of type dynamicprops that defines thes the
+%  markers     - a class of type SimuCell_DynamicProps that defines thes the
 %    different markers.
 %  placement   - the chosen placement model (plugin) to place the
 %    various objects.
@@ -60,8 +60,8 @@ classdef Subpopulation <handle
   methods
     %Subpopulation   - Create a new Subpopulation
     function obj=Subpopulation()
-      obj.objects=dynamicprops;%Shape_list;
-      obj.markers=dynamicprops;%Marker_list;
+      obj.objects=SimuCell_DynamicProps;%Shape_list;
+      obj.markers=SimuCell_DynamicProps;%Marker_list;
     end
     
     function add_object(obj,obj_name)
